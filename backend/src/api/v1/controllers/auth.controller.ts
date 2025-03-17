@@ -101,13 +101,13 @@ export class AuthController {
     try {
       const { email } = req.body as { email: string };
       this.logger.info("Attempt to send email with reset password link");
-      this.authService.sendEmailToResetPassword(email);
+      await this.authService.sendEmailToResetPassword(email);
       this.logger.info("Email sent successfully");
       res.status(200).json({
         success: true,
       });
       return;
-    } catch {
+    } catch (error) {
       next(error);
     }
   };

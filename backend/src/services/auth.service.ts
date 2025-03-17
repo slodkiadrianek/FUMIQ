@@ -85,6 +85,7 @@ export class AuthService extends BaseService {
       "Password change",
       `http://localhost:3000/api/v1/auth/reset-password/${token}`
     );
+    return;
   };
   resetPassword = async (token: string, password: string): Promise<IUser> => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || "");
@@ -94,10 +95,7 @@ export class AuthService extends BaseService {
     if (!user) {
       throw new AppError(400, "User", "Invalid token or user not found");
     }
-    console.log(`Still`);
-    console.log(password);
     const hashedPassword = await bcrypt.hash(password, 12);
-    console.log(hashedPassword);
     user.password = hashedPassword;
     await user.save();
 

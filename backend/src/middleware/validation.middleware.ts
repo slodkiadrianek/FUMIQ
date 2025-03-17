@@ -8,14 +8,16 @@ export class ValidationMiddleware {
   ) {
     return (req: Request, res: Response, next: NextFunction) => {
       if (req.body.email) {
-        req.body.email = req.body.email.trim().toLower();
+        req.body.email = req.body.email.trim().toLowerCase();
       }
       const { error } = schema.validate(req[property], { abortEarly: false });
       if (error) {
         res.status(400).json({
           success: false,
           message: "Validation failed",
-          errors: error.details.map((detail) => detail.message),
+          error: {
+            description: error.details[0].message,
+          },
         });
         return;
       }

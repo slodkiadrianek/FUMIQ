@@ -11,10 +11,14 @@ export const registerUser: ObjectSchema = Joi.object({
     )
     .required()
     .messages({
-      "any.pattern":
+      "string.pattern.base":
         "Password must contain at least 1 lowercase letter, 1 uppercase letter, 1 digit, and 1 special character. It must be at least 8 characters long.",
     }),
   email: Joi.string().email().required(),
+  confirmPassword: Joi.string()
+    .valid(Joi.ref("password")) // Must match "password"
+    .required()
+    .messages({ "any.only": "Passwords do not match" }),
 });
 
 export const loginUser: ObjectSchema = Joi.object({
@@ -27,7 +31,7 @@ export const loginUser: ObjectSchema = Joi.object({
     )
     .required()
     .messages({
-      "string.pattern":
+      "string.pattern.base":
         "Password must contain at least 1 lowercase letter, 1 uppercase letter, 1 digit, and 1 special character. It must be at least 8 characters long.",
     }),
 });
@@ -45,7 +49,7 @@ export const passwordUser: ObjectSchema = Joi.object({
     )
     .required()
     .messages({
-      "string.pattern":
+      "string.pattern.base":
         "Password must contain at least 1 lowercase letter, 1 uppercase letter, 1 digit, and 1 special character. It must be at least 8 characters long.",
     }),
 });
