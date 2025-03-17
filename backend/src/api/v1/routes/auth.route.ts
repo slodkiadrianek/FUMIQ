@@ -4,14 +4,22 @@ import { rateLimit } from "express-rate-limit";
 import { AuthController } from "../controllers/auth.controller.js";
 import { ValidationMiddleware } from "../../../middleware/validation.middleware.js";
 import {
-  loginEmployee,
-  registerEmployee,
-} from "../../../schemas/employee.schema.js";
+  registerUser,
+  loginUser,
+  passwordUser,
+  emailUser,
+} from "../../../schemas/user.schema.js";
 import { Authentication } from "../../../middleware/auth.middleware.js";
 export class AuthRoutes {
   private readonly rateLimit: RateLimitRequestHandler = rateLimit({
-    windowMs: 60 * 60 * 1000,
+    windowMs: 5 * 60 * 1000,
     limit: 3,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: {
+      success: false,
+      message: "Too many requests, please try again in 5 minutes.",
+    },
   });
 
   constructor(
@@ -26,14 +34,14 @@ export class AuthRoutes {
     this.router.post(
       "/api/v1/auth/register",
       this.rateLimit,
-      ValidationMiddleware.validate(registerEmployee, "body"),
-      this.authController.registerEmployee
+      ValidationMiddleware.validate(registerUser, "body"),
+      this.authController.registerUser
     );
     this.router.post(
       "/api/v1/auth/login",
       this.rateLimit,
-      ValidationMiddleware.validate(loginEmployee, "body"),
-      this.authController.loginEmployee
+      ValidationMiddleware.validate(loginUser, "body"),
+      this.authController.loginUser
     );
     this.router.post(
       "/api/v1/auth/logout",
@@ -42,8 +50,17 @@ export class AuthRoutes {
     );
     this.router.post(
       "/api/v1/auth/reset-password",
+      ValidationMiddleware.validate(emailUser, "body"),
       this.authController.sendEmailToResetPassword
     );
-    this.router.post("/api/v1/auth/reset-password/:token",) ;
+    this.router.post(
+      "/api/v1/auth/reset-password/:token",
+      ValidationMiddleware.validate(passwordUser, "body"),
+      this.authController.resetPassword
+    );
+    this.router.get(
+      "/api/v1/auth/activate/:token",
+      this.authController.activateUser
+    );
   }
 }

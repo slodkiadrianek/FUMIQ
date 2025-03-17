@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FUMIQ - Register</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap Icons -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <!-- Animate.css for animations -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      /* Reusing the same styles as the login page */
+      :root {
+        --primary-color: #4f46e5;
+        --primary-hover: #4338ca;
+        --secondary-color: #10b981;
+        --secondary-hover: #059669;
+        --light-bg: #f3f4f6;
+        --dark-text: #1f2937;
+        --google-color: #ea4335;
+        --microsoft-color: #0078d4;
+        --github-color: #333;
+      }
+
+      body {
+        background: linear-gradient(135deg, #f0f4ff 0%, #e6f7ff 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      }
+
+      .register-container {
+        max-width: 480px;
+        margin: 0 auto;
+      }
+
+      .card {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      }
+
+      .brand-badge {
+        display: inline-block;
+        background-color: rgba(79, 70, 229, 0.1);
+        color: var(--primary-color);
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
+
+      .logo-text {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        letter-spacing: -0.025em;
+      }
+
+      .card-body {
+        padding: 2rem;
+      }
+
+      .form-control {
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        border: 1px solid #e2e8f0;
+        background-color: #f8fafc;
+        transition: all 0.3s ease;
+      }
+
+      .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.25rem rgba(79, 70, 229, 0.25);
+        background-color: #fff;
+        transform: translateY(-2px);
+      }
+
+      .input-group-text {
+        border-radius: 10px 0 0 10px;
+        background-color: #f8fafc;
+      }
+
+      .btn {
+        border-radius: 10px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+      }
+
+      .btn-primary:hover {
+        background-color: var(--primary-hover);
+        border-color: var(--primary-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(79, 70, 229, 0.4);
+      }
+
+      .btn-social {
+        border: 1px solid #e2e8f0;
+        background-color: #fff;
+        color: var(--dark-text);
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 0.75rem 1rem;
+      }
+
+      .btn-social:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      }
+
+      .btn-google {
+        color: var(--google-color);
+        border-color: rgba(234, 67, 53, 0.3);
+      }
+
+      .btn-google:hover {
+        background-color: rgba(234, 67, 53, 0.05);
+      }
+
+      .btn-microsoft {
+        color: var(--microsoft-color);
+        border-color: rgba(0, 120, 212, 0.3);
+      }
+
+      .btn-microsoft:hover {
+        background-color: rgba(0, 120, 212, 0.05);
+      }
+
+      .form-check-input:checked {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+      }
+
+      .divider {
+        display: flex;
+        align-items: center;
+        color: #6b7280;
+        font-size: 0.875rem;
+        margin: 1.5rem 0;
+      }
+
+      .divider:before,
+      .divider:after {
+        content: "";
+        flex: 1;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      .divider:before {
+        margin-right: 1rem;
+      }
+
+      .divider:after {
+        margin-left: 1rem;
+      }
+
+      .text-primary {
+        color: var(--primary-color) !important;
+      }
+
+      .text-secondary {
+        color: var(--secondary-color) !important;
+      }
+
+      .password-toggle {
+        border-radius: 0 10px 10px 0;
+        border-left: none;
+        background-color: #f8fafc;
+        color: #6b7280;
+      }
+
+      .password-toggle:hover {
+        background-color: #f1f5f9;
+        color: var(--primary-color);
+      }
+
+      .card-footer {
+        background-color: rgba(243, 244, 246, 0.5);
+        border-top: 1px solid #e2e8f0;
+        padding: 1.25rem 2rem;
+      }
+
+      .brand-footer {
+        font-size: 0.875rem;
+        color: #6b7280;
+      }
+
+      .form-floating > .form-control {
+        padding-top: 1.625rem;
+        padding-bottom: 0.625rem;
+        height: calc(3.5rem + 2px);
+      }
+
+      .form-floating > label {
+        padding: 1rem 0.75rem;
+      }
+
+      .alert {
+        border-radius: 10px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        border: 1px solid transparent;
+      }
+
+      .alert-info {
+        background-color: rgba(96, 165, 250, 0.1);
+        border-color: rgba(96, 165, 250, 0.2);
+        color: #2563eb;
+      }
+
+      .social-btn-text {
+        font-weight: 500;
+      }
+
+      .logo-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+      }
+
+      .logo-icon {
+        font-size: 2rem;
+        color: var(--primary-color);
+        margin-right: 0.5rem;
+      }
+
+      @media (max-width: 576px) {
+        .card-body {
+          padding: 1.5rem;
+        }
+
+        .btn {
+          padding: 0.625rem 1.25rem;
+        }
+
+        .social-btn-text {
+          display: none;
+        }
+
+        .btn-social {
+          padding: 0.75rem;
+          justify-content: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container py-5">
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8">
+          <div class="register-container animate__animated animate__fadeIn">
+            <div class="text-center mb-4">
+              <div class="brand-badge animate__animated animate__fadeInDown">
+                <i class="bi bi-shield-lock"></i> Secure Registration
+              </div>
+              <div class="logo-container">
+                <i class="bi bi-box logo-icon"></i>
+                <h1 class="logo-text mb-0">FUMIQ</h1>
+              </div>
+              <p class="text-muted">Create your account to get started</p>
+            </div>
+
+            <div
+              class="card animate__animated animate__fadeInUp animate__delay-1s"
+            >
+              <div class="card-body">
+                <div class="text-center mb-4">
+                  <h4 class="fw-bold">Create an Account</h4>
+                  <p class="text-muted">Fill in the details below</p>
+                </div>
+
+                <form id="register-form">
+                    <div class="mb-3">
+                        <div class="form-floating">
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="firstname"
+                            placeholder="John"
+                            name="firstname"
+                            required
+                          />
+                          <label for="name"
+                            ><i class="bi bi-person me-2"></i>First Name</label
+                          >
+                        </div>
+                      </div>
+                      <div class="mb-3">
+                        <div class="form-floating">
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="lastname"
+                            placeholder="Doe"
+                            required
+                          />
+                          <label for="name"
+                            ><i class="bi bi-person me-2"></i>Last Name</label
+                          >
+                        </div>
+                      </div>
+
+                  <div class="mb-3">
+                    <div class="form-floating">
+                      <input
+                        type="email"
+                        class="form-control"
+                        id="email"
+                        placeholder="name@example.com"
+                        required
+                      />
+                      <label for="email"
+                        ><i class="bi bi-envelope me-2"></i>Email address</label
+                      >
+                    </div>
+                  </div>
+
+                  <div class="mb-3">
+                    <div class="form-floating">
+                      <input
+                        type="password"
+                        class="form-control"
+                        id="password"
+                        placeholder="Password"
+                        required
+                      />
+                      <label for="password"
+                        ><i class="bi bi-lock me-2"></i>Password</label
+                      >
+                    </div>
+                  </div>
+
+                  <div class="mb-3">
+                    <div class="form-floating">
+                      <input
+                        type="password"
+                        class="form-control"
+                        id="confirm-password"
+                        placeholder="Confirm Password"
+                        required
+                      />
+                      <label for="confirm-password"
+                        ><i class="bi bi-lock me-2"></i>Confirm Password</label
+                      >
+                    </div>
+                  </div>
+
+                  <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary py-2">
+                      <i class="bi bi-person-plus me-2"></i>Sign Up
+                    </button>
+                  </div>
+                </form>
+
+                <div class="my-4">
+                  <div class="divider">Or sign up with</div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                  <div class="col-12">
+                    <button class="btn btn-social btn-google w-100">
+                      <i class="bi bi-google"></i>
+                      <span class="social-btn-text">Continue with Google</span>
+                    </button>
+                  </div>
+                  <div class="col-12">
+                    <button class="btn btn-social btn-microsoft w-100">
+                      <i class="bi bi-microsoft"></i>
+                      <span class="social-btn-text"
+                        >Continue with Microsoft</span
+                      >
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card-footer text-center">
+                <p class="mb-0">
+                  Already have an account?
+                  <a href="#" class="text-decoration-none fw-medium">Sign in</a>
+                </p>
+              </div>
+            </div>
+
+            <div class="text-center mt-4 brand-footer">
+              <p class="mb-1">© 2025 FUMIQ. All rights reserved.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
