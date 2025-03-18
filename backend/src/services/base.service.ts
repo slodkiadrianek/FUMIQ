@@ -27,6 +27,7 @@ export class BaseService {
     userId: string,
     table: Model<T>
   ): Promise<T[]> => {
+    await this.caching.del(`${type}-${userId}`);
     if (await this.caching.exists(`${type}-${userId}`)) {
       const result: T[] | null = JSON.parse(
         (await this.caching.get(`${type}-${userId}`)) || ""
@@ -41,10 +42,8 @@ export class BaseService {
           `An error occurred while retrieving ${type} for ${userId} from the cache.`
         );
       }
-      console.log(`HAJ`);
       return result;
     }
-
     const result: T[] = await table.find({
       userId: new Types.ObjectId(userId),
     });
@@ -91,7 +90,6 @@ export class BaseService {
   };
   updateItem = async <T>(
     type: string,
-    userId: string,
     id: string,
     data: UpdateQuery<T>,
     table: Model<T>
@@ -110,7 +108,7 @@ export class BaseService {
       throw new AppError(404, type, `${type} with this ID does not exist`);
     }
     await this.caching.set(
-      `${type}-${userId}-${id}`,
+      `${type}-${id}`,
       JSON.stringify(result),
       300
     );
@@ -118,7 +116,6 @@ export class BaseService {
   };
   deleteItem = async <T>(
     type: string,
-    userId: string,
     id: string,
     table: Model<T>
   ) => {
@@ -127,7 +124,7 @@ export class BaseService {
       this.logger.error(`${type} with this ID does not exist", { id }`);
       throw new AppError(404, type, `${type} with this ID does not exist`);
     }
-    await this.caching.del(`${type}-${userId}-${id}`);
+    await this.caching.del(`${type}-${id}`);
     return `${type} deleted successfully`;
   };
 }
