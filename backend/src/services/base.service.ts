@@ -22,55 +22,76 @@ export class BaseService {
     }
     return result;
   };
-  getAllItems = async <T>(type: string, table: Model<T>) => {
-    if (await this.caching.exists(type)) {
+  getAllItems = async <T>(
+    type: string,
+    userId: string,
+    table: Model<T>
+  ): Promise<T[]> => {
+    if (await this.caching.exists(`${type}-${userId}`)) {
       const result: T[] | null = JSON.parse(
-        (await this.caching.get(type)) || ""
+        (await this.caching.get(`${type}-${userId}`)) || ""
       );
       if (!result) {
         this.logger.error(
-          `An error occurred while retrieving ${type} from the cache.`
+          `An error occurred while retrieving ${type} for ${userId} from the cache.`
         );
         throw new AppError(
           404,
           type,
-          `An error occurred while retrieving ${type} from the cache.`
+          `An error occurred while retrieving ${type} for ${userId} from the cache.`
         );
       }
+      console.log(`HAJ`);
       return result;
     }
-    const result: T[] = await table.find();
-    await this.caching.set(`warehouses`, JSON.stringify(result), 300);
+
+    const result: T[] = await table.find({
+      userId: new Types.ObjectId(userId),
+    });
+    await this.caching.set(`${type}-${userId}`, JSON.stringify(result), 300);
     return result;
   };
-  getItemById = async <T>(type: string, id: string, table: Model<T>) => {
-    if (await this.caching.exists(`${type}-${id}`)) {
+  getItemById = async <T>(
+    type: string,
+    userId: string,
+    id: string,
+    table: Model<T>
+  ) => {
+    if (await this.caching.exists(`${type}-${userId}-${id}`)) {
       const result: T | null = JSON.parse(
         (await this.caching.get(`${type}-${id}`)) || ""
       );
       if (!result) {
         this.logger.error(
-          `An error occurred while retrieving ${type} from the cache.`,
+          `An error occurred while retrieving ${type} for ${userId} from the cache.`,
           { id }
         );
         throw new AppError(
           404,
           type,
-          "An error occurred while retrieving ${type} from the cache."
+          `An error occurred while retrieving ${type} for ${userId} from the cache.`
         );
       }
       return result;
     }
-    const result: T | null = await table.findOne({ _id: id });
+    const result: T | null = await table.findOne({
+      _id: id,
+      userId: new Types.ObjectId(userId),
+    });
     if (!result) {
-      this.logger.error(`${type} with this ID does not exist", { id }`);
+      this.logger.error(`${type} with this ID does not exist"`, { id });
       throw new AppError(404, type, `${type} with this ID does not exist`);
     }
-    await this.caching.set(`${type}-${id}`, JSON.stringify(result), 300);
+    await this.caching.set(
+      `${type}-${userId}-${id}`,
+      JSON.stringify(result),
+      300
+    );
     return result;
   };
   updateItem = async <T>(
     type: string,
+    userId: string,
     id: string,
     data: UpdateQuery<T>,
     table: Model<T>
@@ -88,16 +109,25 @@ export class BaseService {
       this.logger.error("Warehouse with this ID does not exist", { id });
       throw new AppError(404, type, `${type} with this ID does not exist`);
     }
-    await this.caching.set(`${type}-${id}`, JSON.stringify(result), 300);
+    await this.caching.set(
+      `${type}-${userId}-${id}`,
+      JSON.stringify(result),
+      300
+    );
     return result;
   };
-  deleteItem = async <T>(type: string, id: string, table: Model<T>) => {
+  deleteItem = async <T>(
+    type: string,
+    userId: string,
+    id: string,
+    table: Model<T>
+  ) => {
     const result: DeleteResult | null = await table.deleteOne({ _id: id });
     if (!result) {
       this.logger.error(`${type} with this ID does not exist", { id }`);
       throw new AppError(404, type, `${type} with this ID does not exist`);
     }
-    await this.caching.del(`${type}-${id}`);
+    await this.caching.del(`${type}-${userId}-${id}`);
     return `${type} deleted successfully`;
   };
 }

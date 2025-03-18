@@ -2,7 +2,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { AppError } from "../models/error.model.js";
 import { Logger } from "../utils/logger.js";
-import { RedisCacheService } from "../types/common.type.js";
+import { CustomRequest, RedisCacheService } from "../types/common.type.js";
 import { IUser } from "../models/user.model.js";
 export class Authentication {
   jwt: string;
@@ -37,7 +37,9 @@ export class Authentication {
       this.logger.error(
         `Token is missing during verification of request ${req.baseUrl} with data: ${req.body}`
       );
-      res.status(401).json({ message: "Token is missing" });
+      res
+        .status(401)
+        .json({ success: false, error: { description: "Token is missing" } });
       return;
     }
     try {
@@ -49,14 +51,9 @@ export class Authentication {
         throw new AppError(401, "Authorization", "Token is blacklisted.");
       }
       const decoded = jwt.verify(token, this.jwtSecret) as JwtPayload;
-      (
-        req as Request & {
-          user?: { id: string; email: string; role: string; iat: number };
-        }
-      ).user = {
-        id: decoded.user.id,
+      (req as CustomRequest).user = {
+        id: decoded.user._id,
         email: decoded.user.email,
-        role: decoded.user.role,
         iat: decoded.iat || 0,
       };
       this.logger.info(`User succssefully authorized`);
@@ -67,7 +64,9 @@ export class Authentication {
           req.body
         )} `
       );
-      res.status(401).json({ message: "Invalid token", error });
+      res
+        .status(401)
+        .json({ success: false, error: { description: "Invalid token" } });
       return;
     }
   };

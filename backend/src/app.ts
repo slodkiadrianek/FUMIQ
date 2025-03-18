@@ -7,13 +7,21 @@ import { EmailService } from "./services/email.service.js";
 import { AuthController } from "./api/v1/controllers/auth.controller.js";
 import { Authentication } from "./middleware/auth.middleware.js";
 import { AuthService } from "./services/auth.service.js";
-import { ValidationMiddleware } from "./middleware/validation.middleware.js";
 import { RedisCacheService } from "./types/common.type.js";
 import { Logger } from "./utils/logger.js";
 import { AuthRoutes } from "./api/v1/routes/auth.route.js";
+import { QuizService } from "./services/quiz.service.js";
+import { QuizController } from "./api/v1/controllers/quiz.controller.js";
+import { QuizRoutes } from "./api/v1/routes/quiz.route.js";
 export const app = express();
 app.use(helmet());
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.ORIGIN_LINK || "http://127.0.0.1:5500",
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -50,7 +58,6 @@ const auth: Authentication = new Authentication(
   caching as RedisCacheService
 );
 
-
 //AUTH
 const authService: AuthService = new AuthService(
   logger,
@@ -61,6 +68,15 @@ const authService: AuthService = new AuthService(
 const authController: AuthController = new AuthController(logger, authService);
 const authRoutes: AuthRoutes = new AuthRoutes(authController, auth);
 
+//QUIZ
+const quizService: QuizService = new QuizService(
+  logger,
+  caching as RedisCacheService
+);
+const quizController: QuizController = new QuizController(logger, quizService);
+const quizRoutes: QuizRoutes = new QuizRoutes(quizController, auth);
+
 //USE
 app.use(authRoutes.router);
+app.use(quizRoutes.router);
 app.use(errorHandler);

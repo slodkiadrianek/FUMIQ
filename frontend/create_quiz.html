@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FUMIQ - Create Tests</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap Icons -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <!-- Animate.css for animations -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      /* Reusing the same styles as the login, register, and reset password pages */
+      :root {
+        --primary-color: #4f46e5;
+        --primary-hover: #4338ca;
+        --secondary-color: #10b981;
+        --secondary-hover: #059669;
+        --light-bg: #f3f4f6;
+        --dark-text: #1f2937;
+      }
+
+      body {
+        background: linear-gradient(135deg, #f0f4ff 0%, #e6f7ff 100%);
+        min-height: 100vh;
+        font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      }
+
+      .navbar {
+        background-color: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 20px;
+        margin: 1rem;
+        padding: 0.75rem 1.5rem;
+      }
+
+      .navbar-brand {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+      }
+
+      .navbar-brand i {
+        font-size: 2rem;
+        margin-right: 0.5rem;
+      }
+
+      .nav-link {
+        color: var(--dark-text);
+        font-weight: 500;
+        margin-left: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .nav-link:hover {
+        color: var(--primary-color);
+        transform: translateY(-2px);
+      }
+
+      .dashboard-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+
+      .welcome-section {
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+      }
+
+      .welcome-section h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+      }
+
+      .welcome-section p {
+        font-size: 1.1rem;
+        color: var(--dark-text);
+        margin-bottom: 1.5rem;
+      }
+
+      .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary:hover {
+        background-color: var(--primary-hover);
+        border-color: var(--primary-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(79, 70, 229, 0.4);
+      }
+
+      .test-form {
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+      }
+
+      .question-card {
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 20px;
+        padding: 1.5rem;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1.5rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .question-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      }
+
+      .question-card h4 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+      }
+
+      .footer {
+        text-align: center;
+        padding: 1.5rem;
+        color: #6b7280;
+        font-size: 0.875rem;
+        margin-top: 2rem;
+      }
+
+      @media (max-width: 768px) {
+        .welcome-section h1 {
+          font-size: 2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+          <i class="bi bi-box logo-icon"></i>
+          FUMIQ
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="dashboard.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="create_quiz.html">Create</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Join</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="browse_quizez.html">Quizez</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Profile</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Logout</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="dashboard-container">
+      <!-- Welcome Section -->
+      <div class="welcome-section animate__animated animate__fadeIn">
+        <h1>Create a New Test</h1>
+        <p>
+          Design your test by adding questions, setting time limits, and
+          customizing the experience for your students.
+        </p>
+      </div>
+
+      <!-- Test Creation Form -->
+      <div class="test-form animate__animated animate__fadeInUp">
+        <form id="create-test-form" novalidate>
+          <!-- Test Title -->
+          <div class="mb-4">
+            <label for="test-title" class="form-label">Test Title</label>
+            <input
+              type="text"
+              class="form-control"
+              id="test-title"
+              placeholder="Enter test title"
+              required
+            />
+          </div>
+
+          <!-- Test Description -->
+          <div class="mb-4">
+            <label for="test-description" class="form-label"
+              >Test Description</label
+            >
+            <textarea
+              class="form-control"
+              id="test-description"
+              rows="3"
+              placeholder="Enter test description"
+              required
+            ></textarea>
+          </div>
+
+          <!-- Time Limit -->
+          <div class="mb-4">
+            <label for="time-limit" class="form-label"
+              >Time Limit (minutes)</label
+            >
+            <input
+              type="number"
+              class="form-control"
+              id="time-limit"
+              placeholder="Enter time limit"
+              min="1"
+              required
+            />
+          </div>
+
+          <!-- Questions Section -->
+          <div id="questions-container">
+            <!-- Questions will be dynamically added here -->
+          </div>
+
+          <!-- Add Question Button -->
+          <div class="d-grid gap-2 mb-4">
+            <button type="button" class="btn btn-primary" id="add-question">
+              <i class="bi bi-plus-circle"></i> Add Question
+            </button>
+          </div>
+
+          <!-- Save Test Button -->
+          <div class="d-grid gap-2 mt-4">
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-save"></i> Save Test
+            </button>
+            <div
+              id="error-message"
+              class="alert alert-danger d-none bi bi-trash"
+              role="alert"
+            ></div>
+            <div
+              id="success-message"
+              class="alert alert-success d-none"
+              role="alert"
+            ></div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p class="mb-0">© 2025 FUMIQ School. All rights reserved.</p>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="verify.js"></script>
+    <!-- Script for Enhanced Functionality -->
+    <script>
+      const login_form = document.getElementById("login-form");
+      const errorMessage = document.getElementById("error-message");
+      const success_message = document.getElementById("success-message");
+      let questionCount = 0;
+
+      // Function to add a new question
+      document
+        .getElementById("add-question")
+        .addEventListener("click", function () {
+          questionCount++;
+          const questionsContainer = document.getElementById(
+            "questions-container"
+          );
+
+          const questionCard = document.createElement("div");
+          questionCard.className =
+            "question-card animate__animated animate__fadeInUp";
+          questionCard.innerHTML = `
+            <h4>Question ${questionCount}</h4>
+            <div class="mb-3">
+              <label for="question-text-${questionCount}" class="form-label">Question Text</label>
+              <input
+                type="text"
+                class="form-control question-text"
+                id="question-text-${questionCount}"
+                placeholder="Enter question text"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="question-type-${questionCount}" class="form-label">Question Type</label>
+              <select class="form-control question-type" id="question-type-${questionCount}" required>
+                <option value="single-correct">Single Correct Answer (A, B, C, D)</option>
+                <option value="multiple-correct">Multiple Correct Answers (A, B, C, D)</option>
+                <option value="true-false">True/False</option>
+              </select>
+            </div>
+            <div class="mb-3 options-container" id="options-container-${questionCount}">
+              <label class="form-label">Options (A, B, C, D)</label>
+              <div class="mb-2">
+                <input
+                  type="text"
+                  class="form-control option-input"
+                  placeholder="Option A"
+                  required
+                />
+              </div>
+              <div class="mb-2">
+                <input
+                  type="text"
+                  class="form-control option-input"
+                  placeholder="Option B"
+                  required
+                />
+              </div>
+              <div class="mb-2">
+                <input
+                  type="text"
+                  class="form-control option-input"
+                  placeholder="Option C"
+                  required
+                />
+              </div>
+              <div class="mb-2">
+                <input
+                  type="text"
+                  class="form-control option-input"
+                  placeholder="Option D"
+                  required
+                />
+              </div>
+            </div>
+            <div class="mb-3 correct-answer-container" id="correct-answer-container-${questionCount}">
+              <label class="form-label">Correct Answer</label>
+              <div class="correct-answer-single" id="correct-answer-single-${questionCount}">
+                <select class="form-control">
+                  <option value="A">A</option>
+                  <option value="B">B</option>
+                  <option value="C">C</option>
+                  <option value="D">D</option>
+                </select>
+              </div>
+              <div class="correct-answer-multiple" id="correct-answer-multiple-${questionCount}" style="display: none;">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="A" id="correct-answer-A-${questionCount}">
+                  <label class="form-check-label" for="correct-answer-A-${questionCount}">A</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="B" id="correct-answer-B-${questionCount}">
+                  <label class="form-check-label" for="correct-answer-B-${questionCount}">B</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="C" id="correct-answer-C-${questionCount}">
+                  <label class="form-check-label" for="correct-answer-C-${questionCount}">C</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="D" id="correct-answer-D-${questionCount}">
+                  <label class="form-check-label" for="correct-answer-D-${questionCount}">D</label>
+                </div>
+              </div>
+              <div class="correct-answer-true-false" id="correct-answer-true-false-${questionCount}" style="display: none;">
+                <select class="form-control">
+                  <option value="True">True</option>
+                  <option value="False">False</option>
+                </select>
+              </div>
+            </div>
+            <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">
+              <i class="bi bi-trash"></i> Remove Question
+            </button>
+          `;
+
+          questionsContainer.appendChild(questionCard);
+
+          // Show/hide options and correct answer based on question type
+          const questionType = questionCard.querySelector(".question-type");
+          const optionsContainer =
+            questionCard.querySelector(".options-container");
+          const correctAnswerSingle = questionCard.querySelector(
+            ".correct-answer-single"
+          );
+          const correctAnswerMultiple = questionCard.querySelector(
+            ".correct-answer-multiple"
+          );
+          const correctAnswerTrueFalse = questionCard.querySelector(
+            ".correct-answer-true-false"
+          );
+
+          // Function to toggle required attribute
+          const toggleRequired = (element, isRequired) => {
+            if (isRequired) {
+              element.setAttribute("required", true);
+            } else {
+              element.removeAttribute("required");
+            }
+          };
+
+          // Initialize based on default question type
+          if (questionType.value === "single-correct") {
+            optionsContainer.style.display = "block";
+            correctAnswerSingle.style.display = "block";
+            correctAnswerMultiple.style.display = "none";
+            correctAnswerTrueFalse.style.display = "none";
+            toggleRequired(correctAnswerSingle.querySelector("select"), true);
+          } else if (questionType.value === "multiple-correct") {
+            optionsContainer.style.display = "block";
+            correctAnswerSingle.style.display = "none";
+            correctAnswerMultiple.style.display = "block";
+            correctAnswerTrueFalse.style.display = "none";
+            toggleRequired(
+              correctAnswerMultiple.querySelectorAll(
+                "input[type='checkbox']"
+              )[0],
+              true
+            );
+          } else if (questionType.value === "true-false") {
+            optionsContainer.style.display = "none";
+            correctAnswerSingle.style.display = "none";
+            correctAnswerMultiple.style.display = "none";
+            correctAnswerTrueFalse.style.display = "block";
+            toggleRequired(
+              correctAnswerTrueFalse.querySelector("select"),
+              true
+            );
+          }
+
+          // Add event listener for question type change
+          questionType.addEventListener("change", function () {
+            if (this.value === "single-correct") {
+              optionsContainer.style.display = "block";
+              correctAnswerSingle.style.display = "block";
+              correctAnswerMultiple.style.display = "none";
+              correctAnswerTrueFalse.style.display = "none";
+              toggleRequired(correctAnswerSingle.querySelector("select"), true);
+              toggleRequired(
+                correctAnswerMultiple.querySelectorAll(
+                  "input[type='checkbox']"
+                )[0],
+                false
+              );
+              toggleRequired(
+                correctAnswerTrueFalse.querySelector("select"),
+                false
+              );
+            } else if (this.value === "multiple-correct") {
+              optionsContainer.style.display = "block";
+              correctAnswerSingle.style.display = "none";
+              correctAnswerMultiple.style.display = "block";
+              correctAnswerTrueFalse.style.display = "none";
+              toggleRequired(
+                correctAnswerSingle.querySelector("select"),
+                false
+              );
+              toggleRequired(
+                correctAnswerMultiple.querySelectorAll(
+                  "input[type='checkbox']"
+                )[0],
+                true
+              );
+              toggleRequired(
+                correctAnswerTrueFalse.querySelector("select"),
+                false
+              );
+            } else if (this.value === "true-false") {
+              optionsContainer.style.display = "none";
+              correctAnswerSingle.style.display = "none";
+              correctAnswerMultiple.style.display = "none";
+              correctAnswerTrueFalse.style.display = "block";
+              toggleRequired(
+                correctAnswerSingle.querySelector("select"),
+                false
+              );
+              toggleRequired(
+                correctAnswerMultiple.querySelectorAll(
+                  "input[type='checkbox']"
+                )[0],
+                false
+              );
+              toggleRequired(
+                correctAnswerTrueFalse.querySelector("select"),
+                true
+              );
+            }
+          });
+        });
+
+      document
+        .getElementById("create-test-form")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const questionsContainer = document.getElementById(
+            "questions-container"
+          );
+          const testTitle = document.getElementById("test-title").value;
+          const testDescription =
+            document.getElementById("test-description").value;
+          const timeLimit = document.getElementById("time-limit").value;
+
+          const questions = [];
+          const questionCards = document.querySelectorAll(".question-card");
+
+          if (questionCards.length === 0) {
+            alert("Please add at least one question.");
+            return;
+          }
+
+          let isValid = true;
+
+          questionCards.forEach((card, index) => {
+            const questionText = card.querySelector(".question-text").value;
+            const questionType = card.querySelector(".question-type").value;
+            let correctAnswer;
+
+            if (questionType === "single-correct") {
+              correctAnswer = card.querySelector(
+                ".correct-answer-single select"
+              ).value;
+            } else if (questionType === "multiple-correct") {
+              const checkboxes = card.querySelectorAll(
+                ".correct-answer-multiple input:checked"
+              );
+              correctAnswer = Array.from(checkboxes).map(
+                (checkbox) => checkbox.value
+              );
+              if (correctAnswer.length === 0) {
+                isValid = false;
+                alert(
+                  `Question ${
+                    index + 1
+                  }: Please select at least one correct answer.`
+                );
+              }
+            } else if (questionType === "true-false") {
+              correctAnswer = card.querySelector(
+                ".correct-answer-true-false select"
+              ).value;
+            }
+
+            const options =
+              questionType !== "true-false"
+                ? Array.from(card.querySelectorAll(".option-input")).map(
+                    (input) => input.value
+                  )
+                : [];
+
+            questions.push({
+              questionText,
+              questionType,
+              correctAnswer,
+              options,
+            });
+          });
+
+          if (!isValid) {
+            return;
+          }
+
+          const testData = {
+            title: testTitle,
+            description: testDescription,
+            timeLimit: +timeLimit,
+            questions,
+          };
+
+          console.log("Test Data:", testData);
+          const token = sessionStorage.getItem("authToken");
+
+          const response = await fetch("http://localhost:3000/api/v1/quizez/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(testData),
+          });
+          const responseData = await response.json();
+          if (!responseData.success) {
+            success_message.classList.add("d-none");
+            errorMessage.innerHTML = responseData.error.description;
+            errorMessage.classList.remove("d-none");
+          } else {
+            errorMessage.classList.add("d-none");
+            document.getElementById("create-test-form").reset();
+            success_message.classList.remove("d-none");
+            success_message.innerHTML = "Quiz has been created successfully";
+            questionsContainer.innerHTML = "";
+          }
+          console.log(responseData);
+        });
+    </script>
+  </body>
+</html>

@@ -295,40 +295,52 @@
             >
               <div class="card-body">
                 <div class="text-center mb-4">
+                  <div
+                    id="error-message"
+                    class="alert alert-danger d-none"
+                    role="alert"
+                  ></div>
+                  <div
+                    id="success-message"
+                    class="alert alert-success d-none"
+                    role="alert"
+                  ></div>
+
                   <h4 class="fw-bold">Create an Account</h4>
                   <p class="text-muted">Fill in the details below</p>
                 </div>
 
                 <form id="register-form">
-                    <div class="mb-3">
-                        <div class="form-floating">
-                          <input
-                            type="text"
-                            class="form-control"
-                            id="firstname"
-                            placeholder="John"
-                            name="firstname"
-                            required
-                          />
-                          <label for="name"
-                            ><i class="bi bi-person me-2"></i>First Name</label
-                          >
-                        </div>
-                      </div>
-                      <div class="mb-3">
-                        <div class="form-floating">
-                          <input
-                            type="text"
-                            class="form-control"
-                            id="lastname"
-                            placeholder="Doe"
-                            required
-                          />
-                          <label for="name"
-                            ><i class="bi bi-person me-2"></i>Last Name</label
-                          >
-                        </div>
-                      </div>
+                  <div class="mb-3">
+                    <div class="form-floating">
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="firstname"
+                        placeholder="John"
+                        name="firstname"
+                        required
+                      />
+                      <label for="firstname"
+                        ><i class="bi bi-person me-2"></i>First Name</label
+                      >
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <div class="form-floating">
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="lastname"
+                        placeholder="Doe"
+                        name="lastname"
+                        required
+                      />
+                      <label for="lastname"
+                        ><i class="bi bi-person me-2"></i>Last Name</label
+                      >
+                    </div>
+                  </div>
 
                   <div class="mb-3">
                     <div class="form-floating">
@@ -336,6 +348,7 @@
                         type="email"
                         class="form-control"
                         id="email"
+                        name="email"
                         placeholder="name@example.com"
                         required
                       />
@@ -352,6 +365,7 @@
                         class="form-control"
                         id="password"
                         placeholder="Password"
+                        name="password"
                         required
                       />
                       <label for="password"
@@ -366,6 +380,7 @@
                         type="password"
                         class="form-control"
                         id="confirm-password"
+                        name="confirmPassword"
                         placeholder="Confirm Password"
                         required
                       />
@@ -376,7 +391,11 @@
                   </div>
 
                   <div class="d-grid gap-2 mt-4">
-                    <button type="submit" class="btn btn-primary py-2">
+                    <button
+                      id="btn-submit"
+                      type="submit"
+                      class="btn btn-primary py-2"
+                    >
                       <i class="bi bi-person-plus me-2"></i>Sign Up
                     </button>
                   </div>
@@ -407,7 +426,9 @@
               <div class="card-footer text-center">
                 <p class="mb-0">
                   Already have an account?
-                  <a href="#" class="text-decoration-none fw-medium">Sign in</a>
+                  <a href="login.html" class="text-decoration-none fw-medium"
+                    >Sign in</a
+                  >
                 </p>
               </div>
             </div>
@@ -422,5 +443,45 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+      const register_form = document.getElementById("register-form");
+      const errorMessage = document.getElementById("error-message");
+      const success_message = document.getElementById("success-message");
+
+      register_form.addEventListener("submit", async function (event) {
+        try {
+          event.preventDefault();
+
+          const formData = new FormData(this);
+          const data = Object.fromEntries(formData.entries());
+
+          console.log(data);
+          const res = await fetch(
+            "http://localhost:3000/api/v1/auth/register",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(data),
+            }
+          );
+          const responseData = await res.json();
+          console.log("Success:", responseData);
+          if (!responseData.success) {
+            success_message.classList.add("d-none");
+            errorMessage.innerHTML = responseData.error.description;
+            errorMessage.classList.remove("d-none");
+          } else {
+            errorMessage.classList.add("d-none");
+            success_message.classList.remove("d-none");
+            success_message.innerHTML =
+              "Account has been created. An email with a link to activate your account has been sent.";
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      });
+    </script>
   </body>
 </html>

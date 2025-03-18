@@ -1,0 +1,60 @@
+import { Request, Response, NextFunction } from "express";
+import { QuizService } from "../../../services/quiz.service.js";
+import { Logger } from "../../../utils/logger.js";
+import { IQuiz } from "../../../models/quiz.model.js";
+import { CustomRequest } from "../../../types/common.type.js";
+import { AppError } from "../../../models/error.model.js";
+
+export class QuizController {
+  constructor(private logger: Logger, private quizService: QuizService) {}
+
+  createQuiz = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      if (!(req as CustomRequest).user.id) {
+        throw new AppError(400, "User", "User id not found");
+      }
+      const data: Omit<IQuiz, "_id"> = {
+        ...req.body,
+        userId: (req as CustomRequest).user.id,
+      };
+      this.logger.info("Attempting to create a quiz");
+      const result: IQuiz = await this.quizService.createQuiz(data);
+      this.logger.info("Quiz has been created successfully");
+      res.status(200).json({
+        success: true,
+      });
+      return;
+    } catch (error) {
+      next(error);
+    }
+  };
+  getAllQuizez = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      if (!(req as CustomRequest).user.id) {
+        throw new AppError(400, "User", "User id not found");
+      }
+      const userId = (req as CustomRequest).user.id;
+      this.logger.info("Attempting to get all quizez for user");
+      const result: IQuiz[] = await this.quizService.getAllQuizez(userId);
+      console.log(result)
+      this.logger.info("Quiz has been downloaded");
+      res.status(200).json({
+        success: true,
+        data: {
+          quizez: result,
+        },
+      });
+      return;
+    } catch (error) {
+      next(error);
+    }
+  };
+}

@@ -295,17 +295,28 @@
             >
               <div class="card-body">
                 <div class="text-center mb-4">
+                  <div
+                    id="error-message"
+                    class="alert alert-danger d-none"
+                    role="alert"
+                  ></div>
+                  <div
+                    id="success-message"
+                    class="alert alert-success d-none"
+                    role="alert"
+                  ></div>
                   <h4 class="fw-bold">Welcome Back!</h4>
                   <p class="text-muted">Enter your credentials to continue</p>
                 </div>
 
-                <form id="register-form">
+                <form id="login-form">
                   <div class="mb-3">
                     <div class="form-floating">
                       <input
                         type="email"
                         class="form-control"
                         id="email"
+                        name="email"
                         placeholder="name@example.com"
                         required
                       />
@@ -321,6 +332,7 @@
                         type="password"
                         class="form-control"
                         id="password"
+                        name="password"
                         placeholder="Password"
                         required
                       />
@@ -328,6 +340,13 @@
                         ><i class="bi bi-lock me-2"></i>Password</label
                       >
                     </div>
+                  </div>
+                  <div class="d-flex justify-content-between mt-2">
+                    <a
+                      href="reset_password.html"
+                      class="text-decoration-none small text-primary"
+                      >Forgot password?</a
+                    >
                   </div>
 
                   <div class="d-grid gap-2 mt-4">
@@ -362,7 +381,9 @@
               <div class="card-footer text-center">
                 <p class="mb-0">
                   Don't have account?
-                  <a href="#" class="text-decoration-none fw-medium">Sign up</a>
+                  <a href="register.html" class="text-decoration-none fw-medium"
+                    >Sign up</a
+                  >
                 </p>
               </div>
             </div>
@@ -377,5 +398,40 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+      const login_form = document.getElementById("login-form");
+      const errorMessage = document.getElementById("error-message");
+      const success_message = document.getElementById("success-message");
+
+      login_form.addEventListener("submit", async function (event) {
+        try {
+          event.preventDefault();
+
+          const formData = new FormData(this);
+          const data = Object.fromEntries(formData.entries());
+
+          const res = await fetch("http://localhost:3000/api/v1/auth/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          });
+          const responseData = await res.json();
+          console.log("Success:", responseData);
+          if (!responseData.success) {
+            success_message.classList.add("d-none");
+            errorMessage.innerHTML = responseData.error.description;
+            errorMessage.classList.remove("d-none");
+          } else {
+            errorMessage.classList.add("d-none");
+            sessionStorage.setItem("authToken", responseData.data.token);
+            location.href = "dashboard.html";
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      });
+    </script>
   </body>
 </html>

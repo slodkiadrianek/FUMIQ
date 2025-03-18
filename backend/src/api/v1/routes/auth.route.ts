@@ -45,6 +45,11 @@ export class AuthRoutes {
       ValidationMiddleware.validate(loginUser, "body"),
       this.authController.loginUser
     );
+    this.router.get(
+      "/api/v1/auth/check",
+      this.auth.verify,
+      this.authController.checkUser
+    );
     this.router.post(
       "/api/v1/auth/logout",
       this.auth.blacklist,
@@ -52,6 +57,7 @@ export class AuthRoutes {
     );
     this.router.post(
       "/api/v1/auth/reset-password",
+      this.rateLimit,
       ValidationMiddleware.validate(emailUser, "body"),
       this.authController.sendEmailToResetPassword
     );

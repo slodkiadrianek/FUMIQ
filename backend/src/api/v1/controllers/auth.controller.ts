@@ -46,6 +46,15 @@ export class AuthController {
       next(err);
     }
   };
+  checkUser = async (
+    _req: Request,
+    res: Response,
+    _next: NextFunction
+  ): Promise<void> => {
+    res.status(200).json({
+      success: true,
+    });
+  };
   loginUser = async (
     req: Request,
     res: Response,
@@ -65,12 +74,6 @@ export class AuthController {
       res.status(200).json({
         success: true,
         data: {
-          employee: {
-            _id: result.user._id,
-            email: result.user.email,
-            firstname: result.user.firstname,
-            lastname: result.user.lastname,
-          },
           token: result.token,
         },
       });
