@@ -11,13 +11,18 @@ export class QuizService extends BaseService {
     return this.insertToDatabaseAndCache("Quiz", data, Quiz);
   };
   getAllQuizez = async (userId: string): Promise<IQuiz[]> => {
-    const result = await this.getAllItems("Quizez", userId, Quiz);
-    return result;
+    return await this.getAllItems("Quizez", userId, Quiz);
   };
-  getQuizById = async ( quizId:string) :Promise<IQuiz> =>{
-    return this.getItemById("Quiz",quizId, Quiz)
-  }
-  deleteQuizById = async (quizId:string):Promise<string> =>{
-    return this.deleteItem("Quiz", quizId, Quiz)
-  }
+  getQuizById = async (quizId: string): Promise<IQuiz> => {
+    return this.getItemById("Quiz", quizId, Quiz);
+  };
+  updateQuiz = async (
+    quizId: string,
+    quizData: Omit<IQuiz, "_id">
+  ): Promise<IQuiz> => {
+    return this.updateItem("Quiz", quizId, quizData, Quiz);
+  };
+  deleteQuizById = async (quizId: string): Promise<string> => {
+    return this.deleteItem("Quiz", quizId, Quiz);
+  };
 }

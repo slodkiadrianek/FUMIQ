@@ -22,7 +22,6 @@ export class QuizRoutes {
     this.router.get(
       "/api/v1/quizez/",
       this.auth.verify,
-      ValidationMiddleware.validate(quizId, "params"),
       this.quizController.getAllQuizez
     );
     this.router.get(
@@ -30,6 +29,13 @@ export class QuizRoutes {
       this.auth.verify,
       ValidationMiddleware.validate(quizId, "params"),
       this.quizController.getQuizById
+    );
+    this.router.put(
+      "/api/v1/quizez/:id",
+      this.auth.verify,
+      ValidationMiddleware.validate(createQuiz, "body"),
+      ValidationMiddleware.validate(quizId, "params"),
+      this.quizController.updateQuiz
     );
     this.router.delete(
       "/api/v1/quizez/:id",

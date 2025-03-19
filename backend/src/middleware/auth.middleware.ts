@@ -75,7 +75,7 @@ export class Authentication {
    blacklist = async  (
     req: Request,
     res: Response,
-    _next: NextFunction
+    next: NextFunction
   ): Promise<void> => {
     const token = req.headers?.authorization?.split(" ")[1];
     if (!token) {
@@ -103,5 +103,6 @@ export class Authentication {
     this.logger.info(
       `Token has been blacklisted  of request ${req.baseUrl} with data: ${req.body}`
     );
+    return next()
   }
 }
