@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FUMIQ - Create Tests</title>
+    <title>FUMIQ - Profile</title>
     <!-- Bootstrap CSS -->
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
@@ -19,6 +19,8 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
       rel="stylesheet"
     />
+    <!-- Chart.js for charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
       /* Reusing the same styles as the login, register, and reset password pages */
       :root {
@@ -96,49 +98,128 @@
         margin-bottom: 1.5rem;
       }
 
-      .btn-primary {
-        background-color: var(--primary-color);
-        border-color: var(--primary-color);
-        padding: 0.75rem 1.5rem;
-        font-weight: 500;
+      .profile-card {
+        background-color: rgba(255, 255, 255, 0.95);
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1.5rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+      }
+
+      .profile-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+      }
+
+      .profile-card h4 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+      }
+
+      .profile-card h4 i {
+        font-size: 1.5rem;
+        margin-right: 0.75rem;
+        color: var(--primary-color);
+      }
+
+      .profile-card p {
+        font-size: 1rem;
+        color: var(--dark-text);
+        margin-bottom: 0.75rem;
+        line-height: 1.5;
+      }
+
+      .profile-card .profile-meta {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+      }
+
+      .profile-card .profile-meta span {
+        font-size: 0.9rem;
+        color: #6b7280;
+        background-color: rgba(243, 244, 246, 0.8);
+        padding: 0.5rem 0.75rem;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .profile-card .profile-meta span i {
+        font-size: 1rem;
+      }
+
+      .profile-card .btn-group {
+        display: flex;
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+        flex-wrap: wrap;
+      }
+
+      .profile-card .btn-group .btn {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
         border-radius: 10px;
         transition: all 0.3s ease;
       }
 
-      .btn-primary:hover {
+      .profile-card .btn-group .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+      }
+
+      .profile-card .btn-group .btn-primary:hover {
         background-color: var(--primary-hover);
         border-color: var(--primary-hover);
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(79, 70, 229, 0.4);
+        box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3);
       }
 
-      .test-form {
-        background-color: rgba(255, 255, 255, 0.9);
-        border-radius: 20px;
-        padding: 2rem;
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-        margin-bottom: 2rem;
+      .profile-card .btn-group .btn-secondary {
+        background-color: #6b7280;
+        border-color: #6b7280;
+        color: #fff;
       }
 
-      .question-card {
-        background-color: rgba(255, 255, 255, 0.9);
-        border-radius: 20px;
+      .profile-card .btn-group .btn-secondary:hover {
+        background-color: #4b5563;
+        border-color: #4b5563;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(107, 114, 128, 0.3);
+      }
+
+      .profile-card .btn-group .btn-danger {
+        background-color: #ef4444;
+        border-color: #ef4444;
+        color: #fff;
+      }
+
+      .profile-card .btn-group .btn-danger:hover {
+        background-color: #dc2626;
+        border-color: #dc2626;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+      }
+
+      .chart-container {
+        background-color: rgba(255, 255, 255, 0.95);
+        border-radius: 15px;
         padding: 1.5rem;
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         margin-bottom: 1.5rem;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-      }
-
-      .question-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-      }
-
-      .question-card h4 {
-        font-size: 1.25rem;
-        font-weight: 600;
-        color: var(--primary-color);
-        margin-bottom: 1rem;
       }
 
       .footer {
@@ -152,6 +233,14 @@
       @media (max-width: 768px) {
         .welcome-section h1 {
           font-size: 2rem;
+        }
+
+        .profile-card .profile-meta {
+          flex-direction: column;
+        }
+
+        .profile-card .btn-group {
+          flex-direction: column;
         }
       }
     </style>
@@ -204,86 +293,35 @@
     <div class="dashboard-container">
       <!-- Welcome Section -->
       <div class="welcome-section animate__animated animate__fadeIn">
-        <h1>Create a New Test</h1>
-        <p>
-          Design your test by adding questions, setting time limits, and
-          customizing the experience for your students.
-        </p>
+        <h1>User Profile</h1>
+        <p>View and manage your profile information and performance.</p>
       </div>
 
-      <!-- Test Creation Form -->
-      <div class="test-form animate__animated animate__fadeInUp">
-        <form id="create-test-form" novalidate>
-          <!-- Test Title -->
-          <div class="mb-4">
-            <label for="test-title" class="form-label">Test Title</label>
-            <input
-              type="text"
-              class="form-control"
-              id="test-title"
-              placeholder="Enter test title"
-              required
-            />
-          </div>
+      <!-- Profile Card -->
+      <div class="profile-card animate__animated animate__fadeInUp">
+        <h4><i class="bi bi-person-circle"></i> <span id="userName">Loading...</span></h4>
+        <p>Email: <span id="userEmail">Loading...</span></p>
+        <div class="profile-meta">
+          <span><i class="bi bi-calendar"></i>Joined: <span id="joinDate">Loading...</span></span>
+          <span><i class="bi bi-bar-chart"></i>Tests Created: <span id="testsCreated">Loading...</span></span>
+          <span><i class="bi bi-check-circle"></i>Tests Completed: <span id="testsCompleted">Loading...</span></span>
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-primary rounded">Edit Profile</button>
+          <button class="btn btn-secondary rounded">Change Password</button>
+          <button class="btn btn-danger  rounded">Delete Account</button>
+        </div>
+      </div>
 
-          <!-- Test Description -->
-          <div class="mb-4">
-            <label for="test-description" class="form-label"
-              >Test Description</label
-            >
-            <textarea
-              class="form-control"
-              id="test-description"
-              rows="3"
-              placeholder="Enter test description"
-              required
-            ></textarea>
-          </div>
+      <!-- Charts Section -->
+      <div class="chart-container animate__animated animate__fadeInUp">
+        <h4><i class="bi bi-graph-up"></i>Performance Overview</h4>
+        <canvas id="performanceChart"></canvas>
+      </div>
 
-          <!-- Time Limit -->
-          <div class="mb-4">
-            <label for="time-limit" class="form-label"
-              >Time Limit (minutes)</label
-            >
-            <input
-              type="number"
-              class="form-control"
-              id="time-limit"
-              placeholder="Enter time limit"
-              min="1"
-              required
-            />
-          </div>
-
-          <!-- Questions Section -->
-          <div id="questions-container">
-            <!-- Questions will be dynamically added here -->
-          </div>
-
-          <!-- Add Question Button -->
-          <div class="d-grid gap-2 mb-4">
-            <button type="button" class="btn btn-primary" id="add-question">
-              <i class="bi bi-plus-circle"></i> Add Question
-            </button>
-          </div>
-
-          <!-- Save Test Button -->
-          <div class="d-grid gap-2 mt-4">
-            <button type="submit" class="btn btn-primary">
-              <i class="bi bi-save"></i> Save Test
-            </button>
-            <div
-              id="error-message"
-              class="alert alert-danger d-none bi bi-trash"
-              role="alert"
-            ></div>
-            <div
-              id="success-message"
-              class="alert alert-success d-none"
-              role="alert"
-            ></div>
-          </div>
-        </form>
+      <div class="chart-container animate__animated animate__fadeInUp">
+        <h4><i class="bi bi-pie-chart"></i>Test Results Distribution</h4>
+        <canvas id="resultsChart"></canvas>
       </div>
     </div>
 
@@ -294,10 +332,11 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <script type="module" src="verify.js"></script>
-    <!-- Script for Enhanced Functionality -->
-    <script type="module" src="create_quiz.js">
-      
+
+    <!-- Script for Fetching Data and Displaying Charts -->
+     <script type="module" src="verify.js"></script>
+    <script type="module" src="profile.js">
+     
     </script>
   </body>
 </html>

@@ -13,11 +13,14 @@ import { AuthRoutes } from "./api/v1/routes/auth.route.js";
 import { QuizService } from "./services/quiz.service.js";
 import { QuizController } from "./api/v1/controllers/quiz.controller.js";
 import { QuizRoutes } from "./api/v1/routes/quiz.route.js";
+import { UserService } from "./services/user.service.js";
+import { UserController } from "./api/v1/controllers/user.controller.js";
+import { UserRoutes } from "./api/v1/routes/user.route.js";
 export const app = express();
 app.use(helmet());
 app.use(
   cors({
-    origin: process.env.ORIGIN_LINK || "http://192.168.0.113:8080",
+    origin: process.env.ORIGIN_LINK || "http://192.168.0.194:8080",
     credentials: true,
   })
 );
@@ -76,7 +79,17 @@ const quizService: QuizService = new QuizService(
 const quizController: QuizController = new QuizController(logger, quizService);
 const quizRoutes: QuizRoutes = new QuizRoutes(quizController, auth);
 
+//USER
+
+const userService: UserService = new UserService(
+  logger,
+  caching as RedisCacheService
+);
+const userController: UserController = new UserController(logger, userService);
+const userRoutes: UserRoutes = new UserRoutes(userController, auth);
+
 //USE
 app.use(authRoutes.router);
 app.use(quizRoutes.router);
+app.use(userRoutes.router);
 app.use(errorHandler);

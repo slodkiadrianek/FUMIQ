@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FUMIQ - Create Tests</title>
+    <title>FUMIQ - View Test</title>
     <!-- Bootstrap CSS -->
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
@@ -96,42 +96,54 @@
         margin-bottom: 1.5rem;
       }
 
-      .btn-primary {
-        background-color: var(--primary-color);
-        border-color: var(--primary-color);
-        padding: 0.75rem 1.5rem;
-        font-weight: 500;
-        border-radius: 10px;
-        transition: all 0.3s ease;
-      }
-
-      .btn-primary:hover {
-        background-color: var(--primary-hover);
-        border-color: var(--primary-hover);
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(79, 70, 229, 0.4);
-      }
-
-      .test-form {
-        background-color: rgba(255, 255, 255, 0.9);
-        border-radius: 20px;
+      .test-details {
+        background-color: rgba(255, 255, 255, 0.95);
+        border-radius: 15px;
         padding: 2rem;
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         margin-bottom: 2rem;
       }
 
-      .question-card {
-        background-color: rgba(255, 255, 255, 0.9);
-        border-radius: 20px;
-        padding: 1.5rem;
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      .test-details h2 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary-color);
         margin-bottom: 1.5rem;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
       }
 
-      .question-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      .test-details p {
+        font-size: 1rem;
+        color: var(--dark-text);
+        margin-bottom: 1rem;
+      }
+
+      .test-details .test-meta {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+
+      .test-details .test-meta span {
+        font-size: 0.9rem;
+        color: #6b7280;
+        background-color: rgba(243, 244, 246, 0.8);
+        padding: 0.5rem 0.75rem;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .test-details .test-meta span i {
+        font-size: 1rem;
+      }
+
+      .question-card {
+        background-color: rgba(255, 255, 255, 0.95);
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1.5rem;
       }
 
       .question-card h4 {
@@ -139,6 +151,39 @@
         font-weight: 600;
         color: var(--primary-color);
         margin-bottom: 1rem;
+      }
+
+      .question-card p {
+        font-size: 1rem;
+        color: var(--dark-text);
+        margin-bottom: 1rem;
+      }
+
+      .question-card .options {
+        margin-bottom: 1rem;
+      }
+
+      .question-card .options .option {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .question-card .options .option input[type="checkbox"],
+      .question-card .options .option input[type="radio"] {
+        cursor: pointer;
+      }
+
+      .question-card .options .option label {
+        font-size: 0.9rem;
+        color: var(--dark-text);
+      }
+
+      .question-card .correct-answer {
+        font-size: 0.9rem;
+        color: var(--secondary-color);
+        font-weight: 500;
       }
 
       .footer {
@@ -187,9 +232,6 @@
               <a class="nav-link" href="#">Join</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="browse_quizez.html">Tests</a>
-            </li>
-            <li class="nav-item">
               <a class="nav-link" href="profile.html">Profile</a>
             </li>
             <li class="nav-item">
@@ -204,86 +246,16 @@
     <div class="dashboard-container">
       <!-- Welcome Section -->
       <div class="welcome-section animate__animated animate__fadeIn">
-        <h1>Create a New Test</h1>
+        <h1>View Test</h1>
         <p>
-          Design your test by adding questions, setting time limits, and
-          customizing the experience for your students.
+          Review the details of the selected test, including its questions and
+          correct answers.
         </p>
       </div>
 
-      <!-- Test Creation Form -->
-      <div class="test-form animate__animated animate__fadeInUp">
-        <form id="create-test-form" novalidate>
-          <!-- Test Title -->
-          <div class="mb-4">
-            <label for="test-title" class="form-label">Test Title</label>
-            <input
-              type="text"
-              class="form-control"
-              id="test-title"
-              placeholder="Enter test title"
-              required
-            />
-          </div>
-
-          <!-- Test Description -->
-          <div class="mb-4">
-            <label for="test-description" class="form-label"
-              >Test Description</label
-            >
-            <textarea
-              class="form-control"
-              id="test-description"
-              rows="3"
-              placeholder="Enter test description"
-              required
-            ></textarea>
-          </div>
-
-          <!-- Time Limit -->
-          <div class="mb-4">
-            <label for="time-limit" class="form-label"
-              >Time Limit (minutes)</label
-            >
-            <input
-              type="number"
-              class="form-control"
-              id="time-limit"
-              placeholder="Enter time limit"
-              min="1"
-              required
-            />
-          </div>
-
-          <!-- Questions Section -->
-          <div id="questions-container">
-            <!-- Questions will be dynamically added here -->
-          </div>
-
-          <!-- Add Question Button -->
-          <div class="d-grid gap-2 mb-4">
-            <button type="button" class="btn btn-primary" id="add-question">
-              <i class="bi bi-plus-circle"></i> Add Question
-            </button>
-          </div>
-
-          <!-- Save Test Button -->
-          <div class="d-grid gap-2 mt-4">
-            <button type="submit" class="btn btn-primary">
-              <i class="bi bi-save"></i> Save Test
-            </button>
-            <div
-              id="error-message"
-              class="alert alert-danger d-none bi bi-trash"
-              role="alert"
-            ></div>
-            <div
-              id="success-message"
-              class="alert alert-success d-none"
-              role="alert"
-            ></div>
-          </div>
-        </form>
+      <!-- Test Details -->
+      <div id="test-details" class="test-details animate__animated animate__fadeInUp">
+        <!-- Test details will be dynamically added here -->
       </div>
     </div>
 
@@ -294,10 +266,10 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <!-- Script for Fetching and Displaying Test Details -->
     <script type="module" src="verify.js"></script>
-    <!-- Script for Enhanced Functionality -->
-    <script type="module" src="create_quiz.js">
-      
+    <script type="module" src="viewTest.js">
+    
     </script>
   </body>
 </html>

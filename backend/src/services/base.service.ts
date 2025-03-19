@@ -52,37 +52,36 @@ export class BaseService {
   };
   getItemById = async <T>(
     type: string,
-    userId: string,
     id: string,
     table: Model<T>
   ) => {
-    if (await this.caching.exists(`${type}-${userId}-${id}`)) {
+    if (await this.caching.exists(`${type}-${id}`)) {
       const result: T | null = JSON.parse(
         (await this.caching.get(`${type}-${id}`)) || ""
       );
       if (!result) {
         this.logger.error(
-          `An error occurred while retrieving ${type} for ${userId} from the cache.`,
+          `An error occurred while retrieving ${type} from the cache.`,
           { id }
         );
         throw new AppError(
           404,
           type,
-          `An error occurred while retrieving ${type} for ${userId} from the cache.`
+          `An error occurred while retrieving ${type}  from the cache.`
         );
       }
       return result;
     }
+    console.log(`hi`)
     const result: T | null = await table.findOne({
       _id: id,
-      userId: new Types.ObjectId(userId),
     });
     if (!result) {
       this.logger.error(`${type} with this ID does not exist"`, { id });
       throw new AppError(404, type, `${type} with this ID does not exist`);
     }
     await this.caching.set(
-      `${type}-${userId}-${id}`,
+      `${type}-${id}`,
       JSON.stringify(result),
       300
     );

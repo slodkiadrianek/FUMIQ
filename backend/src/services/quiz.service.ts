@@ -12,7 +12,12 @@ export class QuizService extends BaseService {
   };
   getAllQuizez = async (userId: string): Promise<IQuiz[]> => {
     const result = await this.getAllItems("Quizez", userId, Quiz);
-    console.log(result);
     return result;
   };
+  getQuizById = async ( quizId:string) :Promise<IQuiz> =>{
+    return this.getItemById("Quiz",quizId, Quiz)
+  }
+  deleteQuizById = async (quizId:string):Promise<string> =>{
+    return this.deleteItem("Quiz", quizId, Quiz)
+  }
 }

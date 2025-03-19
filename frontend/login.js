@@ -1,4 +1,4 @@
-import { baser_url } from "./base_api.js";
+import { base_url } from "./base_api.js";
 
 const login_form = document.getElementById("login-form");
 const errorMessage = document.getElementById("error-message");
@@ -11,7 +11,7 @@ login_form.addEventListener("submit", async function (event) {
     const formData = new FormData(this);
     const data = Object.fromEntries(formData.entries());
 
-    const res = await fetch(`http://${baser_url}/api/v1/auth/login`, {
+    const res = await fetch(`http://${base_url}/api/v1/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

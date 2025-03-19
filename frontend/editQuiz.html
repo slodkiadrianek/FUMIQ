@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FUMIQ - Create Tests</title>
+    <title>FUMIQ - Edit Test</title>
     <!-- Bootstrap CSS -->
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
@@ -96,6 +96,78 @@
         margin-bottom: 1.5rem;
       }
 
+      .test-form {
+        background-color: rgba(255, 255, 255, 0.95);
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+      }
+
+      .test-form label {
+        font-weight: 500;
+        color: var(--dark-text);
+      }
+
+      .test-form input,
+      .test-form textarea,
+      .test-form select {
+        border-radius: 10px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        padding: 0.75rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .test-form input:focus,
+      .test-form textarea:focus,
+      .test-form select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+      }
+
+      .question-card {
+        background-color: rgba(255, 255, 255, 0.95);
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1.5rem;
+      }
+
+      .question-card h4 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+      }
+
+      .question-card .options {
+        margin-bottom: 1rem;
+      }
+
+      .question-card .options .option {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .question-card .options .option input[type="checkbox"],
+      .question-card .options .option input[type="radio"] {
+        cursor: pointer;
+      }
+
+      .question-card .options .option label {
+        font-size: 0.9rem;
+        color: var(--dark-text);
+      }
+
+      .question-card .correct-answer {
+        font-size: 0.9rem;
+        color: var(--secondary-color);
+        font-weight: 500;
+      }
+
       .btn-primary {
         background-color: var(--primary-color);
         border-color: var(--primary-color);
@@ -109,36 +181,20 @@
         background-color: var(--primary-hover);
         border-color: var(--primary-hover);
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(79, 70, 229, 0.4);
+        box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3);
       }
 
-      .test-form {
-        background-color: rgba(255, 255, 255, 0.9);
-        border-radius: 20px;
-        padding: 2rem;
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-        margin-bottom: 2rem;
+      .btn-danger {
+        background-color: #ef4444;
+        border-color: #ef4444;
+        color: #fff;
       }
 
-      .question-card {
-        background-color: rgba(255, 255, 255, 0.9);
-        border-radius: 20px;
-        padding: 1.5rem;
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-        margin-bottom: 1.5rem;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-      }
-
-      .question-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-      }
-
-      .question-card h4 {
-        font-size: 1.25rem;
-        font-weight: 600;
-        color: var(--primary-color);
-        margin-bottom: 1rem;
+      .btn-danger:hover {
+        background-color: #dc2626;
+        border-color: #dc2626;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
       }
 
       .footer {
@@ -187,9 +243,6 @@
               <a class="nav-link" href="#">Join</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="browse_quizez.html">Tests</a>
-            </li>
-            <li class="nav-item">
               <a class="nav-link" href="profile.html">Profile</a>
             </li>
             <li class="nav-item">
@@ -204,16 +257,16 @@
     <div class="dashboard-container">
       <!-- Welcome Section -->
       <div class="welcome-section animate__animated animate__fadeIn">
-        <h1>Create a New Test</h1>
+        <h1>Edit Test</h1>
         <p>
-          Design your test by adding questions, setting time limits, and
-          customizing the experience for your students.
+          Update the details of the selected test, including its questions and
+          correct answers.
         </p>
       </div>
 
-      <!-- Test Creation Form -->
+      <!-- Test Edit Form -->
       <div class="test-form animate__animated animate__fadeInUp">
-        <form id="create-test-form" novalidate>
+        <form id="edit-test-form">
           <!-- Test Title -->
           <div class="mb-4">
             <label for="test-title" class="form-label">Test Title</label>
@@ -270,18 +323,8 @@
           <!-- Save Test Button -->
           <div class="d-grid gap-2 mt-4">
             <button type="submit" class="btn btn-primary">
-              <i class="bi bi-save"></i> Save Test
+              <i class="bi bi-save"></i> Save Changes
             </button>
-            <div
-              id="error-message"
-              class="alert alert-danger d-none bi bi-trash"
-              role="alert"
-            ></div>
-            <div
-              id="success-message"
-              class="alert alert-success d-none"
-              role="alert"
-            ></div>
           </div>
         </form>
       </div>
@@ -294,10 +337,8 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <!-- Script for Fetching and Editing Test Details -->
     <script type="module" src="verify.js"></script>
-    <!-- Script for Enhanced Functionality -->
-    <script type="module" src="create_quiz.js">
-      
-    </script>
+    <script type="module" src="editQuiz.js"></script>
   </body>
 </html>

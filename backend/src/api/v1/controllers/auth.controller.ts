@@ -3,6 +3,7 @@ import { Logger } from "../../../utils/logger.js";
 import { IUser } from "../../../models/user.model.js";
 import { error } from "console";
 import { AuthService } from "../../../services/auth.service.js";
+import { CustomRequest } from "../../../types/common.type.js";
 
 export class AuthController {
   private logger: Logger;
@@ -47,12 +48,17 @@ export class AuthController {
     }
   };
   checkUser = async (
-    _req: Request,
+    req: Request,
     res: Response,
     _next: NextFunction
   ): Promise<void> => {
     res.status(200).json({
       success: true,
+      data:{
+        user:{
+          id: (req as CustomRequest).user.id
+        }
+      }
     });
   };
   loginUser = async (
@@ -81,7 +87,7 @@ export class AuthController {
       next(err);
     }
   };
-  logoutEmployee = async (
+  logoutUser = async (
     req: Request,
     res: Response,
     next: NextFunction

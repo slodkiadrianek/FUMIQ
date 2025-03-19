@@ -1,4 +1,4 @@
-import { baser_url } from "./base_api.js";
+import { base_url } from "./base_api.js";
 
 const login_form = document.getElementById("login-form");
 const errorMessage = document.getElementById("error-message");
@@ -270,7 +270,7 @@ document
     console.log("Test Data:", testData);
     const token = sessionStorage.getItem("authToken");
 
-    const response = await fetch(`http://${baser_url}/api/v1/quizez/`, {
+    const response = await fetch(`http://${base_url}/api/v1/quizez/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

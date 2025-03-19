@@ -1,4 +1,4 @@
-import { baser_url } from "./base_api.js";
+import { base_url } from "./base_api.js";
 
 const register_form = document.getElementById("register-form");
 const errorMessage = document.getElementById("error-message");
@@ -12,7 +12,7 @@ register_form.addEventListener("submit", async function (event) {
     const data = Object.fromEntries(formData.entries());
 
     console.log(data);
-    const res = await fetch(`http://${baser_url}/api/v1/auth/register`, {
+    const res = await fetch(`http://${base_url}/api/v1/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

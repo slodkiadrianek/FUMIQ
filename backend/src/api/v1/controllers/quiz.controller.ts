@@ -44,8 +44,7 @@ export class QuizController {
       const userId = (req as CustomRequest).user.id;
       this.logger.info("Attempting to get all quizez for user");
       const result: IQuiz[] = await this.quizService.getAllQuizez(userId);
-      console.log(result)
-      this.logger.info("Quiz has been downloaded");
+      this.logger.info("Quizez have been downloaded");
       res.status(200).json({
         success: true,
         data: {
@@ -57,4 +56,45 @@ export class QuizController {
       next(error);
     }
   };
+  getQuizById = async (req:Request, res:Response, next:NextFunction):Promise<void> =>{
+    try {
+      if (!(req as CustomRequest).user.id) {
+        throw new AppError(400, "User", "User id not found");
+      }
+      const userId = (req as CustomRequest).user.id;
+      const quizId = req.params.id as string
+      this.logger.info(`Attempting to get quiz with id ${quizId} for ${userId}`)
+      const result :IQuiz = await this.quizService.getQuizById(quizId)
+      this.logger.info(`Quiz has been downloaded`)
+      res.status(200).json({
+        success:true,
+        data:{
+          quizez: result
+        }
+      })
+      return
+    } catch (error) {
+      next(error)
+    }
+  }
+  deleteQuizById = async (req:Request, res:Response, next:NextFunction):Promise<void> =>{
+    try {
+      if (!(req as CustomRequest).user.id) {
+        throw new AppError(400, "User", "User id not found");
+      }
+      const quizId = req.params.id as string
+      this.logger.info(`Attempting to delete quiz with id ${quizId}`)
+      const result :string = await this.quizService.deleteQuizById(quizId)
+      this.logger.info(`Quiz has been downloaded`)
+      res.status(200).json({
+        success:true,
+        data:{
+          quizez: result
+        }
+      })
+      return
+    } catch (error) {
+      next(error)
+    }
+  }
 }

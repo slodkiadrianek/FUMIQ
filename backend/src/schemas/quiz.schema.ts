@@ -23,3 +23,7 @@ export const createQuiz: ObjectSchema = Joi.object({
     )
     .required(),
 });
+
+export const quizId:ObjectSchema = Joi.object({
+  id:Joi.string().required()
+})

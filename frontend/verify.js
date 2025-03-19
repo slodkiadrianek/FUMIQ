@@ -1,8 +1,8 @@
-import { baser_url } from "./base_api.js";
+import { base_url } from "./base_api.js";
 async function verifyUser() {
   // Access environment variables
   const token = sessionStorage.getItem("authToken");
-  const response = await fetch(`http://${baser_url}/api/v1/auth/check`, {
+  const response = await fetch(`http://${base_url}/api/v1/auth/check`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -13,5 +13,7 @@ async function verifyUser() {
   if (!responseData.success) {
     location.href = "login.html";
   }
+  sessionStorage.setItem("userId", responseData.data.user.id);
 }
 verifyUser();
+

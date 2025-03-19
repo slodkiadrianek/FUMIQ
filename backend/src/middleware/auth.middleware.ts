@@ -8,13 +8,15 @@ export class Authentication {
   jwt: string;
   jwtSecret: string;
   logger: Logger;
-  constructor(jwt: string, logger: Logger, private caching: RedisCacheService) {
+  caching :RedisCacheService
+  constructor(jwt: string, logger: Logger, caching:RedisCacheService) {
     this.jwt = jwt;
     if (!process.env.JWT_SECRET) {
       throw new Error("JWT_SECRET is not defined in environment variables.");
     }
     this.jwtSecret = process.env.JWT_SECRET;
     this.logger = logger;
+    this.caching = caching
   }
 
   sign = (user: IUser): string => {
@@ -70,11 +72,11 @@ export class Authentication {
       return;
     }
   };
-  async blacklist(
+   blacklist = async  (
     req: Request,
     res: Response,
     _next: NextFunction
-  ): Promise<void> {
+  ): Promise<void> => {
     const token = req.headers?.authorization?.split(" ")[1];
     if (!token) {
       this.logger.error(
@@ -97,6 +99,7 @@ export class Authentication {
         EX: expiration,
       })
     );
+
     this.logger.info(
       `Token has been blacklisted  of request ${req.baseUrl} with data: ${req.body}`
     );

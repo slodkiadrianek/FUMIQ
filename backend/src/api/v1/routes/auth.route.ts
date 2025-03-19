@@ -53,7 +53,7 @@ export class AuthRoutes {
     this.router.post(
       "/api/v1/auth/logout",
       this.auth.blacklist,
-      this.authController.logoutEmployee
+      this.authController.logoutUser
     );
     this.router.post(
       "/api/v1/auth/reset-password",

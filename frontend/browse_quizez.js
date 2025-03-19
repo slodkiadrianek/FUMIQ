@@ -1,10 +1,10 @@
-import { baser_url } from "./base_api";
+import { base_url } from "./base_api.js";
 const testList = document.getElementById("test-list");
-
+// console.log(`hello world`)
 // Function to fetch and display tests
 async function fetchTests() {
   const token = sessionStorage.getItem("authToken");
-  const response = await fetch(`http://${baser_url}/api/v1/quizez/`, {
+  const response = await fetch(`http://${base_url}/api/v1/quizez/`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -26,15 +26,15 @@ async function fetchTests() {
           <span><i class="bi bi-question-circle"></i>${test.questions.length} questions</span>
         </div>
         <div class="btn-group">
-          <button class="btn btn-primary rounded" onclick="viewTest('${test._id}')">
+          <a href="viewTest.html?id=${test._id}"class="btn btn-primary rounded ">
             <i class="bi bi-eye"></i> View
-          </button>
-          <button class="btn btn-secondary rounded" onclick="editTest('${test._id}')">
+          </a>
+          <a class="btn btn-secondary rounded" onclick="editTest('${test._id}')">
             <i class="bi bi-pencil"></i> Edit
           </button>
-          <button class="btn btn-danger rounded" onclick="deleteTest('${test._id}')">
+          <a class="btn btn-danger rounded" onclick="deleteTest('${test._id}')">
             <i class="bi bi-trash"></i> Delete
-          </button>
+          </a>
         </div>
       `;
       testList.appendChild(testCard);
@@ -46,19 +46,19 @@ async function fetchTests() {
 
 // Function to view a test
 function viewTest(testId) {
-  window.location.href = `view_test.html?id=${testId}`;
+  window.location.href = `viewTest.html?id=${testId}`;
 }
 
 // Function to edit a test
 function editTest(testId) {
-  window.location.href = `edit_test.html?id=${testId}`;
+  window.location.href = `editTest.html?id=${testId}`;
 }
 
 // Function to delete a test
 async function deleteTest(testId) {
   const token = sessionStorage.getItem("authToken");
   const response = await fetch(
-    `http://${baser_url}/api/v1/quiz/${testId}`,
+    `http://${base_url}/api/v1/quizez/${testId}`,
     {
       method: "DELETE",
       headers: {
