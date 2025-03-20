@@ -1,6 +1,8 @@
 import { base_url } from "./base_api.js";
+
 const testList = document.getElementById("test-list");
-// console.log(`hello world`)
+let currentTestIdToDelete = null; // Store the test ID to delete
+
 // Function to fetch and display tests
 async function fetchTests() {
   const token = sessionStorage.getItem("authToken");
@@ -56,37 +58,67 @@ function editTest(testId) {
 // Function to delete a test
 async function deleteTest(testId) {
   const token = sessionStorage.getItem("authToken");
-  const response = await fetch(`http://${base_url}/api/v1/quizez/${testId}`, {
-    method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  const data = await response.json();
-  if (data.success) {
-    alert("Test deleted successfully.");
-    fetchTests(); // Refresh the list
-  } else {
-    alert("Failed to delete test.");
+  try {
+    const response = await fetch(`http://${base_url}/api/v1/quizez/${testId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await response.json();
+    if (data.success) {
+      alert("Test deleted successfully.");
+      fetchTests(); // Refresh the list
+    } else {
+      alert("Failed to delete test.");
+    }
+  } catch (error) {
+    console.error("Error deleting test:", error);
+    alert("An error occurred while deleting the test.");
   }
 }
-document.getElementById("test-list").addEventListener("click", (event) => {
+
+// Event delegation for handling button clicks
+testList.addEventListener("click", (event) => {
+  const target = event.target;
+
   // Check if the clicked element is the Delete button
-  if (event.target.classList.contains("btn-danger")) {
-    const testId = event.target.getAttribute("data-test-id");
-    deleteTest(testId);
+  if (target.classList.contains("btn-danger")) {
+    event.preventDefault(); // Prevent default anchor behavior
+    const testId = target.getAttribute("data-test-id");
+    currentTestIdToDelete = testId; // Store the test ID to delete
+    // Show the confirmation modal
+    const deleteModal = new bootstrap.Modal(
+      document.getElementById("deleteConfirmationModal")
+    );
+    deleteModal.show();
   }
 
   // Check if the clicked element is the Edit button
-  if (event.target.classList.contains("btn-secondary")) {
-    const testId = event.target.getAttribute("data-test-id");
+  if (target.classList.contains("btn-secondary")) {
+    event.preventDefault(); // Prevent default anchor behavior
+    const testId = target.getAttribute("data-test-id");
     editTest(testId);
   }
 
   // Check if the clicked element is the View button
-  if (event.target.classList.contains("btn-primary")) {
-    const testId = event.target.getAttribute("data-test-id");
+  if (target.classList.contains("btn-primary")) {
+    // No need to prevent default behavior for the View button
+    const testId = target.getAttribute("data-test-id");
     viewTest(testId);
+  }
+});
+
+// Handle modal confirmation
+document.getElementById("confirmDeleteButton").addEventListener("click", () => {
+  if (currentTestIdToDelete) {
+    deleteTest(currentTestIdToDelete); // Delete the test
+    currentTestIdToDelete = null; // Reset the stored test ID
+    // Hide the modal
+    const deleteModal = bootstrap.Modal.getInstance(
+      document.getElementById("deleteConfirmationModal")
+    );
+    deleteModal.hide();
   }
 });
 

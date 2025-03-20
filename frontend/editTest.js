@@ -419,7 +419,7 @@ document
     const testTitle = document.getElementById("test-title").value;
     const testDescription = document.getElementById("test-description").value;
     const timeLimit = document.getElementById("time-limit").value;
-    const testId = document.getElementById("test-id").value;
+    // const testId = document.getElementById("test-id").value;
 
     const questions = [];
     const questionCards = document.querySelectorAll(".question-card");
@@ -490,7 +490,7 @@ document
     const url = testId
       ? `http://${base_url}/api/v1/quizez/${testId}`
       : `http://${base_url}/api/v1/quizez/`;
-
+    console.log(url);
     const response = await fetch(url, {
       method,
       headers: {
@@ -501,6 +501,7 @@ document
     });
     const responseData = await response.json();
     if (!responseData.success) {
+      console.log(url);
       success_message.classList.add("d-none");
       errorMessage.innerHTML = responseData.error.description;
       errorMessage.classList.remove("d-none");
