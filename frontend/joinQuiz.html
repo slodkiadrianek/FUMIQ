@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FUMIQ - Edit Test</title>
+    <title>Join Quiz - FUMIQ</title>
     <!-- Bootstrap CSS -->
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
@@ -20,7 +20,7 @@
       rel="stylesheet"
     />
     <style>
-      /* Reusing the same styles as the login, register, and reset password pages */
+      /* Reusing the same styles as the dashboard */
       :root {
         --primary-color: #4f46e5;
         --primary-hover: #4338ca;
@@ -69,103 +69,44 @@
         transform: translateY(-2px);
       }
 
-      .dashboard-container {
-        max-width: 1200px;
+      .join-quiz-container {
+        max-width: 800px;
         margin: 2rem auto;
         padding: 0 1rem;
       }
 
-      .welcome-section {
+      .join-quiz-section {
         background-color: rgba(255, 255, 255, 0.9);
         border-radius: 20px;
         padding: 2rem;
         box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
         margin-bottom: 2rem;
+        text-align: center;
       }
 
-      .welcome-section h1 {
+      .join-quiz-section h1 {
         font-size: 2.5rem;
         font-weight: 700;
         color: var(--primary-color);
         margin-bottom: 1rem;
       }
 
-      .welcome-section p {
+      .join-quiz-section p {
         font-size: 1.1rem;
         color: var(--dark-text);
         margin-bottom: 1.5rem;
       }
 
-      .test-form {
-        background-color: rgba(255, 255, 255, 0.95);
-        border-radius: 15px;
-        padding: 2rem;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        margin-bottom: 2rem;
-      }
-
-      .test-form label {
-        font-weight: 500;
-        color: var(--dark-text);
-      }
-
-      .test-form input,
-      .test-form textarea,
-      .test-form select {
+      .form-control {
         border-radius: 10px;
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        padding: 0.75rem;
-        font-size: 1rem;
+        padding: 0.75rem 1rem;
+        border: 1px solid #e5e7eb;
         transition: all 0.3s ease;
       }
 
-      .test-form input:focus,
-      .test-form textarea:focus,
-      .test-form select:focus {
+      .form-control:focus {
         border-color: var(--primary-color);
         box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-      }
-
-      .question-card {
-        background-color: rgba(255, 255, 255, 0.95);
-        border-radius: 15px;
-        padding: 1.5rem;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        margin-bottom: 1.5rem;
-      }
-
-      .question-card h4 {
-        font-size: 1.25rem;
-        font-weight: 600;
-        color: var(--primary-color);
-        margin-bottom: 1rem;
-      }
-
-      .question-card .options {
-        margin-bottom: 1rem;
-      }
-
-      .question-card .options .option {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin-bottom: 0.5rem;
-      }
-
-      .question-card .options .option input[type="checkbox"],
-      .question-card .options .option input[type="radio"] {
-        cursor: pointer;
-      }
-
-      .question-card .options .option label {
-        font-size: 0.9rem;
-        color: var(--dark-text);
-      }
-
-      .question-card .correct-answer {
-        font-size: 0.9rem;
-        color: var(--secondary-color);
-        font-weight: 500;
       }
 
       .btn-primary {
@@ -181,20 +122,7 @@
         background-color: var(--primary-hover);
         border-color: var(--primary-hover);
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3);
-      }
-
-      .btn-danger {
-        background-color: #ef4444;
-        border-color: #ef4444;
-        color: #fff;
-      }
-
-      .btn-danger:hover {
-        background-color: #dc2626;
-        border-color: #dc2626;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+        box-shadow: 0 5px 15px rgba(79, 70, 229, 0.4);
       }
 
       .footer {
@@ -206,7 +134,7 @@
       }
 
       @media (max-width: 768px) {
-        .welcome-section h1 {
+        .join-quiz-section h1 {
           font-size: 2rem;
         }
       }
@@ -240,7 +168,7 @@
               <a class="nav-link" href="create_quiz.html">Create</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Join</a>
+              <a class="nav-link active" href="joinQuiz.html">Join</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="browse_quizez.html">Tests</a>
@@ -257,78 +185,24 @@
     </nav>
 
     <!-- Main Content -->
-    <div class="dashboard-container">
-      <!-- Welcome Section -->
-      <div class="welcome-section animate__animated animate__fadeIn">
-        <h1>Edit Test</h1>
+    <div class="join-quiz-container">
+      <!-- Join Quiz Section -->
+      <div class="join-quiz-section animate__animated animate__fadeIn">
+        <h1>Join a Quiz</h1>
         <p>
-          Update the details of the selected test, including its questions and
-          correct answers.
+          Enter the quiz code provided by your instructor to join the quiz and
+          start answering questions.
         </p>
-      </div>
-
-      <!-- Test Edit Form -->
-      <div class="test-form animate__animated animate__fadeInUp">
-        <form id="edit-test-form">
-          <!-- Test Title -->
-          <div class="mb-4">
-            <label for="test-title" class="form-label">Test Title</label>
+        <form>
+          <div class="mb-3">
             <input
               type="text"
               class="form-control"
-              id="test-title"
-              placeholder="Enter test title"
+              placeholder="Enter Quiz Code"
               required
             />
           </div>
-
-          <!-- Test Description -->
-          <div class="mb-4">
-            <label for="test-description" class="form-label"
-              >Test Description</label
-            >
-            <textarea
-              class="form-control"
-              id="test-description"
-              rows="3"
-              placeholder="Enter test description"
-              required
-            ></textarea>
-          </div>
-
-          <!-- Time Limit -->
-          <div class="mb-4">
-            <label for="time-limit" class="form-label"
-              >Time Limit (minutes)</label
-            >
-            <input
-              type="number"
-              class="form-control"
-              id="time-limit"
-              placeholder="Enter time limit"
-              min="1"
-              required
-            />
-          </div>
-
-          <!-- Questions Section -->
-          <div id="questions-container">
-            <!-- Questions will be dynamically added here -->
-          </div>
-
-          <!-- Add Question Button -->
-          <div class="d-grid gap-2 mb-4">
-            <button type="button" class="btn btn-primary" id="add-question">
-              <i class="bi bi-plus-circle"></i> Add Question
-            </button>
-          </div>
-
-          <!-- Save Test Button -->
-          <div class="d-grid gap-2 mt-4">
-            <button type="submit" class="btn btn-primary">
-              <i class="bi bi-save"></i> Save Changes
-            </button>
-          </div>
+          <button type="submit" class="btn btn-primary">Join Quiz</button>
         </form>
       </div>
     </div>
@@ -340,8 +214,6 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <!-- Script for Fetching and Editing Test Details -->
     <script type="module" src="verify.js"></script>
-    <script type="module" src="editQuiz.js"></script>
   </body>
 </html>

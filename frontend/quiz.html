@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FUMIQ - View Test</title>
+    <title>Quiz - FUMIQ</title>
     <!-- Bootstrap CSS -->
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
@@ -20,7 +20,7 @@
       rel="stylesheet"
     />
     <style>
-      /* Reusing the same styles as the login, register, and reset password pages */
+      /* Reusing the same styles as the dashboard */
       :root {
         --primary-color: #4f46e5;
         --primary-hover: #4338ca;
@@ -69,121 +69,84 @@
         transform: translateY(-2px);
       }
 
-      .dashboard-container {
-        max-width: 1200px;
+      .quiz-container {
+        max-width: 800px;
         margin: 2rem auto;
-        padding: 0 1rem;
-      }
-
-      .welcome-section {
+        padding: 2rem;
         background-color: rgba(255, 255, 255, 0.9);
         border-radius: 20px;
-        padding: 2rem;
         box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-        margin-bottom: 2rem;
-      }
-
-      .welcome-section h1 {
-        font-size: 2.5rem;
-        font-weight: 700;
-        color: var(--primary-color);
-        margin-bottom: 1rem;
-      }
-
-      .welcome-section p {
-        font-size: 1.1rem;
-        color: var(--dark-text);
-        margin-bottom: 1.5rem;
-      }
-
-      .test-details {
-        background-color: rgba(255, 255, 255, 0.95);
-        border-radius: 15px;
-        padding: 2rem;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        margin-bottom: 2rem;
-      }
-
-      .test-details h2 {
-        font-size: 2rem;
-        font-weight: 700;
-        color: var(--primary-color);
-        margin-bottom: 1.5rem;
-      }
-
-      .test-details p {
-        font-size: 1rem;
-        color: var(--dark-text);
-        margin-bottom: 1rem;
-      }
-
-      .test-details .test-meta {
-        display: flex;
-        gap: 1rem;
-        margin-bottom: 2rem;
-      }
-
-      .test-details .test-meta span {
-        font-size: 0.9rem;
-        color: #6b7280;
-        background-color: rgba(243, 244, 246, 0.8);
-        padding: 0.5rem 0.75rem;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-
-      .test-details .test-meta span i {
-        font-size: 1rem;
       }
 
       .question-card {
-        background-color: rgba(255, 255, 255, 0.95);
-        border-radius: 15px;
-        padding: 1.5rem;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        margin-bottom: 1.5rem;
+        margin-bottom: 2rem;
       }
 
-      .question-card h4 {
-        font-size: 1.25rem;
+      .question-card h3 {
+        font-size: 1.5rem;
         font-weight: 600;
         color: var(--primary-color);
         margin-bottom: 1rem;
       }
 
       .question-card p {
-        font-size: 1rem;
+        font-size: 1.1rem;
         color: var(--dark-text);
-        margin-bottom: 1rem;
+        margin-bottom: 1.5rem;
       }
 
-      .question-card .options {
-        margin-bottom: 1rem;
+      .options-list {
+        list-style: none;
+        padding: 0;
       }
 
-      .question-card .options .option {
+      .options-list li {
+        margin-bottom: 0.75rem;
+      }
+
+      .options-list label {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        margin-bottom: 0.5rem;
-      }
-
-      .question-card .options .option input[type="checkbox"],
-      .question-card .options .option input[type="radio"] {
+        font-size: 1rem;
+        color: var(--dark-text);
         cursor: pointer;
       }
 
-      .question-card .options .option label {
-        font-size: 0.9rem;
-        color: var(--dark-text);
+      .options-list input[type="radio"],
+      .options-list input[type="checkbox"] {
+        margin-right: 0.5rem;
       }
 
-      .question-card .correct-answer {
-        font-size: 0.9rem;
-        color: var(--secondary-color);
+      .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        padding: 0.75rem 1.5rem;
         font-weight: 500;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary:hover {
+        background-color: var(--primary-hover);
+        border-color: var(--primary-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(79, 70, 229, 0.4);
+      }
+
+      .btn-end-test {
+        background-color: var(--secondary-color);
+        border-color: var(--secondary-color);
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+      }
+
+      .btn-end-test:hover {
+        background-color: var(--secondary-hover);
+        border-color: var(--secondary-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
       }
 
       .footer {
@@ -192,12 +155,6 @@
         color: #6b7280;
         font-size: 0.875rem;
         margin-top: 2rem;
-      }
-
-      @media (max-width: 768px) {
-        .welcome-section h1 {
-          font-size: 2rem;
-        }
       }
     </style>
   </head>
@@ -245,20 +202,44 @@
       </div>
     </nav>
 
-    <!-- Main Content -->
-    <div class="dashboard-container">
-      <!-- Welcome Section -->
-      <div class="welcome-section animate__animated animate__fadeIn">
-        <h1>View Test</h1>
-        <p>
-          Review the details of the selected test, including its questions and
-          correct answers.
-        </p>
+    <!-- Quiz Container -->
+    <div class="quiz-container">
+      <!-- Question Card -->
+      <div class="question-card animate__animated animate__fadeIn">
+        <h3>Question 1</h3>
+        <p>2+2=?</p>
+        <ul class="options-list">
+          <li>
+            <label>
+              <input type="radio" name="question1" value="A" />
+              4
+            </label>
+          </li>
+          <li>
+            <label>
+              <input type="radio" name="question1" value="B" />
+              5
+            </label>
+          </li>
+          <li>
+            <label>
+              <input type="radio" name="question1" value="C" />
+              76
+            </label>
+          </li>
+          <li>
+            <label>
+              <input type="radio" name="question1" value="D" />
+              34
+            </label>
+          </li>
+        </ul>
+        <button class="btn btn-primary">Next Question</button>
       </div>
 
-      <!-- Test Details -->
-      <div id="test-details" class="test-details animate__animated animate__fadeInUp">
-        <!-- Test details will be dynamically added here -->
+      <!-- End Test Button -->
+      <div class="text-center mt-4">
+        <button class="btn btn-end-test">End Test</button>
       </div>
     </div>
 
@@ -269,10 +250,7 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <!-- Script for Fetching and Displaying Test Details -->
-    <script type="module" src="verify.js"></script>
-    <script type="module" src="viewTest.js">
     
-    </script>
+    <script type="module" src="quiz.js"></script>
   </body>
 </html>

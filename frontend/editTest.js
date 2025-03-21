@@ -1,116 +1,20 @@
 import { base_url } from "./base_api.js";
 
-const login_form = document.getElementById("login-form");
 const errorMessage = document.getElementById("error-message");
 const success_message = document.getElementById("success-message");
 let questionCount = 0;
 
-// Function to add a new question
-document.getElementById("add-question").addEventListener("click", function () {
-  questionCount++;
-  const questionsContainer = document.getElementById("questions-container");
+// Helper function to toggle required attribute
+const toggleRequired = (element, isRequired) => {
+  if (isRequired) {
+    element.setAttribute("required", true);
+  } else {
+    element.removeAttribute("required");
+  }
+};
 
-  const questionCard = document.createElement("div");
-  questionCard.className = "question-card animate__animated animate__fadeInUp";
-  questionCard.innerHTML = `
-      <h4>Question ${questionCount}</h4>
-      <div class="mb-3">
-        <label for="question-text-${questionCount}" class="form-label">Question Text</label>
-        <input
-          type="text"
-          class="form-control question-text"
-          id="question-text-${questionCount}"
-          placeholder="Enter question text"
-          required
-        />
-      </div>
-      <div class="mb-3">
-        <label for="question-type-${questionCount}" class="form-label">Question Type</label>
-        <select class="form-control question-type" id="question-type-${questionCount}" required>
-          <option value="single-correct">Single Correct Answer (A, B, C, D)</option>
-          <option value="multiple-correct">Multiple Correct Answers (A, B, C, D)</option>
-          <option value="true-false">True/False</option>
-        </select>
-      </div>
-      <div class="mb-3 options-container" id="options-container-${questionCount}">
-        <label class="form-label">Options (A, B, C, D)</label>
-        <div class="mb-2">
-          <input
-            type="text"
-            class="form-control option-input"
-            placeholder="Option A"
-            required
-          />
-        </div>
-        <div class="mb-2">
-          <input
-            type="text"
-            class="form-control option-input"
-            placeholder="Option B"
-            required
-          />
-        </div>
-        <div class="mb-2">
-          <input
-            type="text"
-            class="form-control option-input"
-            placeholder="Option C"
-            required
-          />
-        </div>
-        <div class="mb-2">
-          <input
-            type="text"
-            class="form-control option-input"
-            placeholder="Option D"
-            required
-          />
-        </div>
-      </div>
-      <div class="mb-3 correct-answer-container" id="correct-answer-container-${questionCount}">
-        <label class="form-label">Correct Answer</label>
-        <div class="correct-answer-single" id="correct-answer-single-${questionCount}">
-          <select class="form-control">
-            <option value="A">A</option>
-            <option value="B">B</option>
-            <option value="C">C</option>
-            <option value="D">D</option>
-          </select>
-        </div>
-        <div class="correct-answer-multiple" id="correct-answer-multiple-${questionCount}" style="display: none;">
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="A" id="correct-answer-A-${questionCount}">
-            <label class="form-check-label" for="correct-answer-A-${questionCount}">A</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="B" id="correct-answer-B-${questionCount}">
-            <label class="form-check-label" for="correct-answer-B-${questionCount}">B</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="C" id="correct-answer-C-${questionCount}">
-            <label class="form-check-label" for="correct-answer-C-${questionCount}">C</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="D" id="correct-answer-D-${questionCount}">
-            <label class="form-check-label" for="correct-answer-D-${questionCount}">D</label>
-          </div>
-        </div>
-        <div class="correct-answer-true-false" id="correct-answer-true-false-${questionCount}" style="display: none;">
-          <select class="form-control">
-            <option value="True">True</option>
-            <option value="False">False</option>
-          </select>
-        </div>
-      </div>
-      <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">
-        <i class="bi bi-trash"></i> Remove Question
-      </button>
-    `;
-
-  questionsContainer.appendChild(questionCard);
-
-  // Show/hide options and correct answer based on question type
-  const questionType = questionCard.querySelector(".question-type");
+// Helper function to handle question type changes
+const handleQuestionTypeChange = (questionCard, questionType) => {
   const optionsContainer = questionCard.querySelector(".options-container");
   const correctAnswerSingle = questionCard.querySelector(
     ".correct-answer-single"
@@ -122,92 +26,245 @@ document.getElementById("add-question").addEventListener("click", function () {
     ".correct-answer-true-false"
   );
 
-  // Function to toggle required attribute
-  const toggleRequired = (element, isRequired) => {
-    if (isRequired) {
-      element.setAttribute("required", true);
-    } else {
-      element.removeAttribute("required");
-    }
-  };
+  // Hide all first
+  optionsContainer.style.display = "none";
+  correctAnswerSingle.style.display = "none";
+  correctAnswerMultiple.style.display = "none";
+  correctAnswerTrueFalse.style.display = "none";
 
-  // Initialize based on default question type
-  if (questionType.value === "single-correct") {
+  // Reset required attributes
+  toggleRequired(correctAnswerSingle.querySelector("select"), false);
+  const checkboxes = correctAnswerMultiple.querySelectorAll(
+    "input[type='checkbox']"
+  );
+  if (checkboxes.length > 0) {
+    toggleRequired(checkboxes[0], false);
+  }
+  toggleRequired(correctAnswerTrueFalse.querySelector("select"), false);
+
+  // Show appropriate elements based on question type
+  if (questionType === "single-correct") {
     optionsContainer.style.display = "block";
     correctAnswerSingle.style.display = "block";
-    correctAnswerMultiple.style.display = "none";
-    correctAnswerTrueFalse.style.display = "none";
     toggleRequired(correctAnswerSingle.querySelector("select"), true);
-  } else if (questionType.value === "multiple-correct") {
+  } else if (questionType === "multiple-correct") {
     optionsContainer.style.display = "block";
-    correctAnswerSingle.style.display = "none";
     correctAnswerMultiple.style.display = "block";
-    correctAnswerTrueFalse.style.display = "none";
-    toggleRequired(
-      correctAnswerMultiple.querySelectorAll("input[type='checkbox']")[0],
-      true
-    );
-  } else if (questionType.value === "true-false") {
-    optionsContainer.style.display = "none";
-    correctAnswerSingle.style.display = "none";
-    correctAnswerMultiple.style.display = "none";
+    if (checkboxes.length > 0) {
+      toggleRequired(checkboxes[0], true);
+    }
+  } else if (questionType === "true-false") {
     correctAnswerTrueFalse.style.display = "block";
     toggleRequired(correctAnswerTrueFalse.querySelector("select"), true);
   }
+};
+
+// Function to create a new question card
+const createQuestionCard = (questionNumber, questionData = null) => {
+  const questionCard = document.createElement("div");
+  questionCard.className = "question-card animate__animated animate__fadeInUp";
+
+  // Set default values or use provided data
+  const questionText = questionData ? questionData.questionText : "";
+  const questionType = questionData
+    ? questionData.questionType
+    : "single-correct";
+  const options = questionData ? questionData.options : ["", "", "", ""];
+  let correctAnswer = questionData ? questionData.correctAnswer : "";
+
+  // For multiple-correct, ensure correctAnswer is an array
+  if (questionType === "multiple-correct" && !Array.isArray(correctAnswer)) {
+    correctAnswer = correctAnswer ? [correctAnswer] : [];
+  }
+
+  questionCard.innerHTML = `
+    <h4>Question ${questionNumber}</h4>
+    <div class="mb-3">
+      <label for="question-text-${questionCount}" class="form-label">Question Text</label>
+      <input
+        type="text"
+        class="form-control question-text"
+        id="question-text-${questionCount}"
+        value="${questionText}"
+        placeholder="Enter question text"
+        required
+      />
+    </div>
+    <div class="mb-3">
+      <label for="question-type-${questionCount}" class="form-label">Question Type</label>
+      <select class="form-control question-type" id="question-type-${questionCount}" required>
+        <option value="single-correct" ${
+          questionType === "single-correct" ? "selected" : ""
+        }>Single Correct Answer (A, B, C, D)</option>
+        <option value="multiple-correct" ${
+          questionType === "multiple-correct" ? "selected" : ""
+        }>Multiple Correct Answers (A, B, C, D)</option>
+        <option value="true-false" ${
+          questionType === "true-false" ? "selected" : ""
+        }>True/False</option>
+      </select>
+    </div>
+    <div class="mb-3 options-container" id="options-container-${questionCount}">
+      <label class="form-label">Options (A, B, C, D)</label>
+      <div class="mb-2">
+        <input
+          type="text"
+          class="form-control option-input"
+          placeholder="Option A"
+          value="${options[0] || ""}"
+          required
+        />
+      </div>
+      <div class="mb-2">
+        <input
+          type="text"
+          class="form-control option-input"
+          placeholder="Option B"
+          value="${options[1] || ""}"
+          required
+        />
+      </div>
+      <div class="mb-2">
+        <input
+          type="text"
+          class="form-control option-input"
+          placeholder="Option C"
+          value="${options[2] || ""}"
+          required
+        />
+      </div>
+      <div class="mb-2">
+        <input
+          type="text"
+          class="form-control option-input"
+          placeholder="Option D"
+          value="${options[3] || ""}"
+          required
+        />
+      </div>
+    </div>
+    <div class="mb-3 correct-answer-container" id="correct-answer-container-${questionCount}">
+      <label class="form-label">Correct Answer</label>
+      <div class="correct-answer-single" id="correct-answer-single-${questionCount}">
+        <select class="form-control">
+          <option value="A" ${
+            correctAnswer === "A" ? "selected" : ""
+          }>A</option>
+          <option value="B" ${
+            correctAnswer === "B" ? "selected" : ""
+          }>B</option>
+          <option value="C" ${
+            correctAnswer === "C" ? "selected" : ""
+          }>C</option>
+          <option value="D" ${
+            correctAnswer === "D" ? "selected" : ""
+          }>D</option>
+        </select>
+      </div>
+      <div class="correct-answer-multiple" id="correct-answer-multiple-${questionCount}" style="display: none;">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="A" id="correct-answer-A-${questionCount}" ${
+    Array.isArray(correctAnswer) && correctAnswer.includes("A") ? "checked" : ""
+  }>
+          <label class="form-check-label" for="correct-answer-A-${questionCount}">A</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="B" id="correct-answer-B-${questionCount}" ${
+    Array.isArray(correctAnswer) && correctAnswer.includes("B") ? "checked" : ""
+  }>
+          <label class="form-check-label" for="correct-answer-B-${questionCount}">B</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="C" id="correct-answer-C-${questionCount}" ${
+    Array.isArray(correctAnswer) && correctAnswer.includes("C") ? "checked" : ""
+  }>
+          <label class="form-check-label" for="correct-answer-C-${questionCount}">C</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="D" id="correct-answer-D-${questionCount}" ${
+    Array.isArray(correctAnswer) && correctAnswer.includes("D") ? "checked" : ""
+  }>
+          <label class="form-check-label" for="correct-answer-D-${questionCount}">D</label>
+        </div>
+      </div>
+      <div class="correct-answer-true-false" id="correct-answer-true-false-${questionCount}" style="display: none;">
+        <select class="form-control">
+          <option value="True" ${
+            correctAnswer === "True" ? "selected" : ""
+          }>True</option>
+          <option value="False" ${
+            correctAnswer === "False" ? "selected" : ""
+          }>False</option>
+        </select>
+      </div>
+    </div>
+    <button type="button" class="btn btn-danger btn-sm remove-question">
+      <i class="bi bi-trash"></i> Remove Question
+    </button>
+  `;
 
   // Add event listener for question type change
-  questionType.addEventListener("change", function () {
-    if (this.value === "single-correct") {
-      optionsContainer.style.display = "block";
-      correctAnswerSingle.style.display = "block";
-      correctAnswerMultiple.style.display = "none";
-      correctAnswerTrueFalse.style.display = "none";
-      toggleRequired(correctAnswerSingle.querySelector("select"), true);
-      toggleRequired(
-        correctAnswerMultiple.querySelectorAll("input[type='checkbox']")[0],
-        false
-      );
-      toggleRequired(correctAnswerTrueFalse.querySelector("select"), false);
-    } else if (this.value === "multiple-correct") {
-      optionsContainer.style.display = "block";
-      correctAnswerSingle.style.display = "none";
-      correctAnswerMultiple.style.display = "block";
-      correctAnswerTrueFalse.style.display = "none";
-      toggleRequired(correctAnswerSingle.querySelector("select"), false);
-      toggleRequired(
-        correctAnswerMultiple.querySelectorAll("input[type='checkbox']")[0],
-        true
-      );
-      toggleRequired(correctAnswerTrueFalse.querySelector("select"), false);
-    } else if (this.value === "true-false") {
-      optionsContainer.style.display = "none";
-      correctAnswerSingle.style.display = "none";
-      correctAnswerMultiple.style.display = "none";
-      correctAnswerTrueFalse.style.display = "block";
-      toggleRequired(correctAnswerSingle.querySelector("select"), false);
-      toggleRequired(
-        correctAnswerMultiple.querySelectorAll("input[type='checkbox']")[0],
-        false
-      );
-      toggleRequired(correctAnswerTrueFalse.querySelector("select"), true);
-    }
+  const questionTypeSelect = questionCard.querySelector(".question-type");
+  questionTypeSelect.addEventListener("change", function () {
+    handleQuestionTypeChange(questionCard, this.value);
   });
+
+  // Add event listener for remove button
+  const removeButton = questionCard.querySelector(".remove-question");
+  removeButton.addEventListener("click", function () {
+    questionCard.remove();
+    updateQuestionNumbers();
+  });
+
+  // Initialize the question card based on the question type
+  handleQuestionTypeChange(questionCard, questionType);
+
+  return questionCard;
+};
+
+// Function to update question numbers after removing a question
+const updateQuestionNumbers = () => {
+  const questionCards = document.querySelectorAll(".question-card");
+  questionCards.forEach((card, index) => {
+    card.querySelector("h4").textContent = `Question ${index + 1}`;
+  });
+};
+
+// Function to add a new question
+document.getElementById("add-question").addEventListener("click", function () {
+  questionCount++;
+  const questionsContainer = document.getElementById("questions-container");
+  const questionCard = createQuestionCard(questionCount);
+  questionsContainer.appendChild(questionCard);
 });
 
 // Function to load an existing test for editing
 async function loadTestForEditing(testId) {
-  const token = sessionStorage.getItem("authToken");
-  console.log(token);
-  const response = await fetch(`http://${base_url}/api/v1/quizez/${testId}`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  const testData = await response.json();
+  try {
+    const token = sessionStorage.getItem("authToken");
+    if (!token) {
+      throw new Error("Authentication token not found. Please log in again.");
+    }
 
-  if (testData.success) {
-    console.log(testData.data.quizez);
+    const response = await fetch(`http://${base_url}/api/v1/quizez/${testId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const testData = await response.json();
+
+    if (!testData.success) {
+      throw new Error(
+        testData.error?.description || "Failed to load test data"
+      );
+    }
+
     const test = testData.data.quizez;
     document.getElementById("test-id").value = test.id;
     document.getElementById("test-title").value = test.title;
@@ -217,193 +274,30 @@ async function loadTestForEditing(testId) {
     const questionsContainer = document.getElementById("questions-container");
     questionsContainer.innerHTML = "";
 
-    test.questions.forEach((question, index) => {
-      questionCount++;
-      const questionCard = document.createElement("div");
-      questionCard.className =
-        "question-card animate__animated animate__fadeInUp";
-      questionCard.innerHTML = `
-        <h4>Question ${index + 1}</h4>
-        <div class="mb-3">
-          <label for="question-text-${questionCount}" class="form-label">Question Text</label>
-          <input
-            type="text"
-            class="form-control question-text"
-            id="question-text-${questionCount}"
-            value="${question.questionText}"
-            required
-          />
-        </div>
-        <div class="mb-3">
-          <label for="question-type-${questionCount}" class="form-label">Question Type</label>
-          <select class="form-control question-type" id="question-type-${questionCount}" required>
-            <option value="single-correct" ${
-              question.questionType === "single-correct" ? "selected" : ""
-            }>Single Correct Answer (A, B, C, D)</option>
-            <option value="multiple-correct" ${
-              question.questionType === "multiple-correct" ? "selected" : ""
-            }>Multiple Correct Answers (A, B, C, D)</option>
-            <option value="true-false" ${
-              question.questionType === "true-false" ? "selected" : ""
-            }>True/False</option>
-          </select>
-        </div>
-        <div class="mb-3 options-container" id="options-container-${questionCount}">
-          <label class="form-label">Options (A, B, C, D)</label>
-          <div class="mb-2">
-            <input
-              type="text"
-              class="form-control option-input"
-              value="${question.options[0] || ""}"
-              placeholder="Option A"
-              required
-            />
-          </div>
-          <div class="mb-2">
-            <input
-              type="text"
-              class="form-control option-input"
-              value="${question.options[1] || ""}"
-              placeholder="Option B"
-              required
-            />
-          </div>
-          <div class="mb-2">
-            <input
-              type="text"
-              class="form-control option-input"
-              value="${question.options[2] || ""}"
-              placeholder="Option C"
-              required
-            />
-          </div>
-          <div class="mb-2">
-            <input
-              type="text"
-              class="form-control option-input"
-              value="${question.options[3] || ""}"
-              placeholder="Option D"
-              required
-            />
-          </div>
-        </div>
-        <div class="mb-3 correct-answer-container" id="correct-answer-container-${questionCount}">
-          <label class="form-label">Correct Answer</label>
-          <div class="correct-answer-single" id="correct-answer-single-${questionCount}" ${
-        question.questionType === "single-correct"
-          ? ""
-          : "style='display: none;'"
-      }>
-            <select class="form-control">
-              <option value="A" ${
-                question.correctAnswer === "A" ? "selected" : ""
-              }>A</option>
-              <option value="B" ${
-                question.correctAnswer === "B" ? "selected" : ""
-              }>B</option>
-              <option value="C" ${
-                question.correctAnswer === "C" ? "selected" : ""
-              }>C</option>
-              <option value="D" ${
-                question.correctAnswer === "D" ? "selected" : ""
-              }>D</option>
-            </select>
-          </div>
-          <div class="correct-answer-multiple" id="correct-answer-multiple-${questionCount}" ${
-        question.questionType === "multiple-correct"
-          ? ""
-          : "style='display: none;'"
-      }>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" value="A" id="correct-answer-A-${questionCount}" ${
-        question.correctAnswer.includes("A") ? "checked" : ""
-      }>
-              <label class="form-check-label" for="correct-answer-A-${questionCount}">A</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" value="B" id="correct-answer-B-${questionCount}" ${
-        question.correctAnswer.includes("B") ? "checked" : ""
-      }>
-              <label class="form-check-label" for="correct-answer-B-${questionCount}">B</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" value="C" id="correct-answer-C-${questionCount}" ${
-        question.correctAnswer.includes("C") ? "checked" : ""
-      }>
-              <label class="form-check-label" for="correct-answer-C-${questionCount}">C</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" value="D" id="correct-answer-D-${questionCount}" ${
-        question.correctAnswer.includes("D") ? "checked" : ""
-      }>
-              <label class="form-check-label" for="correct-answer-D-${questionCount}">D</label>
-            </div>
-          </div>
-          <div class="correct-answer-true-false" id="correct-answer-true-false-${questionCount}" ${
-        question.questionType === "true-false" ? "" : "style='display: none;'"
-      }>
-            <select class="form-control">
-              <option value="True" ${
-                question.correctAnswer === "True" ? "selected" : ""
-              }>True</option>
-              <option value="False" ${
-                question.correctAnswer === "False" ? "selected" : ""
-              }>False</option>
-            </select>
-          </div>
-        </div>
-        <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">
-          <i class="bi bi-trash"></i> Remove Question
-        </button>
-      `;
-
-      questionsContainer.appendChild(questionCard);
-
-      // Add event listener for question type change
-      const questionType = questionCard.querySelector(".question-type");
-      questionType.addEventListener("change", function () {
-        const optionsContainer =
-          questionCard.querySelector(".options-container");
-        const correctAnswerSingle = questionCard.querySelector(
-          ".correct-answer-single"
-        );
-        const correctAnswerMultiple = questionCard.querySelector(
-          ".correct-answer-multiple"
-        );
-        const correctAnswerTrueFalse = questionCard.querySelector(
-          ".correct-answer-true-false"
-        );
-
-        if (this.value === "single-correct") {
-          optionsContainer.style.display = "block";
-          correctAnswerSingle.style.display = "block";
-          correctAnswerMultiple.style.display = "none";
-          correctAnswerTrueFalse.style.display = "none";
-        } else if (this.value === "multiple-correct") {
-          optionsContainer.style.display = "block";
-          correctAnswerSingle.style.display = "none";
-          correctAnswerMultiple.style.display = "block";
-          correctAnswerTrueFalse.style.display = "none";
-        } else if (this.value === "true-false") {
-          optionsContainer.style.display = "none";
-          correctAnswerSingle.style.display = "none";
-          correctAnswerMultiple.style.display = "none";
-          correctAnswerTrueFalse.style.display = "block";
-        }
+    if (test.questions && test.questions.length > 0) {
+      test.questions.forEach((question, index) => {
+        questionCount = index + 1;
+        const questionCard = createQuestionCard(questionCount, question);
+        questionsContainer.appendChild(questionCard);
       });
-    });
-  } else {
-    alert("Failed to load test data.");
+    } else {
+      // If no questions, add an empty one
+      questionCount = 1;
+      const questionCard = createQuestionCard(questionCount);
+      questionsContainer.appendChild(questionCard);
+    }
+  } catch (error) {
+    console.error("Error loading test:", error);
+    errorMessage.innerHTML = `Error loading test: ${error.message}`;
+    errorMessage.classList.remove("d-none");
   }
 }
 
 // Check if we are editing an existing test
 const urlParams = new URLSearchParams(window.location.search);
 const testId = urlParams.get("id");
-console.log(testId);
 
 if (testId) {
-  console.log(`JA`);
   document.getElementById("page-title").innerText = "Edit Test";
   document.getElementById(
     "save-test"
@@ -411,108 +305,148 @@ if (testId) {
   loadTestForEditing(testId);
 }
 
+// Form submission handler
 document
   .getElementById("create-test-form")
   .addEventListener("submit", async function (e) {
     e.preventDefault();
-    const questionsContainer = document.getElementById("questions-container");
-    const testTitle = document.getElementById("test-title").value;
-    const testDescription = document.getElementById("test-description").value;
-    const timeLimit = document.getElementById("time-limit").value;
-    // const testId = document.getElementById("test-id").value;
 
-    const questions = [];
-    const questionCards = document.querySelectorAll(".question-card");
+    try {
+      const questionsContainer = document.getElementById("questions-container");
+      const testTitle = document.getElementById("test-title").value;
+      const testDescription = document.getElementById("test-description").value;
+      const timeLimit = document.getElementById("time-limit").value;
 
-    if (questionCards.length === 0) {
-      alert("Please add at least one question.");
-      return;
-    }
+      const questionCards = document.querySelectorAll(".question-card");
 
-    let isValid = true;
-
-    questionCards.forEach((card, index) => {
-      const questionText = card.querySelector(".question-text").value;
-      const questionType = card.querySelector(".question-type").value;
-      let correctAnswer;
-
-      if (questionType === "single-correct") {
-        correctAnswer = card.querySelector(
-          ".correct-answer-single select"
-        ).value;
-      } else if (questionType === "multiple-correct") {
-        const checkboxes = card.querySelectorAll(
-          ".correct-answer-multiple input:checked"
-        );
-        correctAnswer = Array.from(checkboxes).map(
-          (checkbox) => checkbox.value
-        );
-        if (correctAnswer.length === 0) {
-          isValid = false;
-          alert(
-            `Question ${index + 1}: Please select at least one correct answer.`
-          );
-        }
-      } else if (questionType === "true-false") {
-        correctAnswer = card.querySelector(
-          ".correct-answer-true-false select"
-        ).value;
+      if (questionCards.length === 0) {
+        throw new Error("Please add at least one question.");
       }
 
-      const options =
-        questionType !== "true-false"
-          ? Array.from(card.querySelectorAll(".option-input")).map(
-              (input) => input.value
-            )
-          : [];
+      const questions = [];
 
-      questions.push({
-        questionText,
-        questionType,
-        correctAnswer,
-        options,
+      // Validate all questions
+      for (let i = 0; i < questionCards.length; i++) {
+        const card = questionCards[i];
+        const questionNumber = i + 1;
+        const questionText = card.querySelector(".question-text").value;
+        const questionType = card.querySelector(".question-type").value;
+
+        if (!questionText) {
+          throw new Error(
+            `Question ${questionNumber}: Please enter question text.`
+          );
+        }
+
+        let correctAnswer;
+
+        if (questionType === "single-correct") {
+          correctAnswer = card.querySelector(
+            ".correct-answer-single select"
+          ).value;
+        } else if (questionType === "multiple-correct") {
+          const checkboxes = card.querySelectorAll(
+            ".correct-answer-multiple input:checked"
+          );
+          correctAnswer = Array.from(checkboxes).map(
+            (checkbox) => checkbox.value
+          );
+
+          if (correctAnswer.length === 0) {
+            throw new Error(
+              `Question ${questionNumber}: Please select at least one correct answer.`
+            );
+          }
+        } else if (questionType === "true-false") {
+          correctAnswer = card.querySelector(
+            ".correct-answer-true-false select"
+          ).value;
+        }
+
+        const optionInputs = card.querySelectorAll(".option-input");
+        const options =
+          questionType !== "true-false"
+            ? Array.from(optionInputs).map((input) => input.value)
+            : [];
+
+        // Validate options for non-true-false questions
+        if (questionType !== "true-false") {
+          for (let j = 0; j < options.length; j++) {
+            if (!options[j]) {
+              throw new Error(
+                `Question ${questionNumber}: Please fill in all options.`
+              );
+            }
+          }
+        }
+
+        questions.push({
+          questionText,
+          questionType,
+          correctAnswer,
+          options,
+        });
+      }
+
+      const testData = {
+        title: testTitle,
+        description: testDescription,
+        timeLimit: parseInt(timeLimit, 10),
+        questions,
+      };
+
+      const token = sessionStorage.getItem("authToken");
+      if (!token) {
+        throw new Error("Authentication token not found. Please log in again.");
+      }
+
+      const method = testId ? "PUT" : "POST";
+      const url = testId
+        ? `http://${base_url}/api/v1/quizez/${testId}`
+        : `http://${base_url}/api/v1/quizez/`;
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(testData),
       });
-    });
 
-    if (!isValid) {
-      return;
-    }
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
 
-    const testData = {
-      title: testTitle,
-      description: testDescription,
-      timeLimit: +timeLimit,
-      questions,
-    };
+      const responseData = await response.json();
 
-    const token = sessionStorage.getItem("authToken");
-    const method = testId ? "PUT" : "POST";
-    const url = testId
-      ? `http://${base_url}/api/v1/quizez/${testId}`
-      : `http://${base_url}/api/v1/quizez/`;
-    console.log(url);
-    const response = await fetch(url, {
-      method,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(testData),
-    });
-    const responseData = await response.json();
-    if (!responseData.success) {
-      console.log(url);
-      success_message.classList.add("d-none");
-      errorMessage.innerHTML = responseData.error.description;
-      errorMessage.classList.remove("d-none");
-    } else {
+      if (!responseData.success) {
+        throw new Error(
+          responseData.error?.description || "Failed to save test"
+        );
+      }
+
+      // Success handling
       errorMessage.classList.add("d-none");
-      document.getElementById("create-test-form").reset();
       success_message.classList.remove("d-none");
       success_message.innerHTML = testId
         ? "Quiz has been updated successfully"
         : "Quiz has been created successfully";
+
+      // Reset form if creating new test
       questionsContainer.innerHTML = "";
+      questionCount = 0;
+      document.getElementById("create-test-form").reset();
+
+      // Scroll to the top to show the success message
+      window.scrollTo(0, 0);
+    } catch (error) {
+      console.error("Error saving test:", error);
+      success_message.classList.add("d-none");
+      errorMessage.innerHTML = error.message;
+      errorMessage.classList.remove("d-none");
+
+      // Scroll to the top to show the error message
+      window.scrollTo(0, 0);
     }
-    console.log(responseData);
   });

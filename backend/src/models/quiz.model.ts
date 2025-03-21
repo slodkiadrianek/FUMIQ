@@ -26,6 +26,7 @@ const quizSchema = new Schema<IQuiz>({
       questionText: { type: String, required: true },
       questionType: { type: String, required: true },
     },
-  ],
-});
+  ]},
+  { timestamps: true }
+);
 export const Quiz: Model<IQuiz> = model<IQuiz>("Quiz", quizSchema);

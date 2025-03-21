@@ -8,7 +8,6 @@ export class UserService extends BaseService {
         super(logger, caching)
     }
     getUserById = async(userId:string):Promise<IUser> =>{
-        
         return this.getItemById("User", userId, User)
     }
 }
