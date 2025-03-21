@@ -4,11 +4,30 @@ import { IUser, User } from "../models/user.model.js";
 import { BaseService } from "./base.service.js";
 
 export class UserService extends BaseService {
-    constructor(logger:Logger, caching: RedisCacheService){
-        super(logger, caching)
+  constructor(logger: Logger, caching: RedisCacheService) {
+    super(logger, caching);
+  }
+  getUserById = async (userId: string): Promise<IUser> => {
+    return this.getItemById("User", userId, User);
+  };
+  changePassword = async (userId: string, newPassword:string): Promise<IUser> => {
+    const result: IUser | null = await User.findByIdAndUpdate(
+      {
+        _id: userId,
+      },
+      {
+        password:newPassword,
+      },
+      { new: true }
+    );
+    if (!result) {
+      this.logger.error(
+        `An error occurred while updating the password for user ${userId}`
+      );
+      throw new Error(
+        `An error occurred while updating the password for user ${userId}`
+      );
     }
-    getUserById = async(userId:string):Promise<IUser> =>{
-        
-        return this.getItemById("User", userId, User)
-    }
+    return result;
+  };
 }
