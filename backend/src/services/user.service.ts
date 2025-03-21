@@ -28,6 +28,13 @@ export class UserService extends BaseService {
         `An error occurred while updating the password for user ${userId}`
       );
     }
+<<<<<<< HEAD
     return result;
   };
 }
+=======
+    getUserById = async(userId:string):Promise<IUser> =>{
+        return this.getItemById("User", userId, User)
+    }
+}
+>>>>>>> cae7fa829c38f6d20db5eac0852c1d10ced8f0d4

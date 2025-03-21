@@ -36,7 +36,10 @@ async function fetchTests() {
           <a class="btn btn-danger rounded" data-test-id="${test._id}">
             <i class="bi bi-trash"></i> Delete
           </a>
-        </div>
+          </div>
+          <a href="take_quiz.html?quizId=${test._id}" class="btn btn-success rounded mt-2 w-100" data-test-id="${test._id}">
+            <i class="bi bi-play-circle"></i> Start Quiz
+          </a>
       `;
       testList.appendChild(testCard);
     });
@@ -67,14 +70,12 @@ async function deleteTest(testId) {
     });
     const data = await response.json();
     if (data.success) {
-      alert("Test deleted successfully.");
       fetchTests(); // Refresh the list
     } else {
       alert("Failed to delete test.");
     }
   } catch (error) {
     console.error("Error deleting test:", error);
-    alert("An error occurred while deleting the test.");
   }
 }
 

@@ -11,7 +11,6 @@ export class EmailService {
           pass: this.pass
         }})
     }
-
     sendEmail = async(to:string, subject:string ,message:string) =>{
             const info:Mail = await this.transporter.sendMail({
                 from: this.fromEmail,
