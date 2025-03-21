@@ -2,7 +2,6 @@ import { RedisCacheService } from "../types/common.type.js";
 import { Logger } from "../utils/logger.js";
 import { Model, Types, UpdateQuery, DeleteResult } from "mongoose";
 import { AppError } from "../models/error.model.js";
-import { string } from "joi";
 export class BaseService {
   constructor(public logger: Logger, public caching: RedisCacheService) {}
 

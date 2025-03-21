@@ -20,7 +20,7 @@ export const app = express();
 app.use(helmet());
 app.use(
   cors({
-    origin: process.env.ORIGIN_LINK || "http://127.0.0.1:5500",
+    origin: process.env.ORIGIN_LINK || "http://192.168.0.194:8080",
     credentials: true,
   })
 );

@@ -37,7 +37,7 @@ async function fetchTests() {
             <i class="bi bi-trash"></i> Delete
           </a>
           </div>
-          <a href="take_quiz.html?quizId=${test._id}" class="btn btn-success rounded mt-2 w-100" data-test-id="${test._id}">
+          <a href="quizDashboard.html?quizId=${test._id}" class="btn btn-success rounded mt-2 w-100" data-test-id="${test._id}">
             <i class="bi bi-play-circle"></i> Start Quiz
           </a>
       `;

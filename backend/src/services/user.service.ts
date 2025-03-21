@@ -10,13 +10,16 @@ export class UserService extends BaseService {
   getUserById = async (userId: string): Promise<IUser> => {
     return this.getItemById("User", userId, User);
   };
-  changePassword = async (userId: string, newPassword:string): Promise<IUser> => {
+  changePassword = async (
+    userId: string,
+    newPassword: string
+  ): Promise<IUser> => {
     const result: IUser | null = await User.findByIdAndUpdate(
       {
         _id: userId,
       },
       {
-        password:newPassword,
+        password: newPassword,
       },
       { new: true }
     );
@@ -28,13 +31,6 @@ export class UserService extends BaseService {
         `An error occurred while updating the password for user ${userId}`
       );
     }
-<<<<<<< HEAD
     return result;
   };
 }
-=======
-    getUserById = async(userId:string):Promise<IUser> =>{
-        return this.getItemById("User", userId, User)
-    }
-}
->>>>>>> cae7fa829c38f6d20db5eac0852c1d10ced8f0d4

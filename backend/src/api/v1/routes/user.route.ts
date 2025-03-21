@@ -11,6 +11,5 @@ export class UserRoutes {
         }
         protected initializeRoutes(): void {
             this.router.get("/api/v1/users/:id", this.auth.verify, this.userController.getUserById)
-            this.router.patch("api/v1/users/:id", this.auth.verify, this.userController.updateUser)
         }
 }
