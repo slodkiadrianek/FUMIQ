@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { ITakenQuiz } from "../../../models/takenQuiz.model.js";
 import { QuizService } from "../../../services/quiz.service.js";
 import { Logger } from "../../../utils/logger.js";
 import { IQuiz } from "../../../models/quiz.model.js";
@@ -6,12 +7,15 @@ import { CustomRequest } from "../../../types/common.type.js";
 import { AppError } from "../../../models/error.model.js";
 
 export class QuizController {
-  constructor(private logger: Logger, private quizService: QuizService) {}
+  constructor(
+    private logger: Logger,
+    private quizService: QuizService,
+  ) {}
 
   createQuiz = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       if (!(req as CustomRequest).user.id) {
@@ -22,7 +26,7 @@ export class QuizController {
         userId: (req as CustomRequest).user.id,
       };
       this.logger.info("Attempting to create a quiz");
-      const result: IQuiz = await this.quizService.createQuiz(data);
+      await this.quizService.createQuiz(data);
       this.logger.info("Quiz has been created successfully");
       res.status(200).json({
         success: true,
@@ -35,7 +39,7 @@ export class QuizController {
   getAllQuizez = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       if (!(req as CustomRequest).user.id) {
@@ -59,7 +63,7 @@ export class QuizController {
   getQuizById = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       if (!(req as CustomRequest).user.id) {
@@ -68,7 +72,7 @@ export class QuizController {
       const userId = (req as CustomRequest).user.id;
       const quizId = req.params.id as string;
       this.logger.info(
-        `Attempting to get quiz with id ${quizId} for ${userId}`
+        `Attempting to get quiz with id ${quizId} for ${userId}`,
       );
       const result: IQuiz = await this.quizService.getQuizById(quizId);
       this.logger.info(`Quiz has been downloaded`);
@@ -86,7 +90,7 @@ export class QuizController {
   updateQuiz = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       if (!(req as CustomRequest).user.id) {
@@ -111,12 +115,9 @@ export class QuizController {
   deleteQuizById = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
-      if (!(req as CustomRequest).user.id) {
-        throw new AppError(400, "User", "User id not found");
-      }
       const quizId = req.params.id as string;
       this.logger.info(`Attempting to delete quiz with id ${quizId}`);
       const result: string = await this.quizService.deleteQuizById(quizId);
@@ -125,6 +126,33 @@ export class QuizController {
         success: true,
         data: {
           quizez: result,
+        },
+      });
+      return;
+    } catch (error) {
+      next(error);
+    }
+  };
+  startQuiz = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      if (!(req as CustomRequest).user.id) {
+        throw new AppError(400, "User", "User id not found");
+      }
+      const quizId = req.params.id as string;
+      this.logger.info(`Attempting to start quiz`);
+      const result: ITakenQuiz = await this.quizService.startQuiz(
+        quizId,
+        (req as CustomRequest).user.id,
+      );
+      this.logger.info(`Quiz has been started`);
+      res.status(200).json({
+        success: true,
+        data: {
+          quiz: result,
         },
       });
       return;

@@ -7,7 +7,7 @@ export class QuizRoutes {
   constructor(
     private quizController: QuizController,
     private auth: Authentication,
-    public router: Router = Router()
+    public router: Router = Router(),
   ) {
     this.initializeRoutes();
   }
@@ -17,31 +17,37 @@ export class QuizRoutes {
       "/api/v1/quizez/",
       ValidationMiddleware.validate(createQuiz, "body"),
       this.auth.verify,
-      this.quizController.createQuiz
+      this.quizController.createQuiz,
     );
     this.router.get(
       "/api/v1/quizez/",
       this.auth.verify,
-      this.quizController.getAllQuizez
+      this.quizController.getAllQuizez,
     );
     this.router.get(
       "/api/v1/quizez/:id",
       this.auth.verify,
       ValidationMiddleware.validate(quizId, "params"),
-      this.quizController.getQuizById
+      this.quizController.getQuizById,
     );
     this.router.put(
       "/api/v1/quizez/:id",
       this.auth.verify,
       ValidationMiddleware.validate(createQuiz, "body"),
       ValidationMiddleware.validate(quizId, "params"),
-      this.quizController.updateQuiz
+      this.quizController.updateQuiz,
     );
     this.router.delete(
       "/api/v1/quizez/:id",
       this.auth.verify,
       ValidationMiddleware.validate(quizId, "params"),
-      this.quizController.deleteQuizById
+      this.quizController.deleteQuizById,
+    );
+    this.router.post(
+      "/api/v1/quizez/:id/session",
+      this.auth.verify,
+      ValidationMiddleware.validate(quizId, "params"),
+      this.quizController.startQuiz,
     );
   }
 }

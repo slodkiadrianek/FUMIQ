@@ -37,8 +37,8 @@ async function fetchTests() {
             <i class="bi bi-trash"></i> Delete
           </a>
           </div>
-          <a href="quizDashboard.html?quizId=${test._id}" class="btn btn-success rounded mt-2 w-100" data-test-id="${test._id}">
-            <i class="bi bi-play-circle"></i> Start Quiz
+          <a href="quizDashboard.html?id=${test._id}" class="btn btn-success rounded mt-2 w-100" data-test-id="${test._id}">
+            <i class="bi bi-play-circle"></i> Start Test
           </a>
       `;
       testList.appendChild(testCard);
@@ -90,7 +90,7 @@ testList.addEventListener("click", (event) => {
     currentTestIdToDelete = testId; // Store the test ID to delete
     // Show the confirmation modal
     const deleteModal = new bootstrap.Modal(
-      document.getElementById("deleteConfirmationModal")
+      document.getElementById("deleteConfirmationModal"),
     );
     deleteModal.show();
   }
@@ -117,7 +117,7 @@ document.getElementById("confirmDeleteButton").addEventListener("click", () => {
     currentTestIdToDelete = null; // Reset the stored test ID
     // Hide the modal
     const deleteModal = bootstrap.Modal.getInstance(
-      document.getElementById("deleteConfirmationModal")
+      document.getElementById("deleteConfirmationModal"),
     );
     deleteModal.hide();
   }

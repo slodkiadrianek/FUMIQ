@@ -1,22 +1,38 @@
 import { base_url } from "./base_api.js";
 // Mock data for the active quiz (replace with API call)
-
+let data;
 async function startQuiz() {
-    const token = sessionStorage.getItem("authToken")
-    const response = await fetch(`http://${base_url}/api/v1/quiz/start`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-        },
-    });
-}
+  const token = sessionStorage.getItem("authToken");
 
+  const testId = new URLSearchParams(window.location.search).get("id");
+  if (!testId) {
+    alert("Test ID not found.");
+    return;
+  }
+
+  const response = await fetch(
+    `http://${base_url}/api/v1/quizez/${testId}/session`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+  const responseData = await response.json();
+  if (!responseData.success) {
+    alert("Error");
+  }
+  return responseData.data.quiz;
+}
+data = await startQuiz();
+console.log(data);
 const activeQuiz = {
-  userId: "67d87b5d8e3b8f3594f35d72",
-  quizId: "67dc3345cef44c8922b289aa",
-  code: "QUIZ123",
-  isActive: true,
+  userId: data.userId,
+  quizId: data.quizId,
+  code: data.code,
+  isActive: data.isActive,
   competitors: [
     {
       userId: "67d87b5d8e3b8f3594f35d73",
@@ -107,13 +123,13 @@ function renderActiveQuiz() {
                           <strong>Question:</strong> ${answer.question}<br>
                           <strong>Answer:</strong> ${answer.answer}
                         </li>
-                      `
+                      `,
                         )
                         .join("")}
                     </ul>
                   </div>
                 </li>
-              `
+              `,
                 )
                 .join("")}
             </ul>

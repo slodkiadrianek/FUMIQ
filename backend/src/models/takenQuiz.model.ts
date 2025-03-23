@@ -1,4 +1,3 @@
-import { string } from "joi";
 import { Document, Schema, model, Types, Model } from "mongoose";
 
 export interface ITakenQuiz extends Document {
@@ -10,14 +9,12 @@ export interface ITakenQuiz extends Document {
   competitors: [
     {
       userId: Types.ObjectId;
-      answers: [
-        {
-          questionId: Types.ObjectId;
-          answer: string;
-          correct: boolean;
-        }
-      ];
-      fninished: boolean;
+      answers: {
+        questionId: Types.ObjectId;
+        answer: string;
+        correct: boolean;
+      }[];
+      finished: boolean;
     }
   ];
 }
@@ -27,18 +24,29 @@ const takenQuizSchema = new Schema<ITakenQuiz>(
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     quizId: { type: Schema.Types.ObjectId, ref: "Quiz", required: true },
     code: { type: String, required: true },
-    isActive: { type: Boolean, required: true },
+    isActive: { type: Boolean, default: true },
     competitors: [
       {
-        userId: { type: Schema.Types.ObjectId, ref: "User" },
-        answers: [
-          {
-            question: { type: String },
-            answer: { type: String },
-            correct: { type: Boolean },
-          },
-        ],
-        finished: { type: Boolean },
+        userId: {
+          type: Schema.Types.ObjectId,
+          ref: "User",
+          required: true,
+        },
+        finished: { type: Boolean, default: false },
+        answers: {
+          type: [
+            {
+              questionId: {
+                type: Schema.Types.ObjectId,
+                ref: "Question",
+                required: true,
+              },
+              answer: { type: String, required: true },
+              correct: { type: Boolean, required: true },
+            },
+          ],
+          default: [], // Empty array by default
+        },
       },
     ],
   },
