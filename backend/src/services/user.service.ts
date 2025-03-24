@@ -14,7 +14,7 @@ export class UserService extends BaseService {
   };
   changePassword = async (
     userId: string,
-    newPassword: string,
+    newPassword: string
   ): Promise<IUser> => {
     const result: IUser | null = await User.findByIdAndUpdate(
       {
@@ -23,38 +23,50 @@ export class UserService extends BaseService {
       {
         password: newPassword,
       },
-      { new: true },
+      { new: true }
     );
     if (!result) {
       this.logger.error(
-        `An error occurred while updating the password for user ${userId}`,
+        `An error occurred while updating the password for user ${userId}`
       );
       throw new Error(
-        `An error occurred while updating the password for user ${userId}`,
+        `An error occurred while updating the password for user ${userId}`
       );
     }
     return result;
   };
-  joinQuiz = async (code: string, userId: string): Promise<ITakenQuiz> => {
-    const userObjectId = new Types.ObjectId(userId);
+  joinQuiz = async (code: string): Promise<boolean> => {
+    // const userObjectId = new Types.ObjectId(userId);
 
     const quiz: ITakenQuiz | null = await TakenQuiz.findOne({
       code,
       isActive: true,
     });
-
     if (!quiz) {
       this.logger.error(`Quiz with code ${code} not found`);
       throw new Error(`Quiz with code ${code} not found`);
     }
+    return true;
+    // let isUserJoined: boolean = false;
+    // let userIndex: number = -1;
+    // for (const el of quiz.competitors) {
+    //   if (el.userId.toString() === userId) {
+    //     userIndex = quiz.competitors.indexOf(el);
+    //     isUserJoined = true;
+    //     break;
+    //   }
+    // }
+    // if (isUserJoined) {
+    //   return { quizId: quiz.quizId, ...quiz.competitors[userIndex] };
+    // }
 
-    quiz.competitors.push({
-      userId: userObjectId,
-      finished: false,
-      answers: [],
-    });
+    // quiz.competitors.push({
+    //   userId: userObjectId,
+    //   finished: false,
+    //   answers: [],
+    // });
 
-    await quiz.save();
-    return quiz;
+    // await quiz.save();
+    // return quiz;
   };
 }
