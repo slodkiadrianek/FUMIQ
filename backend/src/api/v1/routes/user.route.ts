@@ -5,7 +5,7 @@ export class UserRoutes {
   constructor(
     private userController: UserController,
     private auth: Authentication,
-    public router: Router = Router()
+    public router: Router = Router(),
   ) {
     this.initializeRoutes();
   }
@@ -13,12 +13,17 @@ export class UserRoutes {
     this.router.get(
       "/api/v1/users/:id",
       this.auth.verify,
-      this.userController.getUserById
+      this.userController.getUserById,
+    );
+    this.router.post(
+      "/api/v1/users/:id/session/",
+      this.auth.verify,
+      this.userController.joinQuiz,
     );
     this.router.get(
-      "/api/v1/users/:id/session",
+      "/api/v1/users/:userId/session/:quizId",
       this.auth.verify,
-      this.userController.joinQuiz
+      this.userController.getQuestions,
     );
   }
 }

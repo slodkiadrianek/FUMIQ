@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FUMIQ - Quiz</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap Icons -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <!-- Animate.css for animations -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      /* Enhanced color scheme and variables */
+      :root {
+        --primary-color: #4f46e5;
+        --primary-hover: #4338ca;
+        --primary-light: #e0e7ff;
+        --secondary-color: #10b981;
+        --secondary-hover: #059669;
+        --secondary-light: #d1fae5;
+        --danger-color: #ef4444;
+        --danger-hover: #dc2626;
+        --warning-color: #f59e0b;
+        --light-bg: #f3f4f6;
+        --dark-text: #1f2937;
+        --gray-text: #6b7280;
+        --border-radius: 12px;
+        --box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      }
+
+      body {
+        background: linear-gradient(135deg, #f0f4ff 0%, #e6f7ff 100%);
+        min-height: 100vh;
+        font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        color: var(--dark-text);
+      }
+
+      /* Improved navbar with subtle gradient */
+      .navbar {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(245, 247, 250, 0.98) 100%);
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+        border-radius: 0 0 var(--border-radius) var(--border-radius);
+        margin: 0;
+        padding: 0.75rem 2rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      }
+
+      .navbar-brand {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+        transition: all 0.3s ease;
+      }
+
+      .navbar-brand:hover {
+        transform: translateY(-1px);
+      }
+
+      .navbar-brand i {
+        font-size: 2rem;
+        margin-right: 0.5rem;
+      }
+
+      .nav-link {
+        color: var(--dark-text);
+        font-weight: 500;
+        margin-left: 1rem;
+        transition: all 0.3s ease;
+        position: relative;
+        padding: 0.5rem 0;
+      }
+
+      .nav-link:hover {
+        color: var(--primary-color);
+      }
+
+      .nav-link.active {
+        color: var(--primary-color);
+        font-weight: 600;
+      }
+
+      .nav-link.active::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background-color: var(--primary-color);
+        border-radius: 3px;
+      }
+
+      /* Quiz container with better spacing */
+      .quiz-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 0 1.5rem;
+      }
+
+      /* Loading state */
+      .loading-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 300px;
+        text-align: center;
+      }
+
+      .spinner {
+        width: 3rem;
+        height: 3rem;
+        border: 0.25rem solid var(--primary-light);
+        border-top-color: var(--primary-color);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 1.5rem;
+      }
+
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+
+      /* Error state */
+      .error-state {
+        background-color: rgba(239, 68, 68, 0.1);
+        border-radius: var(--border-radius);
+        padding: 2rem;
+        text-align: center;
+        margin: 2rem 0;
+      }
+
+      .error-state i {
+        font-size: 2.5rem;
+        color: var(--danger-color);
+        margin-bottom: 1rem;
+      }
+
+      /* Enhanced quiz header */
+      .quiz-header {
+        background-color: rgba(255, 255, 255, 0.98);
+        border-radius: var(--border-radius);
+        padding: 2rem;
+        box-shadow: var(--box-shadow);
+        margin-bottom: 2rem;
+        text-align: center;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+      }
+
+      .quiz-header h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+        position: relative;
+        display: inline-block;
+      }
+
+      .quiz-header h1::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background-color: var(--primary-color);
+        border-radius: 3px;
+      }
+
+      .quiz-header p {
+        font-size: 1.1rem;
+        color: var(--gray-text);
+        margin-bottom: 1.5rem;
+      }
+
+      .quiz-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 1.5rem;
+        font-size: 1rem;
+        color: var(--dark-text);
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      .quiz-info-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background-color: var(--light-bg);
+        border-radius: 8px;
+      }
+
+      .quiz-info-item i {
+        color: var(--primary-color);
+      }
+
+      .timer {
+        background: linear-gradient(135deg, var(--primary-color) 0%, #6366f1 100%);
+        color: white;
+        padding: 0.5rem 1.25rem;
+        border-radius: 8px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .timer.warning {
+        background: linear-gradient(135deg, var(--warning-color) 0%, #f97316 100%);
+        animation: pulse 1s infinite;
+      }
+
+      .timer.danger {
+        background: linear-gradient(135deg, var(--danger-color) 0%, #dc2626 100%);
+        animation: pulse 0.5s infinite;
+      }
+
+      @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.03); }
+        100% { transform: scale(1); }
+      }
+
+      /* Progress bar */
+      .progress-container {
+        width: 100%;
+        margin: 1.5rem 0;
+      }
+
+      .progress-text {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        color: var(--gray-text);
+      }
+
+      .progress-bar {
+        height: 8px;
+        background-color: var(--light-bg);
+        border-radius: 4px;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--primary-color) 0%, #818cf8 100%);
+        border-radius: 4px;
+        transition: width 0.4s ease;
+        width: 0%;
+      }
+
+      /* Enhanced question cards */
+      .question-card {
+        background-color: rgba(255, 255, 255, 0.98);
+        border-radius: var(--border-radius);
+        padding: 1.75rem;
+        box-shadow: var(--box-shadow);
+        margin-bottom: 1.5rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+      }
+
+      .question-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+      }
+
+      .question-number {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .question-number::before {
+        content: '';
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        background-color: var(--primary-color);
+        border-radius: 50%;
+      }
+
+      .question-text {
+        font-size: 1.15rem;
+        font-weight: 500;
+        color: var(--dark-text);
+        margin-bottom: 1.5rem;
+        line-height: 1.5;
+      }
+
+      .options-list {
+        list-style-type: none;
+        padding-left: 0;
+        margin-bottom: 0;
+      }
+
+      .option-item {
+        margin-bottom: 0.75rem;
+      }
+
+      .option-label {
+        display: flex;
+        align-items: center;
+        padding: 1rem 1.25rem;
+        background-color: var(--light-bg);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
+      }
+
+      .option-label:hover {
+        background-color: var(--primary-light);
+        border-color: var(--primary-color);
+      }
+
+      .option-label.selected {
+        background-color: var(--primary-light);
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+      }
+
+      .option-input {
+        margin-right: 1rem;
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+      }
+
+      /* Improved buttons */
+      .btn {
+        font-weight: 500;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--primary-color) 0%, #6366f1 100%);
+        border: none;
+        padding: 0.75rem 1.75rem;
+      }
+
+      .btn-primary:hover {
+        background: linear-gradient(135deg, var(--primary-hover) 0%, #4f46e5 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3);
+      }
+
+      .btn-secondary {
+        background-color: white;
+        border: 1px solid var(--gray-text);
+        color: var(--dark-text);
+        padding: 0.75rem 1.75rem;
+      }
+
+      .btn-secondary:hover {
+        background-color: var(--light-bg);
+        border-color: var(--dark-text);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      }
+
+      .btn-outline {
+        background-color: transparent;
+        border: 1px solid var(--primary-color);
+        color: var(--primary-color);
+      }
+
+      .btn-outline:hover {
+        background-color: var(--primary-light);
+      }
+
+      /* Quiz navigation */
+      .quiz-footer {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 2rem;
+        padding: 1.5rem 0;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+      }
+
+      .question-nav {
+        display: flex;
+        gap: 1rem;
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+      }
+
+      .question-nav-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .question-nav-btn:hover {
+        transform: translateY(-2px);
+      }
+
+      .question-nav-btn.answered {
+        background-color: var(--secondary-light);
+        color: var(--secondary-hover);
+      }
+
+      .question-nav-btn.current {
+        background-color: var(--primary-light);
+        color: var(--primary-color);
+        box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+      }
+
+      /* Confirmation modal */
+      .modal-confirm {
+        border-radius: var(--border-radius);
+        overflow: hidden;
+      }
+
+      .modal-confirm .modal-header {
+        background-color: var(--primary-color);
+        color: white;
+        border-bottom: none;
+      }
+
+      .modal-confirm .modal-footer {
+        border-top: none;
+      }
+
+      /* Footer */
+      .footer {
+        text-align: center;
+        padding: 1.5rem;
+        color: var(--gray-text);
+        font-size: 0.875rem;
+        margin-top: 2rem;
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        .quiz-header h1 {
+          font-size: 1.6rem;
+        }
+
+        .quiz-info {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .quiz-footer {
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        .quiz-footer .btn {
+          width: 100%;
+        }
+
+        .question-nav {
+          justify-content: center;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .navbar {
+          padding: 0.75rem 1rem;
+        }
+
+        .quiz-container {
+          padding: 0 1rem;
+        }
+
+        .quiz-header {
+          padding: 1.5rem;
+        }
+
+        .question-card {
+          padding: 1.25rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+          <i class="bi bi-box logo-icon"></i>
+          FUMIQ
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="dashboard.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="create_quiz.html">Create</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="joinQuiz.html">Join</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="browse_quizez.html">Tests</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="profile.html">Profile</a>
+            </li>
+            <li class="nav-item">
+              <a id="btn-logout" href="logout.html" class="nav-link">Logout</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Quiz Content -->
+    <div class="quiz-container">
+      <!-- Loading State -->
+      <div id="loading-state" class="loading-state animate__animated animate__fadeIn">
+        <div class="spinner"></div>
+        <h3>Loading Quiz Questions</h3>
+        <p>Please wait while we prepare your quiz...</p>
+      </div>
+
+      <!-- Error State (hidden by default) -->
+      <div id="error-state" class="error-state animate__animated animate__fadeIn" style="display: none;">
+        <i class="bi bi-exclamation-octagon"></i>
+        <h3>Failed to Load Quiz</h3>
+        <p id="error-message">We couldn't load the quiz questions. Please try again later.</p>
+        <button id="retry-btn" class="btn btn-primary mt-3">
+          <i class="bi bi-arrow-clockwise"></i> Try Again
+        </button>
+      </div>
+
+      <!-- Quiz Content (hidden by default) -->
+      <div id="quiz-content" style="display: none;">
+        <!-- Quiz Header -->
+        <div class="quiz-header">
+          <h1 id="quiz-title">Mathematics Quiz</h1>
+          <p id="quiz-description">Test your knowledge of basic mathematics concepts</p>
+
+          <!-- Progress bar -->
+          <div class="progress-container">
+            <div class="progress-text">
+              <span id="progress-text">Progress: 0/0 (0%)</span>
+              <span>Score: <span id="score-text">0</span>/<span id="total-points">0</span></span>
+            </div>
+            <div class="progress-bar">
+              <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <div class="quiz-info">
+            <span class="quiz-info-item"><i class="bi bi-question-circle"></i> <span id="question-count">0</span> Questions</span>
+            <span class="quiz-info-item"><i class="bi bi-award"></i> Total Points: <span id="total-points-text">0</span></span>
+            <span class="timer" id="quiz-timer"><i class="bi bi-clock"></i> <span id="time-display">00:00</span></span>
+          </div>
+        </div>
+
+        <!-- Questions Container -->
+        <form id="quiz-form">
+          <div id="questions-container">
+            <!-- Questions will be dynamically inserted here -->
+          </div>
+
+          <!-- Quiz Navigation -->
+          <div class="quiz-footer">
+            <div id="question-nav" class="question-nav">
+              <!-- Question navigation buttons will be inserted here -->
+            </div>
+
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-secondary" id="prev-btn" disabled>
+                <i class="bi bi-arrow-left"></i> Previous
+              </button>
+              <button type="button" class="btn btn-secondary" id="save-btn">
+                <i class="bi bi-bookmark"></i> Save
+              </button>
+              <button type="button" class="btn btn-primary" id="next-btn">
+                Next <i class="bi bi-arrow-right"></i>
+              </button>
+              <button type="button" class="btn btn-outline d-none" id="submit-quiz-btn" data-bs-toggle="modal" data-bs-target="#submitModal">
+                Submit Quiz
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Submit Confirmation Modal -->
+    <div class="modal fade" id="submitModal" tabindex="-1" aria-labelledby="submitModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-confirm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="submitModalLabel"><i class="bi bi-check-circle me-2"></i> Submit Quiz</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p id="answered-count-text">You have answered 0 out of 0 questions.</p>
+            <p>Are you sure you want to submit your quiz?</p>
+            <div class="alert alert-warning mt-3">
+              <i class="bi bi-exclamation-triangle me-2"></i> You won't be able to make changes after submission.
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Continue Quiz</button>
+            <button type="button" class="btn btn-primary" id="confirm-submit">Submit Anyway</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p class="mb-0">© 2025 FUMIQ School. All rights reserved.</p>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="verify.js"></script>
+    <script type="module" src="takeQuiz.js"></script>
+    <script>

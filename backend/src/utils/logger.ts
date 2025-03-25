@@ -18,7 +18,7 @@ export class Logger {
         const contextStr = context ? `[${context}] ` : "";
         const metaStr = Object.keys(meta).length ? JSON.stringify(meta) : "";
         return `${timestamp} ${level}: ${contextStr}${message} ${metaStr}`;
-      }
+      },
     );
     const transports: winston.transport[] = [
       new winston.transports.Console({
