@@ -21,9 +21,14 @@ export class UserRoutes {
       this.userController.joinQuiz,
     );
     this.router.get(
-      "/api/v1/users/:userId/session/:quizId",
+      "/api/v1/users/:userId/session/:sessionId",
       this.auth.verify,
       this.userController.getQuestions,
+    );
+    this.router.delete(
+      "/api/v1/users/:userId/session/:sessionId",
+      this.auth.verify,
+      this.userController.submitQuiz,
     );
   }
 }

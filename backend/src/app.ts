@@ -80,7 +80,6 @@ const quizController: QuizController = new QuizController(logger, quizService);
 const quizRoutes: QuizRoutes = new QuizRoutes(quizController, auth);
 
 //USER
-
 const userService: UserService = new UserService(
   logger,
   caching as RedisCacheService,

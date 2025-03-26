@@ -8,15 +8,15 @@ export class Authentication {
   jwt: string;
   jwtSecret: string;
   logger: Logger;
-  caching :RedisCacheService
-  constructor(jwt: string, logger: Logger, caching:RedisCacheService) {
+  caching: RedisCacheService;
+  constructor(jwt: string, logger: Logger, caching: RedisCacheService) {
     this.jwt = jwt;
     if (!process.env.JWT_SECRET) {
       throw new Error("JWT_SECRET is not defined in environment variables.");
     }
     this.jwtSecret = process.env.JWT_SECRET;
     this.logger = logger;
-    this.caching = caching
+    this.caching = caching;
   }
 
   sign = (user: IUser): string => {
@@ -25,19 +25,19 @@ export class Authentication {
       this.jwtSecret,
       {
         expiresIn: "1h",
-      }
+      },
     );
     return token;
   };
   verify = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     const token = req.headers?.authorization?.split(" ")[1];
     if (!token) {
       this.logger.error(
-        `Token is missing during verification of request ${req.baseUrl} with data: ${req.body}`
+        `Token is missing during verification of request ${req.baseUrl} with data: ${req.body}`,
       );
       res
         .status(401)
@@ -48,23 +48,25 @@ export class Authentication {
       const isBlacklisted = await this.caching.exists(`blacklist:${token}`);
       if (isBlacklisted) {
         this.logger.error(
-          `Token is blacklisted  of request ${req.baseUrl} with data: ${req.body}`
+          `Token is blacklisted  of request ${req.baseUrl} with data: ${req.body}`,
         );
         throw new AppError(401, "Authorization", "Token is blacklisted.");
       }
       const decoded = jwt.verify(token, this.jwtSecret) as JwtPayload;
       (req as CustomRequest).user = {
         id: decoded.user._id,
+        firstname: decoded.user.firstname,
+        lastname: decoded.user.lastname,
         email: decoded.user.email,
         iat: decoded.iat || 0,
       };
       this.logger.info(`User succssefully authorized`);
       return next();
-    } catch (error) {
+    } catch {
       this.logger.error(
         `Token is invalid of request ${req.url} with data: ${JSON.stringify(
-          req.body
-        )} `
+          req.body,
+        )} `,
       );
       res
         .status(401)
@@ -72,15 +74,15 @@ export class Authentication {
       return;
     }
   };
-   blacklist = async  (
+  blacklist = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     const token = req.headers?.authorization?.split(" ")[1];
     if (!token) {
       this.logger.error(
-        `Token is missing during verification of request ${req.baseUrl} with data: ${req.body}`
+        `Token is missing during verification of request ${req.baseUrl} with data: ${req.body}`,
       );
       res.status(401).json({ message: "Token is missing" });
       return;
@@ -88,7 +90,7 @@ export class Authentication {
     const decoded = jwt.decode(token) as { exp: number };
     if (!decoded || !decoded.exp) {
       this.logger.error(
-        `Token is invalid of request ${req.baseUrl} with data: ${req.body}`
+        `Token is invalid of request ${req.baseUrl} with data: ${req.body}`,
       );
       throw new Error("Invalid token.");
     }
@@ -97,12 +99,12 @@ export class Authentication {
       `blacklist:${token}`,
       JSON.stringify({
         EX: expiration,
-      })
+      }),
     );
 
     this.logger.info(
-      `Token has been blacklisted  of request ${req.baseUrl} with data: ${req.body}`
+      `Token has been blacklisted  of request ${req.baseUrl} with data: ${req.body}`,
     );
-    return next()
-  }
+    return next();
+  };
 }

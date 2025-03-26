@@ -13,7 +13,7 @@ export class AuthService extends BaseService {
     logger: Logger,
     private auth: Authentication,
     caching: RedisCacheService,
-    private emailService: EmailService
+    private emailService: EmailService,
   ) {
     super(logger, caching);
     this.auth = auth;
@@ -31,19 +31,19 @@ export class AuthService extends BaseService {
     const result: IUser = await this.insertToDatabaseAndCache(
       "User",
       userData,
-      User
+      User,
     );
     const token: string = this.auth.sign(result);
     this.emailService.sendEmail(
       userData.email,
       "Aktywacja konta",
-      `http://localhost:3000/api/v1/auth/activate/${token}`
+      `http://localhost:3000/api/v1/auth/activate/${token}`,
     );
     return result;
   };
   loginUser = async (
     email: string,
-    password: string
+    password: string,
   ): Promise<{ user: IUser; token: string }> => {
     const userExist: IUser | null = await User.findOne({
       email,
@@ -53,7 +53,7 @@ export class AuthService extends BaseService {
     }
     const passwordComparison = await bcrypt.compare(
       password,
-      userExist.password
+      userExist.password,
     );
     if (!passwordComparison) {
       throw new AppError(401, "User", "User password is incorrect");
@@ -63,17 +63,18 @@ export class AuthService extends BaseService {
       this.emailService.sendEmail(
         userExist.email,
         "Aktywacja konta",
-        `http://localhost:3000/api/v1/auth/activate/${token}`
+        `http://localhost:3000/api/v1/auth/activate/${token}`,
       );
       throw new AppError(
         401,
         "User",
-        "You have to activate your account. A new email has been sent."
+        "You have to activate your account. A new email has been sent.",
       );
     }
     const token = this.auth.sign(userExist);
     return { user: userExist, token };
   };
+
   sendEmailToResetPassword = async (email: string): Promise<void> => {
     const user: IUser | null = await User.findOne({ email });
     if (!user) {
@@ -83,7 +84,7 @@ export class AuthService extends BaseService {
     this.emailService.sendEmail(
       email,
       "Password change",
-      `http://localhost:3000/api/v1/auth/reset-password/${token}`
+      `http://localhost:3000/api/v1/auth/reset-password/${token}`,
     );
     return;
   };

@@ -1,7 +1,6 @@
 import { NextFunction, Response, Request } from "express";
 import { Logger } from "../../../utils/logger.js";
 import { IUser } from "../../../models/user.model.js";
-import { error } from "console";
 import { AuthService } from "../../../services/auth.service.js";
 import { CustomRequest } from "../../../types/common.type.js";
 
@@ -15,7 +14,7 @@ export class AuthController {
   registerUser = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const { firstname, lastname, email, password } = req.body as {
@@ -50,21 +49,23 @@ export class AuthController {
   checkUser = async (
     req: Request,
     res: Response,
-    _next: NextFunction
+    _next: NextFunction,
   ): Promise<void> => {
     res.status(200).json({
       success: true,
-      data:{
-        user:{
-          id: (req as CustomRequest).user.id
-        }
-      }
+      data: {
+        user: {
+          id: (req as CustomRequest).user.id,
+          firstname: (req as CustomRequest).user.firstname,
+          lastname: (req as CustomRequest).user.lastname,
+        },
+      },
     });
   };
   loginUser = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const { email, password } = req.body as {
@@ -90,7 +91,7 @@ export class AuthController {
   logoutUser = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       this.logger.info("Logged out");
@@ -105,7 +106,7 @@ export class AuthController {
   sendEmailToResetPassword = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const { email } = req.body as { email: string };
@@ -123,7 +124,7 @@ export class AuthController {
   resetPassword = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const { token } = req.params as { token: string };
@@ -131,7 +132,7 @@ export class AuthController {
       this.logger.info("Attempting to change password");
       const result: IUser = await this.authService.resetPassword(
         token,
-        password
+        password,
       );
       this.logger.info("Password changed succesfully", { token });
       res.status(200).json({
@@ -148,7 +149,7 @@ export class AuthController {
   activateUser = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const { token } = req.params as { token: string };

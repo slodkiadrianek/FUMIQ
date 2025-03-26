@@ -18,6 +18,8 @@ export interface emailSend {
 export type CustomRequest = Request & {
   user: {
     id: string;
+    firstname: string;
+    lastname: string;
     email: string;
     iat: number;
   };

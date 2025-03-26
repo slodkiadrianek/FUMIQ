@@ -60,9 +60,9 @@ export class UserController {
   ): Promise<void> => {
     try {
       const userId: string = req.params.userId;
-      const quizId: string = req.params.quizId;
+      const sessionId: string = req.params.sessionId;
       this.logger.info(`Attempting get questions for quiz`, { userId });
-      const result = await this.userService.getQuestions(quizId, userId);
+      const result = await this.userService.getQuestions(sessionId, userId);
       this.logger.info(`Quiz loaded successfully`, { result });
       res.status(200).json({
         success: true,
@@ -71,6 +71,23 @@ export class UserController {
         },
       });
       return;
+    } catch (error) {
+      next(error);
+    }
+  };
+  submitQuiz = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const userId: string = req.params.userId;
+      const sessionId: string = req.params.sessionId;
+      this.logger.info(`Attempting to end test`, { userId, sessionId });
+      await this.userService.endQuiz(userId, sessionId);
+      res.status(200).json({
+        success: true,
+      });
     } catch (error) {
       next(error);
     }

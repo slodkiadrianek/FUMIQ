@@ -46,35 +46,34 @@ export class UserService extends BaseService {
     }
     return `${quiz._id}`;
   };
-  getQuestions = async (quizId: string, userId: string): Promise<any> => {
+  getQuestions = async (sessionId: string, userId: string): Promise<any> => {
     const quizSession: ITakenQuiz | null = await TakenQuiz.findOne({
-      quizId: quizId,
-    }).populate("quizId");
+      _id: sessionId,
+    }).populate({
+      path: "quizId",
+      select: "-questions.correctAnswer", // Exclude correctAnswer field
+    });
 
     if (!quizSession) {
-      this.logger.error(`Quiz session with this id does not exist`, { quiz });
+      this.logger.error(`Quiz session with this id does not exist`, {
+        quizSession,
+      });
       throw new AppError(
         400,
         "Quiz",
         "Quiz session with this id does not exist",
       );
     }
-    console.log(quizSession);
     const userObjectId = new Types.ObjectId(userId);
     let isUserJoined: boolean = false;
-    let userIndex: number = -1;
     for (const el of quizSession.competitors) {
       if (el.userId.toString() === userId) {
-        userIndex = quizSession.competitors.indexOf(el);
         isUserJoined = true;
         break;
       }
     }
     if (isUserJoined) {
-      return {
-        quizId: quizSession.quizId,
-        ...quizSession.competitors[userIndex],
-      };
+      return quizSession;
     }
 
     quizSession.competitors.push({
@@ -84,5 +83,21 @@ export class UserService extends BaseService {
     });
     await quizSession.save();
     return quizSession;
+  };
+  endQuiz = async (userId: string, sessionId: string) => {
+    const sesssionQuiz = await TakenQuiz.findOne({
+      _id: sessionId,
+    }).populate("quizId");
+    if (!sesssionQuiz) {
+      this.logger.error(`Session with this id not found`, { sessionId });
+      throw new AppError(400, "Session", `Session with this id not found`);
+    }
+    console.log(sesssionQuiz);
+    // let pointScored: number = 0;
+    for (const el of sesssionQuiz.competitors) {
+      if (el.userId.toString() === userId) {
+        // for (let i = 0; i < sesssionQuiz.quizId.questions; i++) {}
+      }
+    }
   };
 }

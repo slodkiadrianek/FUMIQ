@@ -4,6 +4,8 @@ import { caching } from "./app.js";
 import { RedisCacheService } from "./types/common.type.js";
 import { createServer } from "http";
 import { Server } from "socket.io";
+import { ITakenQuiz, TakenQuiz } from "./models/takenQuiz.model.js";
+import { Logger } from "./utils/logger.js";
 
 const server = createServer(app);
 
@@ -19,7 +21,44 @@ io.on("connection", (socket) => {
 
   socket.on("message", (data) => {
     console.log(`Message received: ${data}`);
-    io.emit("message", data); // Broadcast message
+    io.emit("message", data);
+  });
+
+  socket.on("joinSession", (data: string) => {
+    console.log(data);
+    io.emit("newUser", data);
+  });
+
+  socket.on("submit_answer", async (data) => {
+    try {
+      const { questionId, answer, questionText, userId, sessionId } = data;
+      console.log(questionId, answer);
+
+      const sessionQuiz: ITakenQuiz = await TakenQuiz.findOne({
+        _id: sessionId,
+      });
+      for (const el of sessionQuiz.competitors) {
+        if (el.userId.toString() === userId) {
+          const indexOfElement: number = sessionQuiz.competitors.indexOf(el);
+          sessionQuiz.competitors[indexOfElement].answers.push({
+            questionId,
+          });
+        }
+      }
+      // Send to admin
+      io.emit("answer_pack", {
+        userId,
+        questionId,
+        questionText,
+        status: "success",
+        answer,
+        timestamp: new Date(),
+      });
+      console.log(`Sent`);
+    } catch (error) {
+      console.error("Error saving answer:", error);
+      socket.emit("error", { message: "Failed to save answer" });
+    }
   });
 
   socket.on("disconnect", () => {
