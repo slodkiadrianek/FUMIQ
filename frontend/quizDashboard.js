@@ -78,7 +78,7 @@ socket.on("newUser", (data) => {
   renderActiveQuiz();
 });
 
-socket.on("answer_pack", (data) => {
+socket.on("newAnswer", (data) => {
   console.log("Answer received:", data);
 
   // Find or create competitor

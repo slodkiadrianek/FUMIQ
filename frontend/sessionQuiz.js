@@ -285,7 +285,7 @@ function renderQuestions() {
   });
 }
 function handleAnswerSelection(userId, questionId, questionText, answer) {
-  socket.emit("submit_answer", {
+  socket.emit("newAnswer", {
     userId,
     questionId,
     questionText,

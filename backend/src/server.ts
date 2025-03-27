@@ -5,7 +5,6 @@ import { RedisCacheService } from "./types/common.type.js";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import { ITakenQuiz, TakenQuiz } from "./models/takenQuiz.model.js";
-import { Logger } from "./utils/logger.js";
 
 const server = createServer(app);
 
@@ -28,23 +27,40 @@ io.on("connection", (socket) => {
     console.log(data);
     io.emit("newUser", data);
   });
+  socket.on("newAnswer", async (data) => {
+    try {
+      const sessionQuiz: ITakenQuiz = await TakenQuiz.findOne({
+        _id: data.sessionId,
+      });
+      for (const el of sessionQuiz.competitors) {
+        if (el.userId.toString() === data.userId) {
+          const indexOfElement: number = sessionQuiz.competitors.indexOf(el);
+          sessionQuiz.competitors[indexOfElement].answers.push({
+            questionId: data.questionId,
+            answer: data.answer,
+            correct: false,
+          });
+        }
+      }
+      await sessionQuiz.save();
+      io.emit(`newAnswer-${data.sessionId}`, {
+        userId: data.userId,
+        questionId: data.questionId,
+        questionText: data.questionText,
+        status: "success",
+        answer: data.answer,
+        timestamp: new Date(),
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  });
 
   socket.on("submit_answer", async (data) => {
     try {
       const { questionId, answer, questionText, userId, sessionId } = data;
       console.log(questionId, answer);
 
-      const sessionQuiz: ITakenQuiz = await TakenQuiz.findOne({
-        _id: sessionId,
-      });
-      for (const el of sessionQuiz.competitors) {
-        if (el.userId.toString() === userId) {
-          const indexOfElement: number = sessionQuiz.competitors.indexOf(el);
-          sessionQuiz.competitors[indexOfElement].answers.push({
-            questionId,
-          });
-        }
-      }
       // Send to admin
       io.emit("answer_pack", {
         userId,
