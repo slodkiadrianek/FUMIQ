@@ -13,7 +13,14 @@ async function verifyUser() {
   if (!responseData.success) {
     location.href = "login.html";
   }
-  sessionStorage.setItem("userId", responseData.data.user.id);
+
+  sessionStorage.setItem(
+    "userData",
+    JSON.stringify({
+      id: responseData.data.user.id,
+      firstname: responseData.data.user.firstname,
+      lastname: responseData.data.user.lastname,
+    }),
+  );
 }
 verifyUser();
-
