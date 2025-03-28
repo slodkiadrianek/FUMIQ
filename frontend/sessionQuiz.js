@@ -60,7 +60,7 @@ function initializeWebSocket() {
   socket = io("http://localhost:3000");
   socket.on("connect", () => console.log("Connected!"));
   const userData = JSON.parse(sessionStorage.getItem("userData"));
-  socket.emit("joinSession", { userData });
+  socket.emit("joinSession", { userData, sessionId: quizState.sessionId });
 }
 
 function handleWebSocketMessage(message) {

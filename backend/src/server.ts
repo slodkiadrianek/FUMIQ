@@ -23,26 +23,56 @@ io.on("connection", (socket) => {
     io.emit("message", data);
   });
 
-  socket.on("joinSession", (data: string) => {
-    console.log(data);
-    io.emit("newUser", data);
+  socket.on("joinSession", (data) => {
+    console.log(`\n\n`, data);
+    if (data.sessionId && typeof data.sessionId === "string") {
+      const sessionId = data.sessionId;
+      io.emit(`newUser-${sessionId}`, data);
+    }
   });
   socket.on("newAnswer", async (data) => {
     try {
-      const sessionQuiz: ITakenQuiz = await TakenQuiz.findOne({
+      const sessionQuiz: ITakenQuiz | null = await TakenQuiz.findOne({
         _id: data.sessionId,
       });
+      if (!sessionQuiz) {
+        throw new Error("Session not found");
+      }
+      console.log(data);
       for (const el of sessionQuiz.competitors) {
         if (el.userId.toString() === data.userId) {
           const indexOfElement: number = sessionQuiz.competitors.indexOf(el);
-          sessionQuiz.competitors[indexOfElement].answers.push({
-            questionId: data.questionId,
-            answer: data.answer,
-            correct: false,
-          });
+          console.log(sessionQuiz.competitors[indexOfElement].answers);
+          if (sessionQuiz.competitors[indexOfElement].answers.length === 0) {
+            sessionQuiz.competitors[indexOfElement].answers.push({
+              questionId: data.questionId,
+              answer: data.answer.join(","),
+              correct: false,
+            });
+          } else {
+            for (const ans of sessionQuiz.competitors[indexOfElement].answers) {
+              if (ans.questionId.toString() === data.questionId) {
+                const indexOfAnswer =
+                  sessionQuiz.competitors[indexOfElement].answers.indexOf(ans);
+                sessionQuiz.competitors[indexOfElement].answers[indexOfAnswer] =
+                  {
+                    questionId: data.questionId,
+                    answer: data.answer.join(","),
+                    correct: false,
+                  };
+              } else {
+                sessionQuiz.competitors[indexOfElement].answers.push({
+                  questionId: data.questionId,
+                  answer: data.answer.join(","),
+                  correct: false,
+                });
+              }
+            }
+          }
         }
       }
       await sessionQuiz.save();
+      console.log(`sent`);
       io.emit(`newAnswer-${data.sessionId}`, {
         userId: data.userId,
         questionId: data.questionId,
@@ -56,9 +86,20 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("submit_answer", async (data) => {
+  socket.on("submit_session", async (data) => {
     try {
       const { questionId, answer, questionText, userId, sessionId } = data;
+      const sessionQuiz: ITakenQuiz | null = await TakenQuiz.findOne({
+        _id: sessionId,
+      });
+      if (!sessionQuiz) {
+        throw new Error("Session not found");
+      }
+      for (const el of sessionQuiz.competitors) {
+        if (el.userId.toString() === userId) {
+          el.finished = true;
+        }
+      }
       console.log(questionId, answer);
 
       // Send to admin

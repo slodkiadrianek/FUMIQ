@@ -10,6 +10,7 @@ let quizData = {
 };
 
 // Initialize quiz data
+let sessionId;
 async function initializeQuiz() {
   const token = sessionStorage.getItem("authToken");
   const testId = new URLSearchParams(window.location.search).get("id");
@@ -32,7 +33,8 @@ async function initializeQuiz() {
       },
     );
     const sessionData = await sessionResponse.json();
-
+    sessionId = sessionData.data.quiz._id.toString();
+    console.log(sessionId);
     // Get quiz details to know total questions
     const quizResponse = await fetch(
       `http://${base_url}/api/v1/quizez/${testId}`,
@@ -59,61 +61,69 @@ async function initializeQuiz() {
     } else {
       alert("Error loading quiz data");
     }
+    // Socket event handlers
+    socket.on(`newUser-${sessionId}`, (data) => {
+      console.log("New user joined:", data);
+      quizData.competitors.push({
+        userId: data.userData.id,
+        firstName: data.userData.firstname,
+        lastName: data.userData.lastname,
+        answers: [],
+        finished: false,
+      });
+      renderActiveQuiz();
+    });
+    socket.on(`newAnswer-${sessionId}`, (data) => {
+      console.log("Answer received:", data);
+
+      // Find or create competitor
+      let competitor = quizData.competitors.find(
+        (c) => c.userId === data.userId,
+      );
+
+      if (!competitor) {
+        competitor = {
+          userId: data.userData.id,
+          firstName: "Unknown",
+          lastName: "User",
+          answers: [],
+          finished: false,
+        };
+        quizData.competitors.push(competitor);
+      }
+
+      // Update answers
+      const existingAnswerIndex = competitor.answers.findIndex(
+        (a) => a.questionId === data.questionId,
+      );
+      if (existingAnswerIndex >= 0) {
+        competitor.answers[existingAnswerIndex].answer = data.answer;
+      } else {
+        competitor.answers.push({
+          questionId: data.questionId,
+          question: data.questionText || `Question ${data.questionId}`,
+          answer: Array.isArray(data.answer)
+            ? data.answer.join(", ")
+            : data.answer,
+        });
+      }
+
+      // Check if finished
+      competitor.finished =
+        competitor.answers.length >= quizData.totalQuestions;
+
+      renderActiveQuiz();
+    });
+    socket.on(`submitQuiz-${sessionId}`, () => {
+      competitor.finished = true;
+      renderActiveQuiz();
+    });
   } catch (error) {
     console.error("Error:", error);
     alert("Failed to load quiz data");
   }
 }
-
-// Socket event handlers
-socket.on("newUser", (data) => {
-  console.log("New user joined:", data);
-  quizData.competitors.push({
-    userId: data.userData.id,
-    firstName: data.userData.firstname,
-    lastName: data.userData.lastname,
-    answers: [],
-    finished: false,
-  });
-  renderActiveQuiz();
-});
-
-socket.on("newAnswer", (data) => {
-  console.log("Answer received:", data);
-
-  // Find or create competitor
-  let competitor = quizData.competitors.find((c) => c.userId === data.userId);
-
-  if (!competitor) {
-    competitor = {
-      userId: data.userData.id,
-      firstName: "Unknown",
-      lastName: "User",
-      answers: [],
-      finished: false,
-    };
-    quizData.competitors.push(competitor);
-  }
-
-  // Update answers
-  const existingAnswerIndex = competitor.answers.findIndex(
-    (a) => a.questionId === data.questionId,
-  );
-  if (existingAnswerIndex >= 0) {
-    competitor.answers[existingAnswerIndex].answer = data.answer;
-  } else {
-    competitor.answers.push({
-      questionId: data.questionId,
-      question: data.questionText || `Question ${data.questionId}`,
-      answer: Array.isArray(data.answer) ? data.answer.join(", ") : data.answer,
-    });
-  }
-
-  // Check if finished
-  competitor.finished = competitor.answers.length >= quizData.totalQuestions;
-
-  renderActiveQuiz();
-});
+initializeQuiz();
 
 // Render function
 function renderActiveQuiz() {
@@ -183,4 +193,3 @@ function renderActiveQuiz() {
 }
 
 // Initialize on page load
-initializeQuiz();
