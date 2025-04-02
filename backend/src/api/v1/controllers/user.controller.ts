@@ -92,4 +92,22 @@ export class UserController {
       next(error);
     }
   };
+  changePassword = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const userId: string = req.params.id;
+      const oldPassword: string = req.body.oldPassword;
+      const newPassword: string = req.body.newPassword;
+      this.logger.info("Attempting to change password", { userId });
+      await this.userService.changePassword(userId, oldPassword, newPassword);
+      res.status(200).json({
+        success: true,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
 }

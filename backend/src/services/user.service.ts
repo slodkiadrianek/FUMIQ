@@ -5,6 +5,7 @@ import { BaseService } from "./base.service.js";
 import { ITakenQuiz, TakenQuiz } from "../models/takenQuiz.model.js";
 import { Types } from "mongoose";
 import { AppError } from "../models/error.model.js";
+import bcrypt from "bcryptjs";
 export class UserService extends BaseService {
   constructor(logger: Logger, caching: RedisCacheService) {
     super(logger, caching);
@@ -14,26 +15,27 @@ export class UserService extends BaseService {
   };
   changePassword = async (
     userId: string,
+    oldPassword: string,
     newPassword: string,
-  ): Promise<IUser> => {
-    const result: IUser | null = await User.findByIdAndUpdate(
+  ): Promise<void> => {
+    const user: IUser | null = await this.getUserById(userId);
+    if (!user) {
+      this.logger.error(`User not found`, { userId });
+      throw new AppError(404, "User", "User not found");
+    }
+    const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
+    if (!isPasswordValid) {
+      this.logger.error(`Invalid password during password change`, { userId });
+      throw new AppError(400, "User", "Invalid password");
+    }
+    await User.updateOne(
       {
         _id: userId,
       },
       {
         password: newPassword,
       },
-      { new: true },
     );
-    if (!result) {
-      this.logger.error(
-        `An error occurred while updating the password for user ${userId}`,
-      );
-      throw new Error(
-        `An error occurred while updating the password for user ${userId}`,
-      );
-    }
-    return result;
   };
   joinQuiz = async (code: string): Promise<string> => {
     const quiz: ITakenQuiz | null = await TakenQuiz.findOne({
@@ -46,7 +48,7 @@ export class UserService extends BaseService {
     }
     return `${quiz._id}`;
   };
-  getQuestions = async (sessionId: string, userId: string): Promise<any> => {
+  getQuestions = async (sessionId: string, userId: string) => {
     const quizSession: ITakenQuiz | null = await TakenQuiz.findOne({
       _id: sessionId,
     }).populate({
