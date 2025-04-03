@@ -98,8 +98,8 @@ export class UserService extends BaseService {
     // let pointScored: number = 0;
     for (const el of sesssionQuiz.competitors) {
       if (el.userId.toString() === userId) {
-        console.log(el.answers, sesssionQuiz.quizId.questionss);
-        for (let i = 0; i < sesssionQuiz.quizId.questions; i++) {}
+        // console.log(el.answers, sesssionQuiz.quizId.questionss);
+        // for (let i = 0; i < sesssionQuiz.quizId.questions; i++) {}
       }
     }
   };
