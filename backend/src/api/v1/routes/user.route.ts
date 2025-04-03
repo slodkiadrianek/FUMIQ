@@ -49,5 +49,15 @@ export class UserRoutes {
       this.auth.verify,
       this.userController.changePassword,
     ); //zmiana hasła
+    this.router.delete(
+      "/api/v1/users/:id",
+      this.auth.verify,
+      this.userController.deleteUser,
+    ); //usuwanie konta
+    this.router.put(
+      "/api/v1/users/:id",
+      this.auth.verify,
+      this.userController.updateUser,
+    ); //aktualizacja danych użytkownika
   }
 }

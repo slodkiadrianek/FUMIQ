@@ -103,4 +103,25 @@ export class UserService extends BaseService {
       }
     }
   };
+  deleteUser = async (userId: string): Promise<void> => {
+    const user: IUser | null = await User.findById(userId);
+    if (!user) {
+      this.logger.error(`User with this id not found`, { userId });
+      throw new AppError(400, "User", `User with this id not found`);
+    }
+    await User.deleteOne();
+    this.logger.info(`User deleted successfully`, { userId });
+  };
+  updateUser = async (
+    userId: string,
+    data: Omit<IUser, "_id">,
+  ): Promise<void> => {
+    const user: IUser | null = await User.findById(userId);
+    if (!user) {
+      this.logger.error(`User with this id not found`, { userId });
+      throw new AppError(400, "User", `User with this id not found`);
+    }
+    await User.updateOne({ _id: userId }, data);
+    this.logger.info(`User updated successfully`, { userId });
+  };
 }

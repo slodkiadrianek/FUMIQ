@@ -103,6 +103,42 @@ export class UserController {
       const newPassword: string = req.body.newPassword;
       this.logger.info("Attempting to change password", { userId });
       await this.userService.changePassword(userId, oldPassword, newPassword);
+      this.logger.info("Password changed successfully", { userId });
+      res.status(200).json({
+        success: true,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+  deleteUser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const userId: string = req.params.id;
+      this.logger.info("Attempting to delete user", { userId });
+      await this.userService.deleteUser(userId);
+      this.logger.info(`Account deleted successfully`, { userId });
+      res.status(200).json({
+        success: true,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+  updateUser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const userId: string = req.params.id;
+      const updatedUser: Omit<IUser, "_id"> = req.body;
+      this.logger.info("Attempting to update user", { userId });
+      await this.userService.updateUser(userId, updatedUser);
+      this.logger.info(`User updated successfully`, { userId });
       res.status(200).json({
         success: true,
       });
