@@ -28,12 +28,13 @@ export class UserService extends BaseService {
       this.logger.error(`Invalid password during password change`, { userId });
       throw new AppError(400, "User", "Invalid password");
     }
+    const hashedPassword = await bcrypt.hash(newPassword, 12);
     await User.updateOne(
       {
         _id: userId,
       },
       {
-        password: newPassword,
+        password: hashedPassword,
       },
     );
   };
@@ -103,13 +104,25 @@ export class UserService extends BaseService {
       }
     }
   };
-  deleteUser = async (userId: string): Promise<void> => {
+  deleteUser = async (userId: string, password: string): Promise<void> => {
     const user: IUser | null = await User.findById(userId);
     if (!user) {
       this.logger.error(`User with this id not found`, { userId });
       throw new AppError(400, "User", `User with this id not found`);
     }
-    await User.deleteOne();
+    const isPasswordValid: boolean = await bcrypt.compare(
+      password,
+      user.password,
+    );
+    if (!isPasswordValid) {
+      this.logger.error(`Invalid password provided during deleting account`, {
+        userId,
+      });
+      throw new AppError(400, "User", "Invalid password");
+    }
+    await User.deleteOne({
+      _id: userId,
+    });
     this.logger.info(`User deleted successfully`, { userId });
   };
   updateUser = async (

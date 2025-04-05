@@ -117,9 +117,10 @@ export class UserController {
     next: NextFunction,
   ): Promise<void> => {
     try {
-      const userId: string = req.params.id;
+      const userId: string = req.params.userId;
+      const password: string = req.body.password;
       this.logger.info("Attempting to delete user", { userId });
-      await this.userService.deleteUser(userId);
+      await this.userService.deleteUser(userId, password);
       this.logger.info(`Account deleted successfully`, { userId });
       res.status(200).json({
         success: true,

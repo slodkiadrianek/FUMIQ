@@ -3,6 +3,11 @@ import { Router } from "express";
 import { UserController } from "../controllers/user.controller.js";
 import { ValidationMiddleware } from "../../../middleware/validation.middleware.js";
 import { quizId } from "../../../schemas/quiz.schema.js";
+import {
+  changePasswordUser,
+  deleteUser,
+  userId,
+} from "../../../schemas/user.schema.js";
 export class UserRoutes {
   constructor(
     private userController: UserController,
@@ -39,19 +44,27 @@ export class UserRoutes {
     this.router.patch(
       "/api/v1/users/:userId/session/:sessionId",
       this.auth.verify,
+      ValidationMiddleware.validate(userId, "params"),
+
       ValidationMiddleware.validate(quizId, "params"),
 
       // this.userController.submitAnswer,
       // Koniec testu
     );
     this.router.patch(
-      "/api/v1/users/:id",
+      "/api/v1/users/:userId",
       this.auth.verify,
+      ValidationMiddleware.validate(userId, "params"),
+      ValidationMiddleware.validate(changePasswordUser),
       this.userController.changePassword,
     ); //zmiana hasła
     this.router.delete(
-      "/api/v1/users/:id",
+      "/api/v1/users/:userId",
       this.auth.verify,
+      ValidationMiddleware.validate(userId, "params"),
+      ValidationMiddleware.validate(deleteUser),
+      this.auth.blacklist,
+
       this.userController.deleteUser,
     ); //usuwanie konta
     this.router.put(

@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Change Password - FUMIQ</title>
+        <title>Edit Profile - FUMIQ</title>
         <!-- Bootstrap CSS -->
         <link
             href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
@@ -20,7 +20,6 @@
             rel="stylesheet"
         />
         <style>
-            /* Reusing the same styles as the dashboard */
             :root {
                 --primary-color: #4f46e5;
                 --primary-hover: #4338ca;
@@ -71,21 +70,20 @@
                 transform: translateY(-2px);
             }
 
-            .password-container {
+            .profile-container {
                 max-width: 500px;
                 margin: 2rem auto;
                 padding: 0 1rem;
             }
 
-            .password-card {
+            .profile-card {
                 background-color: rgba(255, 255, 255, 0.9);
                 border-radius: 20px;
                 padding: 2rem;
                 box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-                margin-bottom: 2rem;
             }
 
-            .password-card h1 {
+            .profile-card h1 {
                 font-size: 2rem;
                 font-weight: 700;
                 color: var(--primary-color);
@@ -128,6 +126,24 @@
                 box-shadow: 0 5px 15px rgba(79, 70, 229, 0.4);
             }
 
+            .btn-secondary {
+                background-color: #6b7280;
+                border-color: #6b7280;
+                padding: 0.75rem 1.5rem;
+                font-weight: 500;
+                border-radius: 10px;
+                transition: all 0.3s ease;
+                width: 100%;
+                margin-top: 0.5rem;
+            }
+
+            .btn-secondary:hover {
+                background-color: #4b5563;
+                border-color: #4b5563;
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(107, 114, 128, 0.4);
+            }
+
             .alert {
                 border-radius: 10px;
                 margin-bottom: 1rem;
@@ -153,25 +169,12 @@
                 margin-top: 2rem;
             }
 
-            .password-toggle {
-                position: absolute;
-                right: 10px;
-                top: 50%;
-                transform: translateY(-50%);
-                cursor: pointer;
-                color: #6b7280;
-            }
-
-            .password-input-group {
-                position: relative;
-            }
-
             @media (max-width: 768px) {
-                .password-card {
+                .profile-card {
                     padding: 1.5rem;
                 }
 
-                .password-card h1 {
+                .profile-card h1 {
                     font-size: 1.75rem;
                 }
             }
@@ -231,9 +234,9 @@
         </nav>
 
         <!-- Main Content -->
-        <div class="password-container">
-            <div class="password-card animate__animated animate__fadeIn">
-                <h1>Change Password</h1>
+        <div class="profile-container">
+            <div class="profile-card animate__animated animate__fadeIn">
+                <h1>Edit Profile</h1>
 
                 <!-- Alert messages -->
                 <div id="error-alert" class="alert alert-danger d-none"></div>
@@ -242,72 +245,57 @@
                     class="alert alert-success d-none"
                 ></div>
 
-                <form id="change-password-form">
+                <form id="edit-profile-form">
                     <div class="mb-3">
-                        <label for="oldPassword" class="form-label"
-                            >Current Password</label
+                        <label for="firstName" class="form-label"
+                            >First Name</label
                         >
-                        <div class="password-input-group">
-                            <input
-                                type="password"
-                                class="form-control"
-                                id="oldPassword"
-                                name="oldPassword"
-                                required
-                            />
-                            <i
-                                class="bi bi-eye-slash password-toggle"
-                                id="toggleOldPassword"
-                            ></i>
-                        </div>
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="firstName"
+                            name="firstName"
+                            required
+                        />
                     </div>
 
                     <div class="mb-3">
-                        <label for="newPassword" class="form-label"
-                            >New Password</label
+                        <label for="lastName" class="form-label"
+                            >Last Name</label
                         >
-                        <div class="password-input-group">
-                            <input
-                                type="password"
-                                class="form-control"
-                                id="newPassword"
-                                name="newPassword"
-                                required
-                                minlength="8"
-                            />
-                            <i
-                                class="bi bi-eye-slash password-toggle"
-                                id="toggleNewPassword"
-                            ></i>
-                        </div>
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="lastName"
+                            name="lastName"
+                            required
+                        />
                     </div>
 
                     <div class="mb-3">
-                        <label for="confirmPassword" class="form-label"
-                            >Confirm New Password</label
+                        <label for="email" class="form-label"
+                            >Email Address</label
                         >
-                        <div class="password-input-group">
-                            <input
-                                type="password"
-                                class="form-control"
-                                id="confirmPassword"
-                                name="confirmPassword"
-                                required
-                            />
-                            <i
-                                class="bi bi-eye-slash password-toggle"
-                                id="toggleConfirmPassword"
-                            ></i>
-                        </div>
+                        <input
+                            type="email"
+                            class="form-control"
+                            id="email"
+                            name="email"
+                            required
+                        />
                     </div>
 
                     <button
                         type="submit"
                         class="btn btn-primary"
-                        id="change-password-btn"
+                        id="save-profile-btn"
                     >
-                        Change Password
+                        Save Changes
                     </button>
+
+                    <a href="profile.html" class="btn btn-secondary">
+                        Cancel
+                    </a>
                 </form>
             </div>
         </div>
@@ -319,8 +307,7 @@
 
         <!-- Bootstrap JS -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-
         <script type="module" src="verify.js"></script>
-        <script type="module" src="changePassword.js"></script>
+        <script type="module" src="editProfile.js"></script>
     </body>
 </html>

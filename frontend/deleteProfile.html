@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Change Password - FUMIQ</title>
+        <title>Delete Profile - FUMIQ</title>
         <!-- Bootstrap CSS -->
         <link
             href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
@@ -29,6 +29,7 @@
                 --light-bg: #f3f4f6;
                 --dark-text: #1f2937;
                 --error-color: #ef4444;
+                --warning-color: #f59e0b;
             }
 
             body {
@@ -71,24 +72,38 @@
                 transform: translateY(-2px);
             }
 
-            .password-container {
+            .delete-container {
                 max-width: 500px;
                 margin: 2rem auto;
                 padding: 0 1rem;
             }
 
-            .password-card {
+            .delete-card {
                 background-color: rgba(255, 255, 255, 0.9);
                 border-radius: 20px;
                 padding: 2rem;
                 box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-                margin-bottom: 2rem;
             }
 
-            .password-card h1 {
+            .delete-card h1 {
                 font-size: 2rem;
                 font-weight: 700;
-                color: var(--primary-color);
+                color: var(--error-color);
+                margin-bottom: 1.5rem;
+                text-align: center;
+            }
+
+            .delete-card .warning-icon {
+                font-size: 4rem;
+                color: var(--warning-color);
+                display: block;
+                text-align: center;
+                margin-bottom: 1.5rem;
+            }
+
+            .delete-card p {
+                font-size: 1.1rem;
+                color: var(--dark-text);
                 margin-bottom: 1.5rem;
                 text-align: center;
             }
@@ -110,9 +125,9 @@
                 box-shadow: 0 0 0 0.25rem rgba(79, 70, 229, 0.25);
             }
 
-            .btn-primary {
-                background-color: var(--primary-color);
-                border-color: var(--primary-color);
+            .btn-danger {
+                background-color: var(--error-color);
+                border-color: var(--error-color);
                 padding: 0.75rem 1.5rem;
                 font-weight: 500;
                 border-radius: 10px;
@@ -121,11 +136,29 @@
                 margin-top: 1rem;
             }
 
-            .btn-primary:hover {
-                background-color: var(--primary-hover);
-                border-color: var(--primary-hover);
+            .btn-danger:hover {
+                background-color: #dc2626;
+                border-color: #dc2626;
                 transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(79, 70, 229, 0.4);
+                box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
+            }
+
+            .btn-secondary {
+                background-color: #6b7280;
+                border-color: #6b7280;
+                padding: 0.75rem 1.5rem;
+                font-weight: 500;
+                border-radius: 10px;
+                transition: all 0.3s ease;
+                width: 100%;
+                margin-top: 1rem;
+            }
+
+            .btn-secondary:hover {
+                background-color: #4b5563;
+                border-color: #4b5563;
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(107, 114, 128, 0.4);
             }
 
             .alert {
@@ -167,11 +200,11 @@
             }
 
             @media (max-width: 768px) {
-                .password-card {
+                .delete-card {
                     padding: 1.5rem;
                 }
 
-                .password-card h1 {
+                .delete-card h1 {
                     font-size: 1.75rem;
                 }
             }
@@ -231,9 +264,15 @@
         </nav>
 
         <!-- Main Content -->
-        <div class="password-container">
-            <div class="password-card animate__animated animate__fadeIn">
-                <h1>Change Password</h1>
+        <div class="delete-container">
+            <div class="delete-card animate__animated animate__fadeIn">
+                <i class="bi bi-exclamation-triangle-fill warning-icon"></i>
+                <h1>Delete Your Profile</h1>
+                <p>
+                    This action is permanent and cannot be undone. All your
+                    data, including tests and results, will be permanently
+                    deleted.
+                </p>
 
                 <!-- Alert messages -->
                 <div id="error-alert" class="alert alert-danger d-none"></div>
@@ -242,72 +281,50 @@
                     class="alert alert-success d-none"
                 ></div>
 
-                <form id="change-password-form">
+                <form id="delete-profile-form">
                     <div class="mb-3">
-                        <label for="oldPassword" class="form-label"
-                            >Current Password</label
+                        <label for="password" class="form-label"
+                            >Enter your password to confirm</label
                         >
                         <div class="password-input-group">
                             <input
                                 type="password"
                                 class="form-control"
-                                id="oldPassword"
-                                name="oldPassword"
+                                id="password"
+                                name="password"
                                 required
                             />
                             <i
                                 class="bi bi-eye-slash password-toggle"
-                                id="toggleOldPassword"
+                                id="togglePassword"
                             ></i>
                         </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="newPassword" class="form-label"
-                            >New Password</label
+                    <div class="mb-3 form-check">
+                        <input
+                            type="checkbox"
+                            class="form-check-input"
+                            id="confirmDelete"
+                            required
+                        />
+                        <label class="form-check-label" for="confirmDelete"
+                            >I understand that this action cannot be
+                            undone</label
                         >
-                        <div class="password-input-group">
-                            <input
-                                type="password"
-                                class="form-control"
-                                id="newPassword"
-                                name="newPassword"
-                                required
-                                minlength="8"
-                            />
-                            <i
-                                class="bi bi-eye-slash password-toggle"
-                                id="toggleNewPassword"
-                            ></i>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="confirmPassword" class="form-label"
-                            >Confirm New Password</label
-                        >
-                        <div class="password-input-group">
-                            <input
-                                type="password"
-                                class="form-control"
-                                id="confirmPassword"
-                                name="confirmPassword"
-                                required
-                            />
-                            <i
-                                class="bi bi-eye-slash password-toggle"
-                                id="toggleConfirmPassword"
-                            ></i>
-                        </div>
                     </div>
 
                     <button
                         type="submit"
-                        class="btn btn-primary"
-                        id="change-password-btn"
+                        class="btn btn-danger"
+                        id="delete-profile-btn"
                     >
-                        Change Password
+                        Permanently Delete My Account
                     </button>
+
+                    <a href="profile.html" class="btn btn-secondary">
+                        Cancel and Return to Profile
+                    </a>
                 </form>
             </div>
         </div>
@@ -321,6 +338,6 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
         <script type="module" src="verify.js"></script>
-        <script type="module" src="changePassword.js"></script>
+        <script type="module" src="deleteProfile.js"></script>
     </body>
 </html>
