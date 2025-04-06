@@ -15,7 +15,7 @@ export class UserController {
     next: NextFunction,
   ): Promise<void> => {
     try {
-      const userId = req.params.id as string;
+      const userId = req.params.userId as string;
       this.logger.info(`Attempting to get user information`, { userId });
       const result: IUser = await this.userService.getUserById(userId);
       this.logger.info("User data downloaded", { result });
@@ -98,7 +98,7 @@ export class UserController {
     next: NextFunction,
   ): Promise<void> => {
     try {
-      const userId: string = req.params.id;
+      const userId: string = req.params.userId;
       const oldPassword: string = req.body.oldPassword;
       const newPassword: string = req.body.newPassword;
       this.logger.info("Attempting to change password", { userId });
@@ -135,7 +135,7 @@ export class UserController {
     next: NextFunction,
   ): Promise<void> => {
     try {
-      const userId: string = req.params.id;
+      const userId: string = req.params.userId;
       const updatedUser: Omit<IUser, "_id"> = req.body;
       this.logger.info("Attempting to update user", { userId });
       await this.userService.updateUser(userId, updatedUser);

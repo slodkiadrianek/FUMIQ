@@ -1,13 +1,13 @@
 // Quiz state management
 import { base_url } from "./base_api.js";
 let userData = JSON.parse(sessionStorage.getItem("userData"));
-document.addEventListener("visibilitychange", () => {
-  if (document.hidden) {
-    window.location.href = "https://github.com/slodkiadrianek";
-  } else {
-    console.log("Strona znów jest widoczna");
-  }
-});
+// document.addEventListener("visibilitychange", () => {
+//   if (document.hidden) {
+//     window.location.href = "https://github.com/slodkiadrianek";
+//   } else {
+//     console.log("Strona znów jest widoczna");
+//   }
+// });
 
 // Define element references
 const elements = {
@@ -63,22 +63,6 @@ function initializeWebSocket() {
   socket.emit("joinSession", { userData, sessionId: quizState.sessionId });
 }
 
-function handleWebSocketMessage(message) {
-  switch (message.type) {
-    case "answer_ack":
-      console.log("Answer acknowledged by server:", message);
-      break;
-    case "error":
-      console.error("Server error:", message.error);
-      break;
-    case "ping":
-      quizState.websocket.send(JSON.stringify({ type: "pong" }));
-      break;
-    default:
-      console.log("Unknown message type:", message);
-  }
-}
-
 // Setup event listeners
 function setupEventListeners() {
   elements.nextBtn.addEventListener("click", navigateToNextQuestion);
@@ -131,7 +115,7 @@ async function loadQuiz() {
     );
 
     const data = await response.json();
-
+    console.log(data);
     if (!data.success) {
       throw new Error("Failed to load quiz data");
     }

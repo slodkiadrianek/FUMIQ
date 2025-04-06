@@ -128,13 +128,7 @@ export class UserService extends BaseService {
   updateUser = async (
     userId: string,
     data: Omit<IUser, "_id">,
-  ): Promise<void> => {
-    const user: IUser | null = await User.findById(userId);
-    if (!user) {
-      this.logger.error(`User with this id not found`, { userId });
-      throw new AppError(400, "User", `User with this id not found`);
-    }
-    await User.updateOne({ _id: userId }, data);
-    this.logger.info(`User updated successfully`, { userId });
+  ): Promise<IUser> => {
+    return this.updateItem("User", userId, data, User);
   };
 }

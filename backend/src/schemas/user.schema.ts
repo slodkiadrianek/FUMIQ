@@ -100,3 +100,9 @@ export const deleteUser: ObjectSchema = Joi.object({
         "Password must contain at least 1 lowercase letter, 1 uppercase letter, 1 digit, and 1 special character. It must be at least 8 characters long.",
     }),
 });
+
+export const updateUser: ObjectSchema = Joi.object({
+  firstname: Joi.string().required(),
+  lastname: Joi.string().required(),
+  email: Joi.string().email().required(),
+});

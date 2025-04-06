@@ -2,12 +2,13 @@ import { Authentication } from "../../../middleware/auth.middleware.js";
 import { Router } from "express";
 import { UserController } from "../controllers/user.controller.js";
 import { ValidationMiddleware } from "../../../middleware/validation.middleware.js";
-import { quizId } from "../../../schemas/quiz.schema.js";
 import {
   changePasswordUser,
   deleteUser,
+  updateUser,
   userId,
 } from "../../../schemas/user.schema.js";
+import { sessionId } from "../../../schemas/session.schema.js";
 export class UserRoutes {
   constructor(
     private userController: UserController,
@@ -18,35 +19,34 @@ export class UserRoutes {
   }
   protected initializeRoutes(): void {
     this.router.get(
-      "/api/v1/users/:id",
+      "/api/v1/users/:userId",
       this.auth.verify,
+      ValidationMiddleware.validate(userId, "params"),
       this.userController.getUserById,
     );
     this.router.post(
-      "/api/v1/users/:id/session/",
+      "/api/v1/users/:userId/session/",
       this.auth.verify,
+      ValidationMiddleware.validate(userId, "params"),
+
       this.userController.joinQuiz,
     );
     this.router.get(
       "/api/v1/users/:userId/session/:sessionId",
       this.auth.verify,
-      ValidationMiddleware.validate(quizId, "params"),
-
+      ValidationMiddleware.validate(sessionId, "params"),
       this.userController.getQuestions,
     );
     this.router.delete(
       "/api/v1/users/:userId/session/:sessionId",
       this.auth.verify,
-      ValidationMiddleware.validate(quizId, "params"),
-
+      ValidationMiddleware.validate(sessionId, "params"),
       this.userController.submitQuiz,
     );
     this.router.patch(
       "/api/v1/users/:userId/session/:sessionId",
       this.auth.verify,
-      ValidationMiddleware.validate(userId, "params"),
-
-      ValidationMiddleware.validate(quizId, "params"),
+      ValidationMiddleware.validate(sessionId, "params"),
 
       // this.userController.submitAnswer,
       // Koniec testu
@@ -68,8 +68,11 @@ export class UserRoutes {
       this.userController.deleteUser,
     ); //usuwanie konta
     this.router.put(
-      "/api/v1/users/:id",
+      "/api/v1/users/:userId",
       this.auth.verify,
+      ValidationMiddleware.validate(userId, "params"),
+      ValidationMiddleware.validate(updateUser),
+
       this.userController.updateUser,
     ); //aktualizacja danych użytkownika
   }

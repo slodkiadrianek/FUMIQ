@@ -19,11 +19,11 @@ export const createQuiz: ObjectSchema = Joi.object({
         questionType: Joi.string().required().messages({
           "string.empty": "Question type must be provided",
         }),
-      })
+      }),
     )
     .required(),
 });
 
-export const quizId:ObjectSchema = Joi.object({
-  id:Joi.string().required()
-})
+export const quizId: ObjectSchema = Joi.object({
+  quizId: Joi.string().required(),
+});
