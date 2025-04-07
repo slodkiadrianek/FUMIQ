@@ -25,26 +25,26 @@ export class QuizRoutes {
       this.quizController.getAllQuizez,
     );
     this.router.get(
-      "/api/v1/quizez/:id",
+      "/api/v1/quizez/:quizId",
       this.auth.verify,
       ValidationMiddleware.validate(quizId, "params"),
       this.quizController.getQuizById,
     );
     this.router.put(
-      "/api/v1/quizez/:id",
+      "/api/v1/quizez/:quizId",
       this.auth.verify,
       ValidationMiddleware.validate(createQuiz, "body"),
       ValidationMiddleware.validate(quizId, "params"),
       this.quizController.updateQuiz,
     );
     this.router.delete(
-      "/api/v1/quizez/:id",
+      "/api/v1/quizez/:quizId",
       this.auth.verify,
       ValidationMiddleware.validate(quizId, "params"),
       this.quizController.deleteQuizById,
     );
     this.router.post(
-      "/api/v1/quizez/:id/session",
+      "/api/v1/quizez/:quizId/session",
       this.auth.verify,
       ValidationMiddleware.validate(quizId, "params"),
       this.quizController.startQuiz,

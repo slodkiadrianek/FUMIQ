@@ -49,7 +49,7 @@ async function updateProfile() {
       `${userData.data.user.firstname} ${userData.data.user.lastname}`;
     document.getElementById("userEmail").textContent = userData.data.user.email;
     document.getElementById("joinDate").textContent =
-      `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} `;
+      `${date.getFullYear()}-${date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1}-${date.getDate() < 10 ? `0${date.getDate()}` : date.getDate()}`;
     document.getElementById("testsCreated").textContent =
       userData.data.user.testsCreated;
     document.getElementById("testsCompleted").textContent =

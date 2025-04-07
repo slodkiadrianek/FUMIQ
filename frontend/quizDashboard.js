@@ -48,7 +48,7 @@ async function initializeQuiz() {
       },
     );
     const quizDetails = await quizResponse.json();
-
+    console.log(quizDetails);
     if (sessionData.success && quizDetails.success) {
       console.log(sessionData.data);
       quizData = {
@@ -64,13 +64,23 @@ async function initializeQuiz() {
     // Socket event handlers
     socket.on(`newUser-${sessionId}`, (data) => {
       console.log("New user joined:", data);
-      quizData.competitors.push({
-        userId: data.userData.id,
-        firstName: data.userData.firstname,
-        lastName: data.userData.lastname,
-        answers: [],
-        finished: false,
-      });
+      let founded = false;
+      for (const el of quizData.competitors) {
+        if (el.userId === data.userData.id) {
+          founded = true;
+          break;
+        }
+      }
+      if (!founded) {
+        quizData.competitors.push({
+          userId: data.userData.id,
+          firstName: data.userData.firstname,
+          lastName: data.userData.lastname,
+          answers: [],
+          finished: false,
+        });
+      }
+
       renderActiveQuiz();
     });
     socket.on(`newAnswer-${sessionId}`, (data) => {
@@ -107,15 +117,14 @@ async function initializeQuiz() {
             : data.answer,
         });
       }
-
-      // Check if finished
-      competitor.finished =
-        competitor.answers.length >= quizData.totalQuestions;
-
       renderActiveQuiz();
     });
-    socket.on(`submitQuiz-${sessionId}`, () => {
-      competitor.finished = true;
+    socket.on(`submitQuiz-${sessionId}`, (data) => {
+      for (const competitor of quizData.competitors) {
+        if (competitor.userId === data.userId) {
+          competitor.finished = true;
+        }
+      }
       renderActiveQuiz();
     });
   } catch (error) {

@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", function () {
 let socket;
 function initializeWebSocket() {
   const token = sessionStorage.getItem("authToken");
-  socket = io("http://localhost:3000");
+  socket = io(base_url);
   socket.on("connect", () => console.log("Connected!"));
   const userData = JSON.parse(sessionStorage.getItem("userData"));
   socket.emit("joinSession", { userData, sessionId: quizState.sessionId });
@@ -75,25 +75,6 @@ function setupEventListeners() {
 
   // Hide save button since we're using WebSocket
   elements.saveBtn.style.display = "none";
-}
-
-// Send answer via WebSocket
-function sendAnswerToServer(questionId, answer) {
-  if (
-    quizState.websocket &&
-    quizState.websocket.readyState === WebSocket.OPEN
-  ) {
-    const message = {
-      type: "answer",
-      questionId,
-      answer,
-      timestamp: new Date().toISOString(),
-    };
-    quizState.websocket.send(JSON.stringify(message));
-    console.log(`heh`);
-  } else {
-    console.error("WebSocket is not connected");
-  }
 }
 
 // Load quiz from API
@@ -115,7 +96,6 @@ async function loadQuiz() {
     );
 
     const data = await response.json();
-    console.log(data);
     if (!data.success) {
       throw new Error("Failed to load quiz data");
     }
@@ -413,6 +393,10 @@ async function submitQuiz() {
     if (quizState.websocket) {
       quizState.websocket.close();
     }
+    socket.emit("submitQuiz", {
+      userId: userData.id,
+      sessionId: quizState.sessionId,
+    });
 
     // Prepare answers in API format
     const submission = {

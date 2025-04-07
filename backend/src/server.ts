@@ -38,11 +38,9 @@ io.on("connection", (socket) => {
       if (!sessionQuiz) {
         throw new Error("Session not found");
       }
-      console.log(data);
       for (const el of sessionQuiz.competitors) {
         if (el.userId.toString() === data.userId) {
           const indexOfElement: number = sessionQuiz.competitors.indexOf(el);
-          console.log(sessionQuiz.competitors[indexOfElement].answers);
           if (sessionQuiz.competitors[indexOfElement].answers.length === 0) {
             sessionQuiz.competitors[indexOfElement].answers.push({
               questionId: data.questionId,
@@ -50,29 +48,33 @@ io.on("connection", (socket) => {
               correct: false,
             });
           } else {
+            let founded: boolean = false;
+            let indexOfAnswer;
             for (const ans of sessionQuiz.competitors[indexOfElement].answers) {
               if (ans.questionId.toString() === data.questionId) {
-                const indexOfAnswer =
+                founded = true;
+                indexOfAnswer =
                   sessionQuiz.competitors[indexOfElement].answers.indexOf(ans);
-                sessionQuiz.competitors[indexOfElement].answers[indexOfAnswer] =
-                  {
-                    questionId: data.questionId,
-                    answer: data.answer.join(","),
-                    correct: false,
-                  };
-              } else {
-                sessionQuiz.competitors[indexOfElement].answers.push({
-                  questionId: data.questionId,
-                  answer: data.answer.join(","),
-                  correct: false,
-                });
+                break;
               }
+            }
+            if (founded && typeof indexOfAnswer === "number") {
+              sessionQuiz.competitors[indexOfElement].answers[indexOfAnswer] = {
+                questionId: data.questionId,
+                answer: data.answer.join(","),
+                correct: false,
+              };
+            } else {
+              sessionQuiz.competitors[indexOfElement].answers.push({
+                questionId: data.questionId,
+                answer: data.answer.join(","),
+                correct: false,
+              });
             }
           }
         }
       }
       await sessionQuiz.save();
-      console.log(`sent`);
       io.emit(`newAnswer-${data.sessionId}`, {
         userId: data.userId,
         questionId: data.questionId,
@@ -84,6 +86,10 @@ io.on("connection", (socket) => {
     } catch (err) {
       console.error(err);
     }
+  });
+  socket.on("submitQuiz", (data) => {
+    console.log(`submitQuiz-${data.sessionId}`);
+    io.emit(`submitQuiz-${data.sessionId}`, { userId: data.userId });
   });
 
   socket.on("submit_session", async (data) => {
@@ -100,8 +106,6 @@ io.on("connection", (socket) => {
           el.finished = true;
         }
       }
-      console.log(questionId, answer);
-
       // Send to admin
       io.emit("answer_pack", {
         userId,

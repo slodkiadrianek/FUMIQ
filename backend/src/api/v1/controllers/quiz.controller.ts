@@ -70,7 +70,7 @@ export class QuizController {
         throw new AppError(400, "User", "User id not found");
       }
       const userId = (req as CustomRequest).user.id;
-      const quizId = req.params.id as string;
+      const quizId = req.params.quizId as string;
       this.logger.info(
         `Attempting to get quiz with id ${quizId} for ${userId}`,
       );
@@ -96,7 +96,7 @@ export class QuizController {
       if (!(req as CustomRequest).user.id) {
         throw new AppError(400, "User", "User id not found");
       }
-      const quizId = req.params.id as string;
+      const quizId = req.params.quizId as string;
       const data: Omit<IQuiz, "_id"> = {
         ...req.body,
         userId: (req as CustomRequest).user.id,
@@ -118,7 +118,7 @@ export class QuizController {
     next: NextFunction,
   ): Promise<void> => {
     try {
-      const quizId = req.params.id as string;
+      const quizId = req.params.quizId as string;
       this.logger.info(`Attempting to delete quiz with id ${quizId}`);
       const result: string = await this.quizService.deleteQuizById(quizId);
       this.logger.info(`Quiz has been downloaded`);
@@ -142,7 +142,7 @@ export class QuizController {
       if (!(req as CustomRequest).user.id) {
         throw new AppError(400, "User", "User id not found");
       }
-      const quizId = req.params.id as string;
+      const quizId = req.params.quizId as string;
       this.logger.info(`Attempting to start quiz`);
       const result: ITakenQuiz = await this.quizService.startQuiz(
         quizId,
