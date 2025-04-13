@@ -21,7 +21,8 @@ app.use(helmet());
 app.use(
   cors({
     origin: process.env.ORIGIN_LINK || "http://192.168.0.194:8080",
-    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
 

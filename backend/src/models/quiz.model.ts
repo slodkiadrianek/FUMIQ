@@ -6,27 +6,33 @@ export interface IQuiz extends Document {
   title: string;
   description: string;
   timeLimit: number;
-  questions: [{
-    correctAnswer: string | string[];
-    options: string[];
-    questionText: string;
-    questionType: string;
-  }];
-}
-
-const quizSchema = new Schema<IQuiz>({
-  userId: { type: Schema.Types.ObjectId, ref: "User" },
-  title: { type: String, required: true },
-  description: { type: String, required: true },
-  timeLimit: { type: Number, required: true },
   questions: [
     {
-      correctAnswer: { type: Schema.Types.Mixed, required: true },
-      options: { type: [String], required: true },
-      questionText: { type: String, required: true },
-      questionType: { type: String, required: true },
+      _id: Types.ObjectId;
+      correctAnswer: string | string[];
+      options: string[];
+      questionText: string;
+      questionType: string;
     },
-  ]},
-  { timestamps: true }
+  ];
+}
+
+const quizSchema = new Schema<IQuiz>(
+  {
+    userId: { type: Schema.Types.ObjectId, ref: "User" },
+    title: { type: String, required: true },
+    description: { type: String, required: true },
+    timeLimit: { type: Number, required: true },
+    questions: [
+      {
+        _id: { type: Types.ObjectId, required: true },
+        correctAnswer: { type: Schema.Types.Mixed, required: true },
+        options: { type: [String], required: true },
+        questionText: { type: String, required: true },
+        questionType: { type: String, required: true },
+      },
+    ],
+  },
+  { timestamps: true },
 );
 export const Quiz: Model<IQuiz> = model<IQuiz>("Quiz", quizSchema);

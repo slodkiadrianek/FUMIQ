@@ -8,7 +8,7 @@ async function joinQuiz() {
   const code = document.getElementById("code").value;
   const userData = JSON.parse(sessionStorage.getItem("userData"));
   const response = await fetch(
-    `http://${base_url}/api/v1/users/${userData.id}/session`,
+    `http://${base_url}/api/v1/users/${userData.id}/sessions`,
     {
       method: "POST",
       headers: {
@@ -25,7 +25,7 @@ async function joinQuiz() {
   console.log(responseData);
   if (!responseData.success) {
     errorMessage.classList.remove("d-none");
-    errorMessage.innerHTML = "Test with this code does not exist!!!";
+    errorMessage.innerHTML = responseData.error.description;
   } else {
     errorMessage.classList.add("d-none");
     window.location.href = `/sessionQuiz.html?sessionId=${responseData.data.quiz._id}`;

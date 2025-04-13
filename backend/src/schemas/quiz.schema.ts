@@ -27,3 +27,8 @@ export const createQuiz: ObjectSchema = Joi.object({
 export const quizId: ObjectSchema = Joi.object({
   quizId: Joi.string().required(),
 });
+
+export const endQuizSession: ObjectSchema = Joi.object({
+  sessionId: Joi.string().required(),
+  quizId: Joi.string().required(),
+});

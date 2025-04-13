@@ -1,13 +1,33 @@
 // Quiz state management
 import { base_url } from "./base_api.js";
+async function submitAnswers() {
+  const token = sessionStorage.getItem("authToken");
+  const response = await fetch(
+    `http://${base_url}/api/v1/users/${userData.id}/sessions/${quizState.sessionId}`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+  let result;
+  if (response.status === 204) {
+    window.location.href = `viewResult.html?sessionId=${quizState.sessionId}`;
+  } else {
+    result = await response.json(); // for 200 or error responses
+    throw new Error(result.error.description || "Submission failed");
+  }
+}
 let userData = JSON.parse(sessionStorage.getItem("userData"));
-// document.addEventListener("visibilitychange", () => {
-//   if (document.hidden) {
-//     window.location.href = "https://github.com/slodkiadrianek";
-//   } else {
-//     console.log("Strona znów jest widoczna");
-//   }
-// });
+document.addEventListener("visibilitychange", async () => {
+  if (document.hidden) {
+    // submitAnswers();
+  } else {
+    console.log("Strona znów jest widoczna");
+  }
+});
 
 // Define element references
 const elements = {
@@ -85,7 +105,7 @@ async function loadQuiz() {
     const token = sessionStorage.getItem("authToken");
 
     const response = await fetch(
-      `http://${base_url}/api/v1/users/${userData.id}/session/${quizState.sessionId}`,
+      `http://${base_url}/api/v1/users/${userData.id}/sessions/${quizState.sessionId}`,
       {
         method: "GET",
         headers: {
@@ -387,8 +407,6 @@ async function submitQuiz() {
   clearInterval(quizState.timerInterval);
 
   try {
-    const token = sessionStorage.getItem("authToken");
-
     // Close WebSocket connection
     if (quizState.websocket) {
       quizState.websocket.close();
@@ -399,37 +417,7 @@ async function submitQuiz() {
     });
 
     // Prepare answers in API format
-    const submission = {
-      sessionId: quizState.sessionId,
-      answers: quizState.questions.map((q) => {
-        const userAnswer = quizState.answers[q.id];
-        return {
-          questionId: q.id,
-          answer: Array.isArray(userAnswer) ? userAnswer : [userAnswer],
-          questionType: q.questionType,
-        };
-      }),
-      timeSpent: quizState.timeLimit - quizState.timeLeft,
-    };
-
-    const response = await fetch(
-      `http://${base_url}/api/v1/users/${userData.id}/session/${quizState.sessionId}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    );
-
-    const result = await response.json();
-
-    if (result.success) {
-      window.location.href = `quiz-results.html?sessionId=${quizState.sessionId}`;
-    } else {
-      throw new Error(result.message || "Submission failed");
-    }
+    await submitAnswers();
   } catch (error) {
     console.error("Submission error:", error);
     alert("Error submitting quiz. Please try again.");

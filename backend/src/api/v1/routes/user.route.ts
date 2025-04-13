@@ -25,31 +25,23 @@ export class UserRoutes {
       this.userController.getUserById,
     );
     this.router.post(
-      "/api/v1/users/:userId/session/",
+      "/api/v1/users/:userId/sessions/",
       this.auth.verify,
       ValidationMiddleware.validate(userId, "params"),
 
       this.userController.joinQuiz,
     );
     this.router.get(
-      "/api/v1/users/:userId/session/:sessionId",
+      "/api/v1/users/:userId/sessions/:sessionId",
       this.auth.verify,
       ValidationMiddleware.validate(sessionId, "params"),
       this.userController.getQuestions,
     );
-    this.router.delete(
-      "/api/v1/users/:userId/session/:sessionId",
+    this.router.patch(
+      "/api/v1/users/:userId/sessions/:sessionId",
       this.auth.verify,
       ValidationMiddleware.validate(sessionId, "params"),
       this.userController.submitQuiz,
-    );
-    this.router.patch(
-      "/api/v1/users/:userId/session/:sessionId",
-      this.auth.verify,
-      ValidationMiddleware.validate(sessionId, "params"),
-
-      // this.userController.submitAnswer,
-      // Koniec testu
     );
     this.router.patch(
       "/api/v1/users/:userId",
@@ -75,5 +67,10 @@ export class UserRoutes {
 
       this.userController.updateUser,
     ); //aktualizacja danych użytkownika
+    this.router.get(
+      "/api/v1/users/:userId/sessions/:sessionId/results",
+      this.auth.verify,
+      this.userController.getResult,
+    );
   }
 }

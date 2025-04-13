@@ -2,7 +2,11 @@ import { Router } from "express";
 import { ValidationMiddleware } from "../../../middleware/validation.middleware.js";
 import { QuizController } from "../controllers/quiz.controller.js";
 import { Authentication } from "../../../middleware/auth.middleware.js";
-import { createQuiz, quizId } from "../../../schemas/quiz.schema.js";
+import {
+  createQuiz,
+  endQuizSession,
+  quizId,
+} from "../../../schemas/quiz.schema.js";
 export class QuizRoutes {
   constructor(
     private quizController: QuizController,
@@ -44,10 +48,16 @@ export class QuizRoutes {
       this.quizController.deleteQuizById,
     );
     this.router.post(
-      "/api/v1/quizez/:quizId/session",
+      "/api/v1/quizez/:quizId/sessions",
       this.auth.verify,
       ValidationMiddleware.validate(quizId, "params"),
-      this.quizController.startQuiz,
+      this.quizController.startQuizSession,
+    );
+    this.router.patch(
+      "/api/v1/quizez/:quizId/sessions/:sessionId",
+      this.auth.verify,
+      ValidationMiddleware.validate(endQuizSession, "params"),
+      this.quizController.endQuizSession,
     );
   }
 }

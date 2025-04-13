@@ -12,10 +12,9 @@ export interface ITakenQuiz extends Document {
       answers: {
         questionId: Types.ObjectId;
         answer: string;
-        correct: boolean;
       }[];
       finished: boolean;
-    }
+    },
   ];
 }
 
@@ -43,18 +42,17 @@ const takenQuizSchema = new Schema<ITakenQuiz>(
                   required: true,
                 },
                 answer: { type: String, required: true },
-                correct: { type: Boolean, required: true },
               },
             ],
-            default: [], 
+            default: [],
           },
         },
       ],
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 export const TakenQuiz: Model<ITakenQuiz> = model<ITakenQuiz>(
   "TakenQuiz",
-  takenQuizSchema
+  takenQuizSchema,
 );

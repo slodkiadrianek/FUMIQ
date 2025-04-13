@@ -26,7 +26,10 @@ export class QuizService extends BaseService {
   deleteQuizById = async (quizId: string): Promise<string> => {
     return this.deleteItem("Quiz", quizId, Quiz);
   };
-  startQuiz = async (quizId: string, userId: string): Promise<ITakenQuiz> => {
+  startQuizSession = async (
+    quizId: string,
+    userId: string,
+  ): Promise<ITakenQuiz> => {
     const quizCheck: ITakenQuiz | null = await TakenQuiz.findOne({
       quizId,
       userId,
@@ -53,5 +56,16 @@ export class QuizService extends BaseService {
       code,
     });
     return result;
+  };
+  endQuizSession = async (sessionId: string): Promise<void> => {
+    const quizSession: ITakenQuiz | null = await TakenQuiz.findOne({
+      _id: sessionId,
+    });
+    if (!quizSession) {
+      this.logger.error(`Quiz with id ${sessionId} not found`);
+      throw new Error(`Quiz with id ${sessionId} not found`);
+    }
+    quizSession.isActive = false;
+    await quizSession.save();
   };
 }

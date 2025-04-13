@@ -133,7 +133,7 @@ export class QuizController {
       next(error);
     }
   };
-  startQuiz = async (
+  startQuizSession = async (
     req: Request,
     res: Response,
     next: NextFunction,
@@ -144,7 +144,7 @@ export class QuizController {
       }
       const quizId = req.params.quizId as string;
       this.logger.info(`Attempting to start quiz`);
-      const result: ITakenQuiz = await this.quizService.startQuiz(
+      const result: ITakenQuiz = await this.quizService.startQuizSession(
         quizId,
         (req as CustomRequest).user.id,
       );
@@ -155,6 +155,22 @@ export class QuizController {
           quiz: result,
         },
       });
+      return;
+    } catch (error) {
+      next(error);
+    }
+  };
+  endQuizSession = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const sessionId = req.params.sessionId as string;
+      this.logger.info(`Attempting to end quiz`);
+      await this.quizService.endQuizSession(sessionId);
+      this.logger.info(`Quiz has been ended`);
+      res.status(204).send();
       return;
     } catch (error) {
       next(error);

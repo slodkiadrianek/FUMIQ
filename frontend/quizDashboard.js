@@ -23,7 +23,7 @@ async function initializeQuiz() {
   try {
     // Get quiz session data
     const sessionResponse = await fetch(
-      `http://${base_url}/api/v1/quizez/${testId}/session`,
+      `http://${base_url}/api/v1/quizez/${testId}/sessions`,
       {
         method: "POST",
         headers: {
@@ -34,7 +34,6 @@ async function initializeQuiz() {
     );
     const sessionData = await sessionResponse.json();
     sessionId = sessionData.data.quiz._id.toString();
-    console.log(sessionId);
     // Get quiz details to know total questions
     const quizResponse = await fetch(
       `http://${base_url}/api/v1/quizez/${testId}`,
@@ -42,7 +41,6 @@ async function initializeQuiz() {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-
           Authorization: `Bearer ${token}`,
         },
       },
@@ -200,5 +198,97 @@ function renderActiveQuiz() {
 
   quizContainer.appendChild(quizCard);
 }
+// Add JavaScript to handle quiz ending
+document.addEventListener("DOMContentLoaded", function () {
+  const confirmEndQuizBtn = document.getElementById("confirmEndQuiz");
+
+  if (confirmEndQuizBtn) {
+    confirmEndQuizBtn.addEventListener("click", function () {
+      // Call function to end the quiz
+      endQuiz();
+
+      // Close the modal
+      const modal = bootstrap.Modal.getInstance(
+        document.getElementById("endQuizModal"),
+      );
+      modal.hide();
+    });
+  }
+
+  // Function to end the quiz
+  async function endQuiz() {
+    try {
+      // Get the active quiz ID from the page or session storage
+      // This would depend on how you're storing the active quiz information
+
+      const token = sessionStorage.getItem("authToken");
+      const testId = new URLSearchParams(window.location.search).get("id");
+      // Make API request to end the quiz
+      const response = await fetch(
+        `http://${base_url}/api/v1/quizez/${testId}/sessions/${sessionId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      if (response.status !== 204) {
+        throw new Error("Failed to end quiz");
+      }
+      showNotification("Quiz ended successfully!", "success");
+
+      // Refresh the quiz display or redirect to results
+      setTimeout(() => {
+        window.location.href = "view_results.html?quiz=" + sessionId;
+      }, 1500);
+    } catch (error) {
+      console.error("Error in endQuiz function:", error);
+      showNotification("An unexpected error occurred.", "error");
+    }
+  }
+
+  // Helper function to get active quiz ID
+
+  // Helper function to show notifications
+  function showNotification(message, type) {
+    // Create notification element
+    const notification = document.createElement("div");
+    notification.className = `notification ${type} animate__animated animate__fadeIn`;
+    notification.textContent = message;
+
+    // Apply styles based on notification type
+    if (type === "success") {
+      notification.style.backgroundColor = "rgba(16, 185, 129, 0.9)";
+    } else if (type === "error") {
+      notification.style.backgroundColor = "rgba(239, 68, 68, 0.9)";
+    }
+
+    // Style the notification
+    Object.assign(notification.style, {
+      position: "fixed",
+      top: "20px",
+      right: "20px",
+      padding: "12px 20px",
+      borderRadius: "8px",
+      color: "white",
+      boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+      zIndex: "9999",
+      maxWidth: "300px",
+    });
+
+    // Add to document
+    document.body.appendChild(notification);
+
+    // Remove after delay
+    setTimeout(() => {
+      notification.classList.replace("animate__fadeIn", "animate__fadeOut");
+      setTimeout(() => {
+        notification.remove();
+      }, 500);
+    }, 3000);
+  }
+});
 
 // Initialize on page load

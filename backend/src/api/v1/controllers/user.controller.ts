@@ -37,8 +37,9 @@ export class UserController {
   ): Promise<void> => {
     try {
       const code = req.body.code as string;
+      const userId = req.params.userId as string;
       this.logger.info(`Attempting to join quiz with code ${code}`);
-      const result: string = await this.userService.joinQuiz(code);
+      const result: string = await this.userService.joinQuiz(userId, code);
       this.logger.info(`User joined quiz with code ${code}`);
       res.status(200).json({
         success: true,
@@ -85,9 +86,7 @@ export class UserController {
       const sessionId: string = req.params.sessionId;
       this.logger.info(`Attempting to end test`, { userId, sessionId });
       await this.userService.endQuiz(userId, sessionId);
-      res.status(200).json({
-        success: true,
-      });
+      res.status(204).send();
     } catch (error) {
       next(error);
     }
@@ -143,6 +142,31 @@ export class UserController {
       res.status(200).json({
         success: true,
       });
+    } catch (error) {
+      next(error);
+    }
+  };
+  getResult = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const userId: string = req.params.userId;
+      const sessionId: string = req.params.sessionId;
+      this.logger.info(`Attempting to get result`, { userId, sessionId });
+      const result: number = await this.userService.getResult(
+        userId,
+        sessionId,
+      );
+      this.logger.info(`Result loaded successfully`, { userId, sessionId });
+      res.status(200).json({
+        success: true,
+        data: {
+          score: result,
+        },
+      });
+      return;
     } catch (error) {
       next(error);
     }
