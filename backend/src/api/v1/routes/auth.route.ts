@@ -8,6 +8,7 @@ import {
   loginUser,
   passwordUser,
   emailUser,
+  token,
 } from "../../../schemas/user.schema.js";
 import { Authentication } from "../../../middleware/auth.middleware.js";
 export class AuthRoutes {
@@ -63,11 +64,13 @@ export class AuthRoutes {
     );
     this.router.post(
       "/api/v1/auth/reset-password/:token",
+      ValidationMiddleware.validate(token, "params"),
       ValidationMiddleware.validate(passwordUser, "body"),
       this.authController.resetPassword
     );
     this.router.get(
       "/api/v1/auth/activate/:token",
+      ValidationMiddleware.validate(token, "params"),
       this.authController.activateUser
     );
   }

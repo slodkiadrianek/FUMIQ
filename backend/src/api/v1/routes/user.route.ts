@@ -13,7 +13,7 @@ export class UserRoutes {
   constructor(
     private userController: UserController,
     private auth: Authentication,
-    public router: Router = Router(),
+    public router: Router = Router()
   ) {
     this.initializeRoutes();
   }
@@ -22,19 +22,19 @@ export class UserRoutes {
       "/api/v1/users/:userId",
       this.auth.verify,
       ValidationMiddleware.validate(userId, "params"),
-      this.userController.getUserById,
+      this.userController.getUserById
     );
     this.router.post(
       "/api/v1/users/:userId/sessions/",
       this.auth.verify,
       ValidationMiddleware.validate(userId, "params"),
-
-      this.userController.joinQuiz,
+      this.userController.joinQuiz
     );
     this.router.get(
       "/api/v1/users/:userId/sessions/:sessionId",
       this.auth.verify,
       ValidationMiddleware.validate(sessionId, "params"),
+<<<<<<< HEAD
       this.userController.getQuestions,
     );
     this.router.patch(
@@ -44,11 +44,22 @@ export class UserRoutes {
       this.userController.submitQuiz,
     );
     this.router.patch(
+=======
+      this.userController.getQuestions
+    );
+    this.router.patch(
+      "/api/v1/users/:userId/sessions/:sessionId",
+      this.auth.verify,
+      ValidationMiddleware.validate(sessionId, "params"),
+      this.userController.submitQuiz
+    );
+    this.router.patch(
+>>>>>>> 01f90fd (Quiz logic)
       "/api/v1/users/:userId",
       this.auth.verify,
       ValidationMiddleware.validate(userId, "params"),
       ValidationMiddleware.validate(changePasswordUser),
-      this.userController.changePassword,
+      this.userController.changePassword
     ); //zmiana hasła
     this.router.delete(
       "/api/v1/users/:userId",
@@ -56,21 +67,24 @@ export class UserRoutes {
       ValidationMiddleware.validate(userId, "params"),
       ValidationMiddleware.validate(deleteUser),
       this.auth.blacklist,
-
-      this.userController.deleteUser,
+      this.userController.deleteUser
     ); //usuwanie konta
     this.router.put(
       "/api/v1/users/:userId",
       this.auth.verify,
       ValidationMiddleware.validate(userId, "params"),
       ValidationMiddleware.validate(updateUser),
-
-      this.userController.updateUser,
+      this.userController.updateUser
     ); //aktualizacja danych użytkownika
     this.router.get(
       "/api/v1/users/:userId/sessions/:sessionId/results",
       this.auth.verify,
+<<<<<<< HEAD
       this.userController.getResult,
+=======
+      ValidationMiddleware.validate(sessionId, "params"),
+      this.userController.getResult
+>>>>>>> 01f90fd (Quiz logic)
     );
   }
 }

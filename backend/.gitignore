@@ -3,3 +3,4 @@ logs
 dist
 .env
 .VSCodeCounter
+.idea

@@ -7,7 +7,7 @@ export const registerUser: ObjectSchema = Joi.object({
     .min(8)
     .max(30)
     .pattern(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
     )
     .required()
     .messages({
@@ -31,7 +31,7 @@ export const loginUser: ObjectSchema = Joi.object({
     .min(8)
     .max(30)
     .pattern(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
     )
     .required()
     .messages({
@@ -49,7 +49,7 @@ export const passwordUser: ObjectSchema = Joi.object({
     .min(8)
     .max(30)
     .pattern(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
     )
     .required()
     .messages({
@@ -63,7 +63,7 @@ export const changePasswordUser: ObjectSchema = Joi.object({
     .min(8)
     .max(30)
     .pattern(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
     )
     .required()
     .messages({
@@ -74,7 +74,7 @@ export const changePasswordUser: ObjectSchema = Joi.object({
     .min(8)
     .max(30)
     .pattern(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
     )
     .required()
     .messages({
@@ -92,7 +92,7 @@ export const deleteUser: ObjectSchema = Joi.object({
     .min(8)
     .max(30)
     .pattern(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
     )
     .required()
     .messages({
@@ -105,4 +105,8 @@ export const updateUser: ObjectSchema = Joi.object({
   firstname: Joi.string().required(),
   lastname: Joi.string().required(),
   email: Joi.string().email().required(),
+});
+
+export const token: ObjectSchema = Joi.object({
+  token: Joi.string().required(),
 });
