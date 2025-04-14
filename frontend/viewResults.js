@@ -1,4 +1,5 @@
-document.addEventListener("DOMContentLoaded", function () {
+import { base_url } from "./base_api.js";
+document.addEventListener("DOMContentLoaded", async function () {
   // Sample data - replace with actual API call
   const competitors = [
     { id: 1, name: "Alex Johnson", score: 95, avatar: "AJ" },
@@ -19,37 +20,49 @@ document.addEventListener("DOMContentLoaded", function () {
   competitors.sort((a, b) => b.score - a.score);
 
   // Populate the list
-  competitors.forEach((competitor) => {
-    const participant = document.createElement("div");
-    participant.className = "participant-item";
+  competitors.forEach((competitor) => {});
 
-    participant.innerHTML = `
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get("sessionId");
+    const quizId = urlParams.get("quizId");
+    const token = sessionStorage.getItem("authToken");
+    const response = await fetch(
+      `http://${base_url}/api/v1/quizez/${quizId}/sessions/${sessionId}/results`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    console.log(response);
+    const responseData = await response.json();
+    if (responseData.success) {
+      console.log(responseData);
+      const quizScore = responseData.data.scores;
+      for (const el of quizScore) {
+        const splitted = el.name.split(" ");
+        const avatar = `${splitted[0][0]}${splitted[1][0]}`.toUpperCase();
+        const participant = document.createElement("div");
+        participant.className = "participant-item";
+
+        participant.innerHTML = `
                         <div class="participant-info">
-                            <div class="avatar">${competitor.avatar}</div>
-                            <div>${competitor.name}</div>
+                            <div class="avatar">${avatar}</div>
+                            <div>${el.name}</div>
                         </div>
-                        <div class="participant-score">${competitor.score}%</div>
+                        <div class="participant-score">${el.score}%</div>
                     `;
 
-    participantsList.appendChild(participant);
-  });
-
-  // To connect to your actual API:
-  /*
-                fetch('/api/quiz-competitors?id=123')
-                    .then(response => response.json())
-                    .then(data => {
-                        // Clear existing list
-                        participantsList.innerHTML = '';
-                        
-                        // Sort and populate with real data
-                        data.sort((a, b) => b.score - a.score)
-                           .forEach(competitor => {
-                               // Create and append participant items as above
-                           });
-                    })
-                    .catch(error => {
-                        console.error('Error fetching competitor results:', error);
-                    });
-                */
+        participantsList.appendChild(participant);
+      }
+    } else {
+      throw new Error(requestData.error.description);
+    }
+  } catch (error) {
+    console.error("Submission error:", error);
+    alert("Error during showing results. Please try again.");
+  }
 });

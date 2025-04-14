@@ -176,4 +176,27 @@ export class QuizController {
       next(error);
     }
   };
+  getQuizResults = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const quizId = req.params.quizId as string;
+      const sessionId = req.params.sessionId as string;
+      this.logger.info(`Attempting to download quiz results`);
+      const result: { name: string; score: number }[] =
+        await this.quizService.showQuizResults(quizId, sessionId);
+      this.logger.info(`Quiz results have been dowloaded and calculated`);
+      res.status(200).json({
+        success: true,
+        data: {
+          scores: result,
+        },
+      });
+      return;
+    } catch (error) {
+      next(error);
+    }
+  };
 }

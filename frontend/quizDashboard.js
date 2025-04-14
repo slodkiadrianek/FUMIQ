@@ -241,7 +241,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Refresh the quiz display or redirect to results
       setTimeout(() => {
-        window.location.href = "view_results.html?quiz=" + sessionId;
+        window.location.href =
+          "viewResults.html?sessionId=" + sessionId + "&quizId=" + testId;
       }, 1500);
     } catch (error) {
       console.error("Error in endQuiz function:", error);

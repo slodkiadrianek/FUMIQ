@@ -202,7 +202,6 @@ export class UserService extends BaseService {
       }
     }
     score = Math.ceil((score / answers.length) * 100);
-    console.log(score);
     return score;
   };
 }

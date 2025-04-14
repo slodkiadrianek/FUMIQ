@@ -16,24 +16,30 @@ document.addEventListener("DOMContentLoaded", async function () {
                     )
                 `;
   scorePercent.textContent = `${quizScore}%`;
-  const token = sessionStorage.getItem("authToken");
-  let userData = JSON.parse(sessionStorage.getItem("userData"));
-  const response = await fetch(
-    `http://${base_url}/api/v1/users/${userData.id}/sessions/${sessionId}/results`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+  try {
+    const token = sessionStorage.getItem("authToken");
+    let userData = JSON.parse(sessionStorage.getItem("userData"));
+    const response = await fetch(
+      `http://${base_url}/api/v1/users/${userData.id}/sessions/${sessionId}/results`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       },
-    },
-  );
-  console.log(response);
-  const responseData = await response.json();
-  if (responseData.success) {
-    console.log(responseData);
-    quizScore = responseData.data.score;
-    scorePercent.textContent = `${quizScore}%`;
-  } else {
+    );
+    console.log(response);
+    const responseData = await response.json();
+    if (responseData.success) {
+      console.log(responseData);
+      quizScore = responseData.data.score;
+      scorePercent.textContent = `${quizScore}%`;
+    } else {
+      throw new Error(requestData.error.description);
+    }
+  } catch (error) {
+    console.error("Submission error:", error);
+    alert("Error during showing results. Please try again.");
   }
 });
