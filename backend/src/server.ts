@@ -10,7 +10,7 @@ const server = createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: process.env.ORIGIN_LINK || "http://127.0.0.1:5500",
+    // origin: process.env.ORIGIN_LINK || "http://192.168.88.183:8080",
     credentials: true,
   },
 });

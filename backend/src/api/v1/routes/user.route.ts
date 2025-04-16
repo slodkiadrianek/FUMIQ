@@ -34,17 +34,6 @@ export class UserRoutes {
       "/api/v1/users/:userId/sessions/:sessionId",
       this.auth.verify,
       ValidationMiddleware.validate(sessionId, "params"),
-<<<<<<< HEAD
-      this.userController.getQuestions,
-    );
-    this.router.patch(
-      "/api/v1/users/:userId/sessions/:sessionId",
-      this.auth.verify,
-      ValidationMiddleware.validate(sessionId, "params"),
-      this.userController.submitQuiz,
-    );
-    this.router.patch(
-=======
       this.userController.getQuestions
     );
     this.router.patch(
@@ -54,7 +43,6 @@ export class UserRoutes {
       this.userController.submitQuiz
     );
     this.router.patch(
->>>>>>> 01f90fd (Quiz logic)
       "/api/v1/users/:userId",
       this.auth.verify,
       ValidationMiddleware.validate(userId, "params"),
@@ -79,12 +67,9 @@ export class UserRoutes {
     this.router.get(
       "/api/v1/users/:userId/sessions/:sessionId/results",
       this.auth.verify,
-<<<<<<< HEAD
-      this.userController.getResult,
-=======
+
       ValidationMiddleware.validate(sessionId, "params"),
       this.userController.getResult
->>>>>>> 01f90fd (Quiz logic)
     );
   }
 }

@@ -11,7 +11,7 @@ export class QuizRoutes {
   constructor(
     private quizController: QuizController,
     private auth: Authentication,
-    public router: Router = Router(),
+    public router: Router = Router()
   ) {
     this.initializeRoutes();
   }
@@ -21,49 +21,55 @@ export class QuizRoutes {
       "/api/v1/quizez/",
       ValidationMiddleware.validate(createQuiz, "body"),
       this.auth.verify,
-      this.quizController.createQuiz,
+      this.quizController.createQuiz
     );
     this.router.get(
       "/api/v1/quizez/",
       this.auth.verify,
-      this.quizController.getAllQuizez,
+      this.quizController.getAllQuizez
     );
     this.router.get(
       "/api/v1/quizez/:quizId",
       this.auth.verify,
       ValidationMiddleware.validate(quizId, "params"),
-      this.quizController.getQuizById,
+      this.quizController.getQuizById
     );
     this.router.put(
       "/api/v1/quizez/:quizId",
       this.auth.verify,
       ValidationMiddleware.validate(createQuiz, "body"),
       ValidationMiddleware.validate(quizId, "params"),
-      this.quizController.updateQuiz,
+      this.quizController.updateQuiz
     );
     this.router.delete(
       "/api/v1/quizez/:quizId",
       this.auth.verify,
       ValidationMiddleware.validate(quizId, "params"),
-      this.quizController.deleteQuizById,
+      this.quizController.deleteQuizById
     );
     this.router.post(
       "/api/v1/quizez/:quizId/sessions",
       this.auth.verify,
       ValidationMiddleware.validate(quizId, "params"),
-      this.quizController.startQuizSession,
+      this.quizController.startQuizSession
     );
     this.router.patch(
       "/api/v1/quizez/:quizId/sessions/:sessionId",
       this.auth.verify,
       ValidationMiddleware.validate(endQuizSession, "params"),
-      this.quizController.endQuizSession,
+      this.quizController.endQuizSession
     );
     this.router.get(
       "/api/v1/quizez/:quizId/sessions/:sessionId/results",
       this.auth.verify,
       ValidationMiddleware.validate(endQuizSession, "params"),
-      this.quizController.getQuizResults,
+      this.quizController.getQuizResults
+    );
+    this.router.get(
+      "/api/v1/quizez/:quizId/sessions",
+      this.auth.verify,
+      ValidationMiddleware.validate(quizId, "params"),
+      this.quizController.getAllSessions
     );
   }
 }

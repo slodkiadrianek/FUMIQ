@@ -7,15 +7,12 @@ import { CustomRequest } from "../../../types/common.type.js";
 import { AppError } from "../../../models/error.model.js";
 
 export class QuizController {
-  constructor(
-    private logger: Logger,
-    private quizService: QuizService,
-  ) {}
+  constructor(private logger: Logger, private quizService: QuizService) {}
 
   createQuiz = async (
     req: Request,
     res: Response,
-    next: NextFunction,
+    next: NextFunction
   ): Promise<void> => {
     try {
       if (!(req as CustomRequest).user.id) {
@@ -39,7 +36,7 @@ export class QuizController {
   getAllQuizez = async (
     req: Request,
     res: Response,
-    next: NextFunction,
+    next: NextFunction
   ): Promise<void> => {
     try {
       if (!(req as CustomRequest).user.id) {
@@ -63,7 +60,7 @@ export class QuizController {
   getQuizById = async (
     req: Request,
     res: Response,
-    next: NextFunction,
+    next: NextFunction
   ): Promise<void> => {
     try {
       if (!(req as CustomRequest).user.id) {
@@ -72,7 +69,7 @@ export class QuizController {
       const userId = (req as CustomRequest).user.id;
       const quizId = req.params.quizId as string;
       this.logger.info(
-        `Attempting to get quiz with id ${quizId} for ${userId}`,
+        `Attempting to get quiz with id ${quizId} for ${userId}`
       );
       const result: IQuiz = await this.quizService.getQuizById(quizId);
       this.logger.info(`Quiz has been downloaded`);
@@ -90,7 +87,7 @@ export class QuizController {
   updateQuiz = async (
     req: Request,
     res: Response,
-    next: NextFunction,
+    next: NextFunction
   ): Promise<void> => {
     try {
       if (!(req as CustomRequest).user.id) {
@@ -115,7 +112,7 @@ export class QuizController {
   deleteQuizById = async (
     req: Request,
     res: Response,
-    next: NextFunction,
+    next: NextFunction
   ): Promise<void> => {
     try {
       const quizId = req.params.quizId as string;
@@ -136,7 +133,7 @@ export class QuizController {
   startQuizSession = async (
     req: Request,
     res: Response,
-    next: NextFunction,
+    next: NextFunction
   ): Promise<void> => {
     try {
       if (!(req as CustomRequest).user.id) {
@@ -146,7 +143,7 @@ export class QuizController {
       this.logger.info(`Attempting to start quiz`);
       const result: ITakenQuiz = await this.quizService.startQuizSession(
         quizId,
-        (req as CustomRequest).user.id,
+        (req as CustomRequest).user.id
       );
       this.logger.info(`Quiz has been started`);
       res.status(200).json({
@@ -163,7 +160,7 @@ export class QuizController {
   endQuizSession = async (
     req: Request,
     res: Response,
-    next: NextFunction,
+    next: NextFunction
   ): Promise<void> => {
     try {
       const sessionId = req.params.sessionId as string;
@@ -179,7 +176,7 @@ export class QuizController {
   getQuizResults = async (
     req: Request,
     res: Response,
-    next: NextFunction,
+    next: NextFunction
   ): Promise<void> => {
     try {
       const quizId = req.params.quizId as string;
@@ -192,6 +189,33 @@ export class QuizController {
         success: true,
         data: {
           scores: result,
+        },
+      });
+      return;
+    } catch (error) {
+      next(error);
+    }
+  };
+  getAllSessions = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const quizId: string = req.params.quizId;
+      this.logger.info(`Attempting to get data about session`, { quizId });
+      const result: {
+        startedAt: string;
+        endedAt: string;
+        amountOfParticipants: number;
+      }[] = await this.quizService.getAllSessions(quizId);
+      this.logger.info(`Successfully dowloaded data about sessions`, {
+        quizId,
+      });
+      res.status(200).json({
+        success: true,
+        data: {
+          sessions: result,
         },
       });
       return;

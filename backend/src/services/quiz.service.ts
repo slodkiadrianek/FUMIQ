@@ -4,6 +4,8 @@ import { Logger } from "../utils/logger.js";
 import { BaseService } from "./base.service.js";
 import { ITakenQuiz, TakenQuiz } from "../models/takenQuiz.model.js";
 import { IUser } from "../models/user.model.js";
+import { quizId } from "../schemas/quiz.schema.js";
+import { AppError } from "../models/error.model.js";
 
 export class QuizService extends BaseService {
   constructor(logger: Logger, caching: RedisCacheService) {
@@ -20,7 +22,7 @@ export class QuizService extends BaseService {
   };
   updateQuiz = async (
     quizId: string,
-    quizData: Omit<IQuiz, "_id">,
+    quizData: Omit<IQuiz, "_id">
   ): Promise<IQuiz> => {
     return this.updateItem("Quiz", quizId, quizData, Quiz);
   };
@@ -29,7 +31,7 @@ export class QuizService extends BaseService {
   };
   startQuizSession = async (
     quizId: string,
-    userId: string,
+    userId: string
   ): Promise<ITakenQuiz> => {
     const quizCheck: ITakenQuiz | null = await TakenQuiz.findOne({
       quizId,
@@ -71,9 +73,8 @@ export class QuizService extends BaseService {
   };
   showQuizResults = async (
     quizId: string,
-    sessionId: string,
+    sessionId: string
   ): Promise<{ name: string; score: number }[]> => {
-    console.log("HUJ");
     const result: { name: string; score: number }[] = [];
     const quizSession = await TakenQuiz.findOne({
       _id: sessionId,
@@ -91,7 +92,6 @@ export class QuizService extends BaseService {
       this.logger.error(`Quiz with id ${sessionId} not found`);
       throw new Error(`Quiz with id ${sessionId} not found`);
     }
-    console.log(quizSession);
     const answers = quizSession.quizId.questions.map((el) => ({
       question: el._id,
       answer: el.correctAnswer,
@@ -119,5 +119,24 @@ export class QuizService extends BaseService {
       result.push({ name, score });
     }
     return result;
+  };
+  getAllSessions = async (quizId: string): Promise<{startedAt:string, endedAt:string, amountOfParticipants:number}[]> => {
+    const sessions: {updatedAt:string, createdAt:string, competitors:[]}[] | null = await TakenQuiz.find({
+      quizId,
+      isActive: false,
+    }, "createdAt updatedAt competitors");
+    if(!sessions){
+      this.logger.error("No sessions with this quizId", {quizId})
+      throw new AppError(400, "Session", "No session with this quizId")
+    }
+    const result: {
+      startedAt: string;
+      endedAt: string;
+      amountOfParticipants: number;
+    }[] = []
+    for(const el of sessions){
+      result.push({startedAt:el.createdAt, endedAt:el.updatedAt, amountOfParticipants: el.competitors.length})
+    }
+    return result
   };
 }

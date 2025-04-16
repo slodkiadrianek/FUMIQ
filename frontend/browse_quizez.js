@@ -40,6 +40,9 @@ async function fetchTests() {
           <a href="quizDashboard.html?id=${test._id}" class="btn btn-success rounded mt-2 w-100" data-test-id="${test._id}">
             <i class="bi bi-play-circle"></i> Start Test
           </a>
+           <a href="browseSessions.html?id=${test._id}" class="btn btn-primary rounded mt-2 w-100" data-test-id="${test._id}">
+            <i class="bi bi-database"></i> Browse sessions
+          </a>
       `;
       testList.appendChild(testCard);
     });
@@ -90,7 +93,7 @@ testList.addEventListener("click", (event) => {
     currentTestIdToDelete = testId; // Store the test ID to delete
     // Show the confirmation modal
     const deleteModal = new bootstrap.Modal(
-      document.getElementById("deleteConfirmationModal"),
+      document.getElementById("deleteConfirmationModal")
     );
     deleteModal.show();
   }
@@ -117,7 +120,7 @@ document.getElementById("confirmDeleteButton").addEventListener("click", () => {
     currentTestIdToDelete = null; // Reset the stored test ID
     // Hide the modal
     const deleteModal = bootstrap.Modal.getInstance(
-      document.getElementById("deleteConfirmationModal"),
+      document.getElementById("deleteConfirmationModal")
     );
     deleteModal.hide();
   }
