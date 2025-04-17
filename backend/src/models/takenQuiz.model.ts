@@ -14,7 +14,7 @@ export interface ITakenQuiz extends Document {
         answer: string;
       }[];
       finished: boolean;
-    },
+    }
   ];
 }
 
@@ -38,7 +38,7 @@ const takenQuizSchema = new Schema<ITakenQuiz>(
               {
                 questionId: {
                   type: Schema.Types.ObjectId,
-                  ref: "Question",
+                  ref: "Quiz",
                   required: true,
                 },
                 answer: { type: String, required: true },
@@ -50,9 +50,9 @@ const takenQuizSchema = new Schema<ITakenQuiz>(
       ],
     },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 export const TakenQuiz: Model<ITakenQuiz> = model<ITakenQuiz>(
   "TakenQuiz",
-  takenQuizSchema,
+  takenQuizSchema
 );

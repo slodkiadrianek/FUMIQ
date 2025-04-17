@@ -40,7 +40,7 @@ async function fetchTests() {
           <a href="quizDashboard.html?id=${test._id}" class="btn btn-success rounded mt-2 w-100" data-test-id="${test._id}">
             <i class="bi bi-play-circle"></i> Start Test
           </a>
-           <a href="browseSessions.html?id=${test._id}" class="btn btn-primary rounded mt-2 w-100" data-test-id="${test._id}">
+           <a href="viewSessions.html?id=${test._id}" class="btn btn-primary rounded mt-2 w-100" data-test-id="${test._id}">
             <i class="bi bi-database"></i> Browse sessions
           </a>
       `;

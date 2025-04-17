@@ -45,7 +45,6 @@ io.on("connection", (socket) => {
             sessionQuiz.competitors[indexOfElement].answers.push({
               questionId: data.questionId,
               answer: data.answer.join(","),
-              correct: false,
             });
           } else {
             let founded: boolean = false;
@@ -62,13 +61,11 @@ io.on("connection", (socket) => {
               sessionQuiz.competitors[indexOfElement].answers[indexOfAnswer] = {
                 questionId: data.questionId,
                 answer: data.answer.join(","),
-                correct: false,
               };
             } else {
               sessionQuiz.competitors[indexOfElement].answers.push({
                 questionId: data.questionId,
                 answer: data.answer.join(","),
-                correct: false,
               });
             }
           }

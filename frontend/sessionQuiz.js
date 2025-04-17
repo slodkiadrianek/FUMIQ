@@ -10,7 +10,7 @@ async function submitAnswers() {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-    },
+    }
   );
   let result;
   if (response.status === 204) {
@@ -94,7 +94,6 @@ function setupEventListeners() {
     .addEventListener("click", submitQuiz);
 
   // Hide save button since we're using WebSocket
-  elements.saveBtn.style.display = "none";
 }
 
 // Load quiz from API
@@ -112,7 +111,7 @@ async function loadQuiz() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-      },
+      }
     );
 
     const data = await response.json();
@@ -186,7 +185,7 @@ function renderQuestions() {
             ${opt.text}
           </label>
         </li>
-      `,
+      `
         )
         .join("");
     } else if (question.questionType === "true-false") {
@@ -214,14 +213,14 @@ function renderQuestions() {
             ${opt.text}
           </label>
         </li>
-      `,
+      `
         )
         .join("");
     }
 
     questionCard.innerHTML = `
       <div class="question-number">Question ${questionNum}
-        ${index === 0 ? '<span class="badge bg-primary ms-2">Current</span>' : ""}
+
       </div>
       <div class="question-text">${question.text}</div>
       <ul class="options-list" id="options-${questionNum}">
@@ -231,6 +230,7 @@ function renderQuestions() {
 
     elements.questionsContainer.appendChild(questionCard);
   });
+  updateNavigationButtons();
 
   // Add event listeners to options
   quizState.questions.forEach((question) => {
@@ -244,12 +244,11 @@ function renderQuestions() {
             .filter((i) => i.checked)
             .map((i) => i.value);
           quizState.answers[question.id] = checkedOptions;
-          console.log(question.id, checkedOptions);
           handleAnswerSelection(
             userData.id,
             question.id,
             question.text,
-            checkedOptions,
+            checkedOptions
           );
 
           // sendAnswerToServer(question.id, checkedOptions);
@@ -306,18 +305,18 @@ function updateNavigationButtons() {
   elements.prevBtn.disabled = quizState.currentQuestionIndex === 0;
   elements.nextBtn.disabled =
     quizState.currentQuestionIndex === quizState.questions.length - 1;
-
+  console.log(`index`, quizState.currentQuestionIndex);
   // Show submit button on last question
   elements.submitQuizBtn.classList.toggle(
     "d-none",
-    quizState.currentQuestionIndex !== quizState.questions.length - 1,
+    quizState.currentQuestionIndex !== quizState.questions.length - 1
   );
 }
 
 // Update progress calculation
 function updateProgress() {
   const answeredCount = Object.values(quizState.answers).filter(
-    (a) => a !== null && (Array.isArray(a) ? a.length > 0 : true),
+    (a) => a !== null && (Array.isArray(a) ? a.length > 0 : true)
   ).length;
 
   const totalQuestions = quizState.questions.length;
@@ -330,11 +329,12 @@ function updateProgress() {
 // Show submit confirmation
 function showSubmitConfirmation() {
   const answeredCount = Object.values(quizState.answers).filter(
-    (a) => a !== null && (Array.isArray(a) ? a.length > 0 : true),
+    (a) => a !== null && (Array.isArray(a) ? a.length > 0 : true)
   ).length;
 
-  document.getElementById("answered-count-text").textContent =
-    `You have answered ${answeredCount} out of ${quizState.questions.length} questions.`;
+  document.getElementById(
+    "answered-count-text"
+  ).textContent = `You have answered ${answeredCount} out of ${quizState.questions.length} questions.`;
 }
 
 // Start timer
@@ -366,7 +366,9 @@ function startTimer() {
 function formatTime(seconds) {
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
-  return `${minutes.toString().padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
+  return `${minutes.toString().padStart(2, "0")}:${remainingSeconds
+    .toString()
+    .padStart(2, "0")}`;
 }
 
 // Show loading state
@@ -396,10 +398,6 @@ function updateQuizInfo() {
   document.getElementById("quiz-title").textContent = quizState.title;
   document.getElementById("quiz-description").textContent =
     quizState.description;
-  document.getElementById("question-count").textContent =
-    quizState.questions.length;
-  document.getElementById("total-points-text").textContent =
-    quizState.totalPoints;
 }
 
 // Submit the quiz

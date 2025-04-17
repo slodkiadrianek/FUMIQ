@@ -5,6 +5,8 @@ import { Logger } from "../../../utils/logger.js";
 import { IQuiz } from "../../../models/quiz.model.js";
 import { CustomRequest } from "../../../types/common.type.js";
 import { AppError } from "../../../models/error.model.js";
+import { quizId } from "../../../schemas/quiz.schema.js";
+import { date } from "joi";
 
 export class QuizController {
   constructor(private logger: Logger, private quizService: QuizService) {}
@@ -71,7 +73,7 @@ export class QuizController {
       this.logger.info(
         `Attempting to get quiz with id ${quizId} for ${userId}`
       );
-      const result: IQuiz = await this.quizService.getQuizById(quizId);
+      const result: IQuiz = await this.quizService.getQuizById(userId, quizId);
       this.logger.info(`Quiz has been downloaded`);
       res.status(200).json({
         success: true,
@@ -203,7 +205,7 @@ export class QuizController {
   ): Promise<void> => {
     try {
       const quizId: string = req.params.quizId;
-      this.logger.info(`Attempting to get data about session`, { quizId });
+      this.logger.info(`Attempting to get data about sessions`, { quizId });
       const result: {
         startedAt: string;
         endedAt: string;
@@ -216,6 +218,33 @@ export class QuizController {
         success: true,
         data: {
           sessions: result,
+        },
+      });
+      return;
+    } catch (error) {
+      next(error);
+    }
+  };
+  getSession = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const sessionId: string = req.params.sessionId;
+      const quizId: string = req.params.quizId;
+      this.logger.info("Attempting to get data about session", {
+        sessionId,
+        quizId,
+      });
+      const result: ITakenQuiz = await this.quizService.getSession(quizId,sessionId);
+      this.logger.info("Successfully dowloaded data about session", {
+        sessionId,
+      });
+      res.status(200).json({
+        success: true,
+        data: {
+          session: result,
         },
       });
       return;

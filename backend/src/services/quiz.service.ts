@@ -4,7 +4,6 @@ import { Logger } from "../utils/logger.js";
 import { BaseService } from "./base.service.js";
 import { ITakenQuiz, TakenQuiz } from "../models/takenQuiz.model.js";
 import { IUser } from "../models/user.model.js";
-import { quizId } from "../schemas/quiz.schema.js";
 import { AppError } from "../models/error.model.js";
 
 export class QuizService extends BaseService {
@@ -15,10 +14,29 @@ export class QuizService extends BaseService {
     return this.insertToDatabaseAndCache("Quiz", data, Quiz);
   };
   getAllQuizez = async (userId: string): Promise<IQuiz[]> => {
-    return await this.getAllItems("Quizez", userId, Quiz);
+    const result: IQuiz[] = await this.getAllItems("Quizez", userId, Quiz);
+
+    if (result[0].userId.toString() !== userId) {
+      throw new AppError(
+        403,
+        "Quiz",
+        "You are not  permitted to do this operation"
+      );
+    } else {
+      return result;
+    }
   };
-  getQuizById = async (quizId: string): Promise<IQuiz> => {
-    return this.getItemById("Quiz", quizId, Quiz);
+  getQuizById = async (userId: string, quizId: string): Promise<IQuiz> => {
+    const result: IQuiz = await this.getItemById("Quiz", quizId, Quiz);
+    if (result.userId.toString() !== userId) {
+      throw new AppError(
+        403,
+        "Quiz",
+        "You are not permitted to do this operation"
+      );
+    } else {
+      return result;
+    }
   };
   updateQuiz = async (
     quizId: string,
@@ -120,23 +138,83 @@ export class QuizService extends BaseService {
     }
     return result;
   };
-  getAllSessions = async (quizId: string): Promise<{startedAt:string, endedAt:string, amountOfParticipants:number}[]> => {
-    const sessions: {updatedAt:string, createdAt:string, competitors:[]}[] | null = await TakenQuiz.find({
-      quizId,
-      isActive: false,
-    }, "createdAt updatedAt competitors");
-    if(!sessions){
-      this.logger.error("No sessions with this quizId", {quizId})
-      throw new AppError(400, "Session", "No session with this quizId")
-    }
-    const result: {
+  getAllSessions = async (
+    quizId: string
+  ): Promise<
+    {
+      id: string;
+      quizId: string;
       startedAt: string;
       endedAt: string;
       amountOfParticipants: number;
-    }[] = []
-    for(const el of sessions){
-      result.push({startedAt:el.createdAt, endedAt:el.updatedAt, amountOfParticipants: el.competitors.length})
+    }[]
+  > => {
+    const sessions:
+      | {
+          _id: string;
+          quizId: string;
+          updatedAt: string;
+          createdAt: string;
+          competitors: [];
+        }[]
+      | null = await TakenQuiz.find(
+      {
+        quizId,
+        isActive: false,
+      },
+      "_id quizId createdAt updatedAt competitors"
+    );
+    if (!sessions) {
+      this.logger.error("No sessions with this quizId", { quizId });
+      throw new AppError(400, "Session", "No session with this quizId");
     }
-    return result
+    const result: {
+      id: string;
+      quizId: string;
+      startedAt: string;
+      endedAt: string;
+      amountOfParticipants: number;
+    }[] = [];
+    for (const el of sessions) {
+      result.push({
+        id: el._id,
+        quizId: el.quizId,
+        startedAt: el.createdAt,
+        endedAt: el.updatedAt,
+        amountOfParticipants: el.competitors.length,
+      });
+    }
+    return result;
+  };
+  getSession = async (quizId: string, sessionId: string) => {
+    const session = await TakenQuiz.findOne({
+      _id: sessionId,
+    })
+      .populate([
+        {
+          path: "competitors.userId",
+          model: "User",
+        },
+        {
+          path: "competitors.answers.questionId",
+          model: "Quiz",
+        },
+      ])
+      .lean<
+        Omit<ITakenQuiz, "competitors"> & {
+          competitors: {
+            userId: IUser;
+            answers: {
+              questionId: IQuiz;
+            }[];
+          }[];
+        }
+      >();
+    if (!session) {
+      this.logger.error("No session with this id", { sessionId });
+      throw new AppError(400, "Session", "No session with this id");
+    }
+    console.log(session.competitors[0]);
+    // return this.getItemById("Session", sessionId, TakenQuiz)
   };
 }

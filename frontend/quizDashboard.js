@@ -1,7 +1,7 @@
 import { base_url } from "./base_api.js";
 
 // Socket.io connection
-const socket = io("http://127.0.0.1:3000");
+const socket = io(base_url);
 socket.on("connect", () => console.log("Connected!"));
 
 let quizData = {
@@ -21,7 +21,6 @@ async function initializeQuiz() {
   }
 
   try {
-    // Get quiz session data
     const sessionResponse = await fetch(
       `http://${base_url}/api/v1/quizez/${testId}/sessions`,
       {
@@ -30,7 +29,7 @@ async function initializeQuiz() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-      },
+      }
     );
     const sessionData = await sessionResponse.json();
     sessionId = sessionData.data.quiz._id.toString();
@@ -43,18 +42,31 @@ async function initializeQuiz() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-      },
+      }
     );
+
     const quizDetails = await quizResponse.json();
-    console.log(quizDetails);
+    const competitorsResponse = await fetch(
+      `http://${base_url}/api/v1/quizez/${testId}/sessions/${sessionId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const competitorsData = await competitorsResponse.json();
+    console.log(competitorsData);
     if (sessionData.success && quizDetails.success) {
       console.log(sessionData.data);
       quizData = {
         code: sessionData.data.quiz.code,
         isActive: sessionData.data.quiz.isActive,
         totalQuestions: quizDetails.data.quizez.questions.length,
-        competitors: [],
+        competitors: competitorsData.data.session.competitors ||[],
       };
+      console.log(quizData.competitors)
       renderActiveQuiz();
     } else {
       alert("Error loading quiz data");
@@ -86,7 +98,7 @@ async function initializeQuiz() {
 
       // Find or create competitor
       let competitor = quizData.competitors.find(
-        (c) => c.userId === data.userId,
+        (c) => c.userId === data.userId
       );
 
       if (!competitor) {
@@ -102,7 +114,7 @@ async function initializeQuiz() {
 
       // Update answers
       const existingAnswerIndex = competitor.answers.findIndex(
-        (a) => a.questionId === data.questionId,
+        (a) => a.questionId === data.questionId
       );
       if (existingAnswerIndex >= 0) {
         competitor.answers[existingAnswerIndex].answer = data.answer;
@@ -183,13 +195,13 @@ function renderActiveQuiz() {
                     <strong>Question:</strong> ${answer.question}<br>
                     <strong>Answer:</strong> ${answer.answer}
                   </li>
-                `,
+                `
                   )
                   .join("")}
               </ul>
             </div>
           </li>
-        `,
+        `
           )
           .join("")}
       </ul>
@@ -209,7 +221,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Close the modal
       const modal = bootstrap.Modal.getInstance(
-        document.getElementById("endQuizModal"),
+        document.getElementById("endQuizModal")
       );
       modal.hide();
     });
@@ -232,7 +244,7 @@ document.addEventListener("DOMContentLoaded", function () {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        },
+        }
       );
       if (response.status !== 204) {
         throw new Error("Failed to end quiz");

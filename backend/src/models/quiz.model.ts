@@ -13,7 +13,7 @@ export interface IQuiz extends Document {
       options: string[];
       questionText: string;
       questionType: string;
-    },
+    }
   ];
 }
 
@@ -25,7 +25,6 @@ const quizSchema = new Schema<IQuiz>(
     timeLimit: { type: Number, required: true },
     questions: [
       {
-        _id: { type: Types.ObjectId, required: true },
         correctAnswer: { type: Schema.Types.Mixed, required: true },
         options: { type: [String], required: true },
         questionText: { type: String, required: true },
@@ -33,6 +32,6 @@ const quizSchema = new Schema<IQuiz>(
       },
     ],
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 export const Quiz: Model<IQuiz> = model<IQuiz>("Quiz", quizSchema);

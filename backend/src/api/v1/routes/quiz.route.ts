@@ -71,5 +71,11 @@ export class QuizRoutes {
       ValidationMiddleware.validate(quizId, "params"),
       this.quizController.getAllSessions
     );
+    this.router.get(
+      "/api/v1/quizez/:quizId/sessions/:sessionId",
+      this.auth.verify,
+      ValidationMiddleware.validate(endQuizSession, "params"),
+      this.quizController.getSession
+    );
   }
 }

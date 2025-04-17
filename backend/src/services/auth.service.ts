@@ -13,37 +13,36 @@ export class AuthService extends BaseService {
     logger: Logger,
     private auth: Authentication,
     caching: RedisCacheService,
-    private emailService: EmailService,
+    private emailService: EmailService
   ) {
     super(logger, caching);
     this.auth = auth;
   }
   registerUser = async (userData: Omit<IUser, "_id">): Promise<IUser> => {
-    const userExist = await User.findOne({
+    const userExist: IUser | null = await User.findOne({
       email: userData.email,
     });
     if (userExist) {
       this.logger.error("User with this email already exists");
       throw new AppError(409, "User", "User with this email already exists");
     }
-    const hashedPassword = await bcrypt.hash(userData.password, 12);
-    userData.password = hashedPassword;
+    userData.password = await bcrypt.hash(userData.password, 11);
     const result: IUser = await this.insertToDatabaseAndCache(
       "User",
       userData,
-      User,
+      User
     );
     const token: string = this.auth.sign(result);
-    this.emailService.sendEmail(
+    await this.emailService.sendEmail(
       userData.email,
       "Aktywacja konta",
-      `http://localhost:3000/api/v1/auth/activate/${token}`,
+      `http://${process.env.SERVER_IP}:3000/api/v1/auth/activate/${token}`
     );
     return result;
   };
   loginUser = async (
     email: string,
-    password: string,
+    password: string
   ): Promise<{ user: IUser; token: string }> => {
     const userExist: IUser | null = await User.findOne({
       email,
@@ -53,22 +52,22 @@ export class AuthService extends BaseService {
     }
     const passwordComparison = await bcrypt.compare(
       password,
-      userExist.password,
+      userExist.password
     );
     if (!passwordComparison) {
       throw new AppError(401, "User", "User password is incorrect");
     }
     if (!userExist.isActivated) {
       const token: string = this.auth.sign(userExist);
-      this.emailService.sendEmail(
+      await this.emailService.sendEmail(
         userExist.email,
         "Aktywacja konta",
-        `http://localhost:3000/api/v1/auth/activate/${token}`,
+        `http://${process.env.SERVER_IP}:3000/api/v1/auth/activate/${token}`
       );
       throw new AppError(
         401,
         "User",
-        "You have to activate your account. A new email has been sent.",
+        "You have to activate your account. A new email has been sent."
       );
     }
     const token = this.auth.sign(userExist);
@@ -81,10 +80,10 @@ export class AuthService extends BaseService {
       throw new AppError(400, "User", "No user found with that email address");
     }
     const token: string = this.auth.sign(user);
-    this.emailService.sendEmail(
+    await this.emailService.sendEmail(
       email,
       "Password change",
-      `http://localhost:3000/api/v1/auth/reset-password/${token}`,
+      `http://${process.env.SERVER_IP}:3000/api/v1/auth/reset-password/${token}`
     );
     return;
   };
@@ -96,10 +95,8 @@ export class AuthService extends BaseService {
     if (!user) {
       throw new AppError(400, "User", "Invalid token or user not found");
     }
-    const hashedPassword = await bcrypt.hash(password, 12);
-    user.password = hashedPassword;
+    user.password = await bcrypt.hash(password, 12);
     await user.save();
-
     return user;
   };
   activateUser = async (token: string): Promise<IUser> => {

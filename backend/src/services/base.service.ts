@@ -72,7 +72,6 @@ export class BaseService {
       }
       return result;
     }
-    console.log(`hi`)
     const result: T | null = await table.findOne({
       _id: id,
     });
