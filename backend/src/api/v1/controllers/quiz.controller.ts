@@ -237,7 +237,20 @@ export class QuizController {
         sessionId,
         quizId,
       });
-      const result: ITakenQuiz = await this.quizService.getSession(quizId,sessionId);
+      const result: {
+        userId: string;
+        firstName: string;
+        lastName: string;
+        finished: boolean;
+        answers: {
+          userId: string;
+          questionId: string;
+          question: string;
+          status: string;
+          answer: string;
+          timestamp: Date;
+        }[];
+      }[] = await this.quizService.getSession(quizId, sessionId);
       this.logger.info("Successfully dowloaded data about session", {
         sessionId,
       });

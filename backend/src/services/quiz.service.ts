@@ -5,6 +5,7 @@ import { BaseService } from "./base.service.js";
 import { ITakenQuiz, TakenQuiz } from "../models/takenQuiz.model.js";
 import { IUser } from "../models/user.model.js";
 import { AppError } from "../models/error.model.js";
+import { userId } from "../schemas/user.schema.js";
 
 export class QuizService extends BaseService {
   constructor(logger: Logger, caching: RedisCacheService) {
@@ -186,7 +187,25 @@ export class QuizService extends BaseService {
     }
     return result;
   };
-  getSession = async (quizId: string, sessionId: string) => {
+  getSession = async (
+    quizId: string,
+    sessionId: string
+  ): Promise<
+    {
+      userId: string;
+      firstName: string;
+      lastName: string;
+      finished: boolean;
+      answers: {
+        userId: string;
+        questionId: string;
+        question: string;
+        status: string;
+        answer: string;
+        timestamp: Date;
+      }[];
+    }[]
+  > => {
     const session = await TakenQuiz.findOne({
       _id: sessionId,
     })
@@ -195,17 +214,15 @@ export class QuizService extends BaseService {
           path: "competitors.userId",
           model: "User",
         },
-        {
-          path: "competitors.answers.questionId",
-          model: "Quiz",
-        },
       ])
       .lean<
         Omit<ITakenQuiz, "competitors"> & {
           competitors: {
             userId: IUser;
+            finished: boolean;
             answers: {
-              questionId: IQuiz;
+              questionId: string;
+              answer: string;
             }[];
           }[];
         }
@@ -214,7 +231,55 @@ export class QuizService extends BaseService {
       this.logger.error("No session with this id", { sessionId });
       throw new AppError(400, "Session", "No session with this id");
     }
-    console.log(session.competitors[0]);
-    // return this.getItemById("Session", sessionId, TakenQuiz)
+    const quiz: IQuiz | null = await Quiz.findOne({
+      _id: quizId,
+    });
+    if (!quiz) {
+      this.logger.error("No quiz with this id", { sessionId });
+      throw new AppError(400, "Quiz", "No quiz with this id");
+    }
+    const result: {
+      userId: string;
+      firstName: string;
+      lastName: string;
+      finished: boolean;
+      answers: {
+        userId: string;
+        questionId: string;
+        question: string;
+        status: string;
+        answer: string;
+        timestamp: Date;
+      }[];
+    }[] = [];
+    for (const competitor of session.competitors) {
+      const answers = [];
+    
+      for (const answer of competitor.answers) {
+        const question = quiz.questions.find(
+          (q) => q._id.toString() === answer.questionId.toString()
+        );
+    
+        if (question) {
+          answers.push({
+            userId: competitor.userId._id.toString(),
+            questionId: question._id.toString(),
+            question: question.questionText,
+            status: "success",
+            answer: answer.answer,
+            timestamp: new Date(),
+          });
+        }
+      }
+    
+      result.push({
+        userId: competitor.userId._id.toString(),
+        firstName: competitor.userId.firstname,
+        lastName: competitor.userId.lastname,
+        finished: competitor.finished,
+        answers: answers,
+      });
+    }
+    return result;
   };
 }

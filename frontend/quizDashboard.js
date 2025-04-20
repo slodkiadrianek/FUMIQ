@@ -59,14 +59,15 @@ async function initializeQuiz() {
     const competitorsData = await competitorsResponse.json();
     console.log(competitorsData);
     if (sessionData.success && quizDetails.success) {
-      console.log(sessionData.data);
+      // console.log(sessionData.data);
       quizData = {
         code: sessionData.data.quiz.code,
         isActive: sessionData.data.quiz.isActive,
         totalQuestions: quizDetails.data.quizez.questions.length,
-        competitors: competitorsData.data.session.competitors ||[],
+        competitors: competitorsData.data.session.competitors || [],
       };
-      console.log(quizData.competitors)
+      quizData.competitors = competitorsData.data.session;
+      console.log(quizData.competitors);
       renderActiveQuiz();
     } else {
       alert("Error loading quiz data");
@@ -171,7 +172,8 @@ function renderActiveQuiz() {
       <ul>
         ${quizData.competitors
           .map(
-            (competitor) => `
+            (competitor) =>
+              `
           <li>
             <div class="competitor-info">
               <h6>${competitor.firstName} ${competitor.lastName}</h6>
