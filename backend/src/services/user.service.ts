@@ -17,7 +17,7 @@ export class UserService extends BaseService {
   changePassword = async (
     userId: string,
     oldPassword: string,
-    newPassword: string,
+    newPassword: string
   ): Promise<void> => {
     const user: IUser | null = await this.getUserById(userId);
     if (!user) {
@@ -36,7 +36,7 @@ export class UserService extends BaseService {
       },
       {
         password: hashedPassword,
-      },
+      }
     );
   };
   joinQuiz = async (userId: string, code: string): Promise<string> => {
@@ -58,20 +58,36 @@ export class UserService extends BaseService {
           throw new AppError(
             400,
             "Quiz",
-            "You have already finished this quiz",
+            "You have already finished this quiz"
           );
         }
       }
     }
     return `${quiz._id}`;
   };
-  getQuestions = async (sessionId: string, userId: string) => {
+  getQuestions = async (
+    sessionId: string,
+    userId: string
+  ): Promise<
+    ITakenQuiz & {
+      competitor: {
+        userId: Types.ObjectId;
+        finished: boolean;
+        answers: {
+          questionId: Types.ObjectId;
+          answer: string;
+        }[];
+      };
+    } & {
+      competitors: any[];
+    }
+  > => {
     const quizSession: ITakenQuiz | null = await TakenQuiz.findOne({
       _id: sessionId,
       isActive: true,
     }).populate({
       path: "quizId",
-      select: "-questions.correctAnswer", // Exclude correctAnswer field
+      select: "-questions.correctAnswer",
     });
 
     if (!quizSession) {
@@ -81,43 +97,43 @@ export class UserService extends BaseService {
       throw new AppError(
         400,
         "Quiz",
-        "Quiz session with this id does not exist",
+        "Quiz session with this id does not exist"
       );
     }
-    for (const el of quizSession.competitors) {
-      if (el.userId.toString() === userId) {
-        if (el.finished) {
-          this.logger.error(`You have already finished this quiz`, {
-            userId,
-            quize: quizSession._id,
-          });
-          throw new AppError(
-            400,
-            "Quiz",
-            "You have already finished this quiz",
-          );
-        }
+
+    let existingCompetitor = quizSession.competitors.find(
+      (el) => el.userId.toString() === userId
+    );
+
+    if (existingCompetitor) {
+      if (existingCompetitor.finished) {
+        this.logger.error(`You have already finished this quiz`, {
+          userId,
+          quiz: quizSession._id,
+        });
+        throw new AppError(400, "Quiz", "You have already finished this quiz");
       }
-    }
-    const userObjectId = new Types.ObjectId(userId);
-    let isUserJoined: boolean = false;
-    for (const el of quizSession.competitors) {
-      if (el.userId.toString() === userId) {
-        isUserJoined = true;
-        break;
-      }
-    }
-    if (isUserJoined) {
-      return quizSession;
+      quizSession.competitors = [] as any;
+
+      return {
+        ...quizSession.toObject(),
+        competitor: existingCompetitor,
+      };
     }
 
-    quizSession.competitors.push({
+    const userObjectId = new Types.ObjectId(userId);
+    const newCompetitor = {
       userId: userObjectId,
       finished: false,
       answers: [],
-    });
+    };
+    quizSession.competitors.push(newCompetitor);
     await quizSession.save();
-    return quizSession;
+    quizSession.competitors = [] as any;
+    return {
+      ...quizSession.toObject(),
+      competitor: newCompetitor,
+    };
   };
   endQuiz = async (userId: string, sessionId: string) => {
     const sesssionQuiz = await TakenQuiz.findOne({
@@ -143,7 +159,7 @@ export class UserService extends BaseService {
     }
     const isPasswordValid: boolean = await bcrypt.compare(
       password,
-      user.password,
+      user.password
     );
     if (!isPasswordValid) {
       this.logger.error(`Invalid password provided during deleting account`, {
@@ -158,7 +174,7 @@ export class UserService extends BaseService {
   };
   updateUser = async (
     userId: string,
-    data: Omit<IUser, "_id">,
+    data: Omit<IUser, "_id">
   ): Promise<IUser> => {
     return this.updateItem("User", userId, data, User);
   };

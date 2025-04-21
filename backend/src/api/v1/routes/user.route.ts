@@ -67,7 +67,6 @@ export class UserRoutes {
     this.router.get(
       "/api/v1/users/:userId/sessions/:sessionId/results",
       this.auth.verify,
-
       ValidationMiddleware.validate(sessionId, "params"),
       this.userController.getResult
     );

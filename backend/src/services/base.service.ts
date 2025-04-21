@@ -54,7 +54,7 @@ export class BaseService {
     type: string,
     id: string,
     table: Model<T>
-  ) => {
+  ):Promise<T> => {
     if (await this.caching.exists(`${type}-${id}`)) {
       const result: T | null = JSON.parse(
         (await this.caching.get(`${type}-${id}`)) || ""
@@ -91,7 +91,7 @@ export class BaseService {
     id: string,
     data: UpdateQuery<T>,
     table: Model<T>
-  ) => {
+  ):Promise<T> => {
     const result: T | null = await table.findOneAndUpdate(
       { _id: id },
       {
@@ -116,7 +116,7 @@ export class BaseService {
     type: string,
     id: string,
     table: Model<T>
-  ) => {
+  ):Promise<string> => {
     const result: DeleteResult | null = await table.deleteOne({ _id: id });
     if (!result) {
       this.logger.error(`${type} with this ID does not exist", { id }`);
