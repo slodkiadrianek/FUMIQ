@@ -23,7 +23,11 @@ async function submitAnswers() {
 let userData = JSON.parse(sessionStorage.getItem("userData"));
 document.addEventListener("visibilitychange", async () => {
   if (document.hidden) {
-    // submitAnswers();
+    submitAnswers();
+    socket.emit("submitQuiz", {
+      userId: userData.id,
+      sessionId: quizState.sessionId,
+    });
   } else {
     console.log("Strona znów jest widoczna");
   }
@@ -115,8 +119,9 @@ async function loadQuiz() {
     );
 
     const data = await response.json();
+    console.log(data);
     if (!data.success) {
-      throw new Error("Failed to load quiz data");
+      throw new Error(data.error.description || "Failed to load quiz");
     }
 
     // Transform API data to our quiz state format
@@ -124,7 +129,27 @@ async function loadQuiz() {
     const sessionData = data.data.quiz.competitor;
     quizState.title = quizData.title;
     quizState.description = quizData.description;
-    quizState.timeLimit = quizData.timeLimit * 60; // Convert minutes to seconds
+    const endTime = new Date(data.data.quiz.competitor.startedAt);
+    endTime.setMinutes(endTime.getMinutes() + quizData.timeLimit);
+    if(endTime.getMinutes() + quizData.timeLimit > 60) {
+      endTime.setHours(endTime.getHours() + 1);
+          endTime.setMinutes(endTime.getMinutes() + quizData.timeLimit);
+
+    }
+    const actualTime = new Date();
+    if (actualTime > endTime) {
+      await submitAnswers();
+      socket.emit("submitQuiz", {
+        userId: userData.id,
+        sessionId: quizState.sessionId,
+      });
+    }
+
+    quizState.timeLimit =
+      ((endTime.getHours() - actualTime.getHours()) * 60 +
+        (endTime.getMinutes() - actualTime.getMinutes())) *
+        60 +
+      (endTime.getSeconds() - actualTime.getSeconds()); // Convert minutes to seconds
 
     // Transform questions from API format to our format
     quizState.questions = quizData.questions.map((q, index) => {

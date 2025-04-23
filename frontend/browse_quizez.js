@@ -16,6 +16,7 @@ async function fetchTests() {
   const data = await response.json();
   if (data.success) {
     testList.innerHTML = ""; // Clear existing content
+  
     data.data.quizez.forEach((test) => {
       const testCard = document.createElement("div");
       testCard.className = "test-card animate__animated animate__fadeInUp";
@@ -47,7 +48,7 @@ async function fetchTests() {
       testList.appendChild(testCard);
     });
   } else {
-    alert("Failed to fetch tests.");
+    alert("No quizez to display.");
   }
 }
 

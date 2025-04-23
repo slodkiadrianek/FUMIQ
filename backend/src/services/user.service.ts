@@ -7,6 +7,7 @@ import { Types } from "mongoose";
 import { AppError } from "../models/error.model.js";
 import bcrypt from "bcryptjs";
 import { IQuiz } from "../models/quiz.model.js";
+import { time } from "console";
 export class UserService extends BaseService {
   constructor(logger: Logger, caching: RedisCacheService) {
     super(logger, caching);
@@ -43,7 +44,7 @@ export class UserService extends BaseService {
     const quiz: ITakenQuiz | null = await TakenQuiz.findOne({
       code,
       isActive: true,
-    });
+    }).populate("quizId");
     if (!quiz) {
       this.logger.error(`Quiz with code ${code} not found`);
       throw new Error(`Quiz with code ${code} not found`);
@@ -124,6 +125,7 @@ export class UserService extends BaseService {
     const userObjectId = new Types.ObjectId(userId);
     const newCompetitor = {
       userId: userObjectId,
+      startedAt: new Date(),
       finished: false,
       answers: [],
     };
@@ -200,7 +202,6 @@ export class UserService extends BaseService {
       this.logger.error(`Session with this id not found`, { sessionId });
       throw new AppError(400, "Session", `Session with this id not found`);
     }
-    console.log(userAnswers, answers);
     let score: number = 0;
     for (const el of answers) {
       for (const userAnswer of userAnswers) {

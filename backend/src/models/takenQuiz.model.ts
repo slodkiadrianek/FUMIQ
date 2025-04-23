@@ -1,3 +1,4 @@
+import { required } from "joi";
 import { Document, Schema, model, Types, Model } from "mongoose";
 
 export interface ITakenQuiz extends Document {
@@ -32,6 +33,7 @@ const takenQuizSchema = new Schema<ITakenQuiz>(
             ref: "User",
             required: true,
           },
+          startedAt: { type: Date, required: true },
           finished: { type: Boolean, default: false },
           answers: {
             type: [
