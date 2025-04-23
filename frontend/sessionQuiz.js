@@ -121,6 +121,7 @@ async function loadQuiz() {
 
     // Transform API data to our quiz state format
     const quizData = data.data.quiz.quizId;
+    const sessionData = data.data.quiz.competitor;
     quizState.title = quizData.title;
     quizState.description = quizData.description;
     quizState.timeLimit = quizData.timeLimit * 60; // Convert minutes to seconds
@@ -141,13 +142,27 @@ async function loadQuiz() {
     });
 
     quizState.timeLeft = quizState.timeLimit;
-    quizState.totalPoints = quizState.questions.length; // 1 point per question
 
-    // Initialize answers
     quizState.answers = {};
     quizState.questions.forEach((q) => {
-      quizState.answers[q.id] =
-        q.questionType === "multiple-correct" ? [] : null;
+      // Check if this question has an answer in the session data
+      const questionAnswer = sessionData.answers.find(
+        (a) => a.questionId === q.id
+      );
+
+      if (questionAnswer) {
+        // For multiple-correct questions, we expect an array of answers
+        if (q.questionType === "multiple-correct") {
+          quizState.answers[q.id] = questionAnswer.answer.split(",");
+        } else {
+          // For single answer questions, store the answer directly
+          quizState.answers[q.id] = questionAnswer.answer;
+        }
+      } else {
+        // No answer yet for this question
+        quizState.answers[q.id] =
+          q.questionType === "multiple-correct" ? [] : null;
+      }
     });
 
     updateQuizInfo();
@@ -167,6 +182,7 @@ function renderQuestions() {
   quizState.questions.forEach((question, index) => {
     const questionNum = index + 1;
     const questionId = question.id;
+    const currentAnswer = quizState.answers[questionId];
 
     const questionCard = document.createElement("div");
     questionCard.className = "question-card";
@@ -181,7 +197,12 @@ function renderQuestions() {
           (opt) => `
         <li class="option-item">
           <label class="option-label">
-            <input type="checkbox" name="${questionId}" class="option-input" value="${opt.id}">
+            <input type="checkbox" name="${questionId}" class="option-input" value="${
+            opt.id
+          }"
+              ${
+                currentAnswer && currentAnswer.includes(opt.id) ? "checked" : ""
+              }>
             ${opt.text}
           </label>
         </li>
@@ -192,13 +213,15 @@ function renderQuestions() {
       optionsHtml = `
         <li class="option-item">
           <label class="option-label">
-            <input type="radio" name="${questionId}" class="option-input" value="true">
+            <input type="radio" name="${questionId}" class="option-input" value="true"
+              ${currentAnswer === "true" ? "checked" : ""}>
             True
           </label>
         </li>
         <li class="option-item">
           <label class="option-label">
-            <input type="radio" name="${questionId}" class="option-input" value="false">
+            <input type="radio" name="${questionId}" class="option-input" value="false"
+              ${currentAnswer === "false" ? "checked" : ""}>
             False
           </label>
         </li>
@@ -209,7 +232,10 @@ function renderQuestions() {
           (opt) => `
         <li class="option-item">
           <label class="option-label">
-            <input type="radio" name="${questionId}" class="option-input" value="${opt.id}">
+            <input type="radio" name="${questionId}" class="option-input" value="${
+            opt.id
+          }"
+              ${currentAnswer === opt.id ? "checked" : ""}>
             ${opt.text}
           </label>
         </li>
@@ -219,9 +245,7 @@ function renderQuestions() {
     }
 
     questionCard.innerHTML = `
-      <div class="question-number">Question ${questionNum}
-
-      </div>
+      <div class="question-number">Question ${questionNum}</div>
       <div class="question-text">${question.text}</div>
       <ul class="options-list" id="options-${questionNum}">
         ${optionsHtml}
@@ -230,9 +254,9 @@ function renderQuestions() {
 
     elements.questionsContainer.appendChild(questionCard);
   });
-  updateNavigationButtons();
 
-  // Add event listeners to options
+  updateNavigationButtons();
+  updateProgress();
   quizState.questions.forEach((question) => {
     const inputs = document.querySelectorAll(`input[name="${question.id}"]`);
 
@@ -253,7 +277,6 @@ function renderQuestions() {
 
           // sendAnswerToServer(question.id, checkedOptions);
         } else {
-          console.log(question);
           // Handle single correct and true-false answers
           quizState.answers[question.id] = e.target.value;
           handleAnswerSelection(userData.id, question.id, question.text, [
@@ -305,7 +328,6 @@ function updateNavigationButtons() {
   elements.prevBtn.disabled = quizState.currentQuestionIndex === 0;
   elements.nextBtn.disabled =
     quizState.currentQuestionIndex === quizState.questions.length - 1;
-  console.log(`index`, quizState.currentQuestionIndex);
   // Show submit button on last question
   elements.submitQuizBtn.classList.toggle(
     "d-none",
