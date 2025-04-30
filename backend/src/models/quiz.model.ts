@@ -9,7 +9,8 @@ export interface IQuiz extends Document {
   questions: [
     {
       _id: Types.ObjectId;
-      correctAnswer: string | string[];
+      correctAnswer?: string | string[];
+      photoUrl?: string;
       options: string[];
       questionText: string;
       questionType: string;
@@ -25,7 +26,8 @@ const quizSchema = new Schema<IQuiz>(
     timeLimit: { type: Number, required: true },
     questions: [
       {
-        correctAnswer: { type: Schema.Types.Mixed, required: true },
+        correctAnswer: { type: Schema.Types.Mixed, required: false },
+        photoUrl: { type: String, required: false },
         options: { type: [String], required: true },
         questionText: { type: String, required: true },
         questionType: { type: String, required: true },

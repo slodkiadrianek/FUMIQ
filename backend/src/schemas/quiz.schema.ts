@@ -7,6 +7,7 @@ export const createQuiz: ObjectSchema = Joi.object({
   questions: Joi.array()
     .items(
       Joi.object({
+        photo: Joi.optional(),
         correctAnswer: Joi.alternatives()
           .try(Joi.string(), Joi.array().items(Joi.string()))
           .required(),
@@ -19,7 +20,7 @@ export const createQuiz: ObjectSchema = Joi.object({
         questionType: Joi.string().required().messages({
           "string.empty": "Question type must be provided",
         }),
-      }),
+      })
     )
     .required(),
 });
