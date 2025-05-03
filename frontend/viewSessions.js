@@ -4,7 +4,7 @@
 // const quizId = urlParams.get("id");
 
 // async function fetchQuizData(token) {
-//   const response = await fetch(`http://${base_url}/api/v1/quizez/${quizId}`, {
+//   const response = await fetch(`http://${base_url}/api/v1/quizzes/${quizId}`, {
 //     method: "GET",
 //     headers: {
 //       "Content-Type": "application/json",
@@ -20,7 +20,7 @@
 
 // async function fetchSessionsData(token) {
 //   const response = await fetch(
-//     `http://${base_url}/api/v1/quizez/${quizId}/sessions`,
+//     `http://${base_url}/api/v1/quizzes/${quizId}/sessions`,
 //     {
 //       method: "GET",
 //       headers: {
@@ -236,7 +236,7 @@ async function fetchQuizData() {
 
   try {
     const response = await fetchWithAuth(
-      `http://${base_url}/api/v1/quizez/${quizId}`
+      `http://${base_url}/api/v1/quizzes/${quizId}`
     );
 
     if (!response.success) {
@@ -256,7 +256,7 @@ async function fetchQuizData() {
 async function fetchSessionsData() {
   try {
     const response = await fetchWithAuth(
-      `http://${base_url}/api/v1/quizez/${quizId}/sessions`
+      `http://${base_url}/api/v1/quizzes/${quizId}/sessions`
     );
 
     if (!response.success) {

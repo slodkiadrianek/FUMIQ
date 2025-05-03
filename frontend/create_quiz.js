@@ -1,6 +1,5 @@
 import { base_url } from "./base_api.js";
 
-const login_form = document.getElementById("login-form");
 const errorMessage = document.getElementById("error-message");
 const success_message = document.getElementById("success-message");
 let questionCount = 0;
@@ -309,33 +308,53 @@ document
 
     // Create FormData to handle file uploads
     console.log(testTitle, testDescription, timeLimit);
+    const token = sessionStorage.getItem("authToken");
+
     const formData = new FormData();
     formData.append("title", testTitle);
     formData.append("description", testDescription);
     formData.append("timeLimit", timeLimit);
 
-    // Add questions data as JSON string
-    const questionsWithoutFiles = questions.map((q) => (console.log(q),{
-      photo: q.imageFile, // This will be handled in the FormData version
-      questionText: q.questionText,
-      questionType: q.questionType,
-      correctAnswer: q.correctAnswer,
-      options: q.options,
-    }));
-    formData.append("questions", questionsWithoutFiles);
+    const questionsWithoutFiles = await Promise.all(
+      questions.map(async (q) => {
+        let photoUrl = null;
+        if (q.imageFile) {
+          const imageFormData = new FormData();
+          imageFormData.append("photos", q.imageFile); // "photos" is the expected field name
+          const uploadResponse = await fetch(`http://localhost:3007/upload`, {
+            method: "POST",
+            body: imageFormData,
+          });
 
+          if (!uploadResponse.ok) {
+            throw new Error("Image upload failed");
+          }
 
+          const uploadResult = await uploadResponse.json();
+          photoUrl = uploadResult.photoUrls[0];
+        }
+
+        return {
+          photoUrl: photoUrl,
+          questionText: q.questionText,
+          questionType: q.questionType,
+          correctAnswer: q.correctAnswer,
+          options: q.options,
+        };
+      })
+    );
+    console.log(
+      "Questions without files:",
+      JSON.stringify(questionsWithoutFiles)
+    );
     const bodyData = {};
-    const token = sessionStorage.getItem("authToken");
     for (let [key, value] of formData.entries()) {
-      
       bodyData[key] = value;
-
-      
     }
-    console.log("FormData:", bodyData);
+    bodyData["questions"] = questionsWithoutFiles;
+    console.log("FormData:", JSON.stringify(bodyData));
     try {
-      const response = await fetch(`http://${base_url}/api/v1/quizez/`, {
+      const response = await fetch(`http://${base_url}/api/v1/quizzes/`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -343,9 +362,7 @@ document
         },
         body: JSON.stringify(bodyData),
       });
-
       const responseData = await response.json();
-
       if (!response.ok || !responseData.success) {
         success_message.classList.add("d-none");
         errorMessage.innerHTML =

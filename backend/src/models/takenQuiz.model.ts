@@ -1,4 +1,3 @@
-import { required } from "joi";
 import { Document, Schema, model, Types, Model } from "mongoose";
 
 export interface ITakenQuiz extends Document {
@@ -10,6 +9,7 @@ export interface ITakenQuiz extends Document {
   competitors: [
     {
       userId: Types.ObjectId;
+      startedAt: Date;
       answers: {
         questionId: Types.ObjectId;
         answer: string;

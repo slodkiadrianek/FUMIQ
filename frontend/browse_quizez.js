@@ -6,7 +6,7 @@ let currentTestIdToDelete = null; // Store the test ID to delete
 // Function to fetch and display tests
 async function fetchTests() {
   const token = sessionStorage.getItem("authToken");
-  const response = await fetch(`http://${base_url}/api/v1/quizez/`, {
+  const response = await fetch(`http://${base_url}/api/v1/quizzes/`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -16,7 +16,7 @@ async function fetchTests() {
   const data = await response.json();
   if (data.success) {
     testList.innerHTML = ""; // Clear existing content
-  
+
     data.data.quizez.forEach((test) => {
       const testCard = document.createElement("div");
       testCard.className = "test-card animate__animated animate__fadeInUp";
@@ -66,12 +66,15 @@ function editTest(testId) {
 async function deleteTest(testId) {
   const token = sessionStorage.getItem("authToken");
   try {
-    const response = await fetch(`http://${base_url}/api/v1/quizez/${testId}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      `http://${base_url}/api/v1/quizzes/${testId}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     const data = await response.json();
     if (data.success) {
       fetchTests(); // Refresh the list

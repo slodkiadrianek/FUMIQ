@@ -17,13 +17,13 @@ const toggleRequired = (element, isRequired) => {
 const handleQuestionTypeChange = (questionCard, questionType) => {
   const optionsContainer = questionCard.querySelector(".options-container");
   const correctAnswerSingle = questionCard.querySelector(
-    ".correct-answer-single",
+    ".correct-answer-single"
   );
   const correctAnswerMultiple = questionCard.querySelector(
-    ".correct-answer-multiple",
+    ".correct-answer-multiple"
   );
   const correctAnswerTrueFalse = questionCard.querySelector(
-    ".correct-answer-true-false",
+    ".correct-answer-true-false"
   );
 
   // Hide all first
@@ -35,7 +35,7 @@ const handleQuestionTypeChange = (questionCard, questionType) => {
   // Reset required attributes
   toggleRequired(correctAnswerSingle.querySelector("select"), false);
   const checkboxes = correctAnswerMultiple.querySelectorAll(
-    "input[type='checkbox']",
+    "input[type='checkbox']"
   );
   if (checkboxes.length > 0) {
     toggleRequired(checkboxes[0], false);
@@ -164,34 +164,26 @@ const createQuestionCard = (questionNumber, questionData = null) => {
       <div class="correct-answer-multiple" id="correct-answer-multiple-${questionCount}" style="display: none;">
         <div class="form-check">
           <input class="form-check-input" type="checkbox" value="A" id="correct-answer-A-${questionCount}" ${
-            Array.isArray(correctAnswer) && correctAnswer.includes("A")
-              ? "checked"
-              : ""
-          }>
+    Array.isArray(correctAnswer) && correctAnswer.includes("A") ? "checked" : ""
+  }>
           <label class="form-check-label" for="correct-answer-A-${questionCount}">A</label>
         </div>
         <div class="form-check">
           <input class="form-check-input" type="checkbox" value="B" id="correct-answer-B-${questionCount}" ${
-            Array.isArray(correctAnswer) && correctAnswer.includes("B")
-              ? "checked"
-              : ""
-          }>
+    Array.isArray(correctAnswer) && correctAnswer.includes("B") ? "checked" : ""
+  }>
           <label class="form-check-label" for="correct-answer-B-${questionCount}">B</label>
         </div>
         <div class="form-check">
           <input class="form-check-input" type="checkbox" value="C" id="correct-answer-C-${questionCount}" ${
-            Array.isArray(correctAnswer) && correctAnswer.includes("C")
-              ? "checked"
-              : ""
-          }>
+    Array.isArray(correctAnswer) && correctAnswer.includes("C") ? "checked" : ""
+  }>
           <label class="form-check-label" for="correct-answer-C-${questionCount}">C</label>
         </div>
         <div class="form-check">
           <input class="form-check-input" type="checkbox" value="D" id="correct-answer-D-${questionCount}" ${
-            Array.isArray(correctAnswer) && correctAnswer.includes("D")
-              ? "checked"
-              : ""
-          }>
+    Array.isArray(correctAnswer) && correctAnswer.includes("D") ? "checked" : ""
+  }>
           <label class="form-check-label" for="correct-answer-D-${questionCount}">D</label>
         </div>
       </div>
@@ -254,12 +246,15 @@ async function loadTestForEditing(testId) {
       throw new Error("Authentication token not found. Please log in again.");
     }
 
-    const response = await fetch(`http://${base_url}/api/v1/quizez/${testId}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      `http://${base_url}/api/v1/quizzes/${testId}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
@@ -269,7 +264,7 @@ async function loadTestForEditing(testId) {
 
     if (!testData.success) {
       throw new Error(
-        testData.error?.description || "Failed to load test data",
+        testData.error?.description || "Failed to load test data"
       );
     }
 
@@ -307,8 +302,9 @@ const testId = urlParams.get("id");
 
 if (testId) {
   document.getElementById("page-title").innerText = "Edit Test";
-  document.getElementById("save-test").innerHTML =
-    `<i class="bi bi-save"></i> Update Test`;
+  document.getElementById(
+    "save-test"
+  ).innerHTML = `<i class="bi bi-save"></i> Update Test`;
   loadTestForEditing(testId);
 }
 
@@ -341,7 +337,7 @@ document
 
         if (!questionText) {
           throw new Error(
-            `Question ${questionNumber}: Please enter question text.`,
+            `Question ${questionNumber}: Please enter question text.`
           );
         }
 
@@ -349,24 +345,24 @@ document
 
         if (questionType === "single-correct") {
           correctAnswer = card.querySelector(
-            ".correct-answer-single select",
+            ".correct-answer-single select"
           ).value;
         } else if (questionType === "multiple-correct") {
           const checkboxes = card.querySelectorAll(
-            ".correct-answer-multiple input:checked",
+            ".correct-answer-multiple input:checked"
           );
           correctAnswer = Array.from(checkboxes).map(
-            (checkbox) => checkbox.value,
+            (checkbox) => checkbox.value
           );
 
           if (correctAnswer.length === 0) {
             throw new Error(
-              `Question ${questionNumber}: Please select at least one correct answer.`,
+              `Question ${questionNumber}: Please select at least one correct answer.`
             );
           }
         } else if (questionType === "true-false") {
           correctAnswer = card.querySelector(
-            ".correct-answer-true-false select",
+            ".correct-answer-true-false select"
           ).value;
         }
 
@@ -381,7 +377,7 @@ document
           for (let j = 0; j < options.length; j++) {
             if (!options[j]) {
               throw new Error(
-                `Question ${questionNumber}: Please fill in all options.`,
+                `Question ${questionNumber}: Please fill in all options.`
               );
             }
           }
@@ -409,8 +405,8 @@ document
 
       const method = testId ? "PUT" : "POST";
       const url = testId
-        ? `http://${base_url}/api/v1/quizez/${testId}`
-        : `http://${base_url}/api/v1/quizez/`;
+        ? `http://${base_url}/api/v1/quizzes/${testId}`
+        : `http://${base_url}/api/v1/quizzes/`;
 
       const response = await fetch(url, {
         method,
@@ -429,7 +425,7 @@ document
 
       if (!responseData.success) {
         throw new Error(
-          responseData.error?.description || "Failed to save test",
+          responseData.error?.description || "Failed to save test"
         );
       }
 

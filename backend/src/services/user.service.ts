@@ -211,8 +211,12 @@ export class UserService extends BaseService {
               score++;
             }
           } else {
-            if (el.answer.join(",").toLowerCase() === userAnswer.answer) {
+            if (!el.answer) {
               score++;
+            } else {
+              if (el.answer.join(",").toLowerCase() === userAnswer.answer) {
+                score++;
+              }
             }
           }
         }

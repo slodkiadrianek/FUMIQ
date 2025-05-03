@@ -7,13 +7,16 @@ export const createQuiz: ObjectSchema = Joi.object({
   questions: Joi.array()
     .items(
       Joi.object({
-        photo: Joi.optional(),
+        photoUrl: Joi.optional(),
         correctAnswer: Joi.alternatives()
-          .try(Joi.string(), Joi.array().items(Joi.string()),Joi.allow(null))
+          .try(Joi.string(), Joi.array().items(Joi.string()), Joi.allow(null))
           .optional(),
-        options: Joi.array().items(Joi.string()).required().messages({
-          "string.empty": "Option must be provided",
-        }),
+        options: Joi.array()
+          .items(Joi.string(), Joi.allow(null))
+          .required()
+          .messages({
+            "string.empty": "Option must be provided",
+          }),
         questionText: Joi.string().required().messages({
           "string.empty": "Question must be provided",
         }),

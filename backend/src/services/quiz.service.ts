@@ -5,7 +5,6 @@ import { BaseService } from "./base.service.js";
 import { ITakenQuiz, TakenQuiz } from "../models/takenQuiz.model.js";
 import { IUser } from "../models/user.model.js";
 import { AppError } from "../models/error.model.js";
-import { userId } from "../schemas/user.schema.js";
 
 export class QuizService extends BaseService {
   constructor(logger: Logger, caching: RedisCacheService) {
@@ -83,6 +82,7 @@ export class QuizService extends BaseService {
     const quizSession: ITakenQuiz | null = await TakenQuiz.findOne({
       _id: sessionId,
     });
+    console.log(quizSession, "quizSession");
     if (!quizSession) {
       this.logger.error(`Quiz with id ${sessionId} not found`);
       throw new Error(`Quiz with id ${sessionId} not found`);
@@ -93,8 +93,24 @@ export class QuizService extends BaseService {
   showQuizResults = async (
     quizId: string,
     sessionId: string
-  ): Promise<{ name: string; score: number }[]> => {
-    const result: { name: string; score: number }[] = [];
+  ): Promise<
+    {
+      name: string;
+      score: number;
+      userAnswers: {
+        questionText: string;
+        answer: string;
+      }[];
+    }[]
+  > => {
+    const result: {
+      name: string;
+      score: number;
+      userAnswers: {
+        questionText: string;
+        answer: string;
+      }[];
+    }[] = [];
     const quizSession = await TakenQuiz.findOne({
       _id: sessionId,
       quizId: quizId,
@@ -112,30 +128,43 @@ export class QuizService extends BaseService {
       throw new Error(`Quiz with id ${sessionId} not found`);
     }
     const answers = quizSession.quizId.questions.map((el) => ({
-      question: el._id,
+      questionId: el._id,
+      question: el.questionText,
       answer: el.correctAnswer,
     }));
     for (const el of quizSession.competitors) {
+      let userAnswersInfo: {
+        questionText: string;
+        answer: string;
+      }[] = [];
       const name: string = `${el.userId.firstname} ${el.userId.lastname}`;
       const userAnswers = el.answers;
       let score: number = 0;
       for (const el of answers) {
         for (const userAnswer of userAnswers) {
-          if (el.question.toString() === userAnswer.questionId.toString()) {
+          if (el.questionId.toString() === userAnswer.questionId.toString()) {
+            userAnswersInfo.push({
+              questionText: el.question.toString(),
+              answer: userAnswer.answer,
+            });
             if (typeof el.answer === "string") {
               if (el.answer.toLowerCase() === userAnswer.answer) {
                 score++;
               }
             } else {
-              if (el.answer.join(",").toLowerCase() === userAnswer.answer) {
+              if (!el.answer) {
                 score++;
+              } else {
+                if (el.answer.join(",").toLowerCase() === userAnswer.answer) {
+                  score++;
+                }
               }
             }
           }
         }
       }
       score = Math.ceil((score / answers.length) * 100);
-      result.push({ name, score });
+      result.push({ name, score, userAnswers: userAnswersInfo });
     }
     return result;
   };
@@ -254,12 +283,12 @@ export class QuizService extends BaseService {
     }[] = [];
     for (const competitor of session.competitors) {
       const answers = [];
-    
+
       for (const answer of competitor.answers) {
         const question = quiz.questions.find(
           (q) => q._id.toString() === answer.questionId.toString()
         );
-    
+
         if (question) {
           answers.push({
             userId: competitor.userId._id.toString(),
@@ -271,7 +300,7 @@ export class QuizService extends BaseService {
           });
         }
       }
-    
+
       result.push({
         userId: competitor.userId._id.toString(),
         firstName: competitor.userId.firstname,

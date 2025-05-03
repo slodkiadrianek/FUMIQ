@@ -22,7 +22,7 @@ async function initializeQuiz() {
 
   try {
     const sessionResponse = await fetch(
-      `http://${base_url}/api/v1/quizez/${testId}/sessions`,
+      `http://${base_url}/api/v1/quizzes/${testId}/sessions`,
       {
         method: "POST",
         headers: {
@@ -35,7 +35,7 @@ async function initializeQuiz() {
     sessionId = sessionData.data.quiz._id.toString();
     // Get quiz details to know total questions
     const quizResponse = await fetch(
-      `http://${base_url}/api/v1/quizez/${testId}`,
+      `http://${base_url}/api/v1/quizzes/${testId}`,
       {
         method: "GET",
         headers: {
@@ -47,7 +47,7 @@ async function initializeQuiz() {
 
     const quizDetails = await quizResponse.json();
     const competitorsResponse = await fetch(
-      `http://${base_url}/api/v1/quizez/${testId}/sessions/${sessionId}`,
+      `http://${base_url}/api/v1/quizzes/${testId}/sessions/${sessionId}`,
       {
         method: "GET",
         headers: {
@@ -239,7 +239,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const testId = new URLSearchParams(window.location.search).get("id");
       // Make API request to end the quiz
       const response = await fetch(
-        `http://${base_url}/api/v1/quizez/${testId}/sessions/${sessionId}`,
+        `http://${base_url}/api/v1/quizzes/${testId}/sessions/${sessionId}`,
         {
           method: "PATCH",
           headers: {

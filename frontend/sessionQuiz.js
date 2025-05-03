@@ -131,10 +131,9 @@ async function loadQuiz() {
     quizState.description = quizData.description;
     const endTime = new Date(data.data.quiz.competitor.startedAt);
     endTime.setMinutes(endTime.getMinutes() + quizData.timeLimit);
-    if(endTime.getMinutes() + quizData.timeLimit > 60) {
+    if (endTime.getMinutes() + quizData.timeLimit > 60) {
       endTime.setHours(endTime.getHours() + 1);
-          endTime.setMinutes(endTime.getMinutes() + quizData.timeLimit);
-
+      endTime.setMinutes(endTime.getMinutes() + quizData.timeLimit);
     }
     const actualTime = new Date();
     if (actualTime > endTime) {
@@ -158,10 +157,13 @@ async function loadQuiz() {
         text: q.questionText,
         points: 1, // Default points if not specified
         questionType: q.questionType,
-        options: q.options.map((opt, i) => ({
-          id: String.fromCharCode(97 + i), // a, b, c, etc.
-          text: opt,
-        })),
+        options: q.options
+          ? q.options.map((opt, i) => ({
+              id: String.fromCharCode(97 + i), // a, b, c, etc.
+              text: opt,
+            }))
+          : [],
+        photoUrl: q.photoUrl, // Add photo URL if available
       };
       return question;
     });
@@ -199,12 +201,11 @@ async function loadQuiz() {
     showErrorState(error.message || "Failed to load quiz. Please try again.");
   }
 }
-
-// Render questions based on type
 function renderQuestions() {
   elements.questionsContainer.innerHTML = "";
 
   quizState.questions.forEach((question, index) => {
+    console.log(question.photoUrl);
     const questionNum = index + 1;
     const questionId = question.id;
     const currentAnswer = quizState.answers[questionId];
@@ -234,6 +235,14 @@ function renderQuestions() {
       `
         )
         .join("");
+      if (question.photoUrl) {
+        console.log(`YES`);
+        optionsHtml += `
+            <div class="mb-3">
+              <img src="${question.photoUrl}" class="img-fluid rounded mb-2" alt="Question image">
+            </div>
+          `;
+      }
     } else if (question.questionType === "true-false") {
       optionsHtml = `
         <li class="option-item">
@@ -251,7 +260,35 @@ function renderQuestions() {
           </label>
         </li>
       `;
+      if (question.photoUrl) {
+        console.log(`YES`);
+        optionsHtml += `
+          <div class="mb-3">
+            <img src="${question.photoUrl}" class="img-fluid rounded mb-2" alt="Question image">
+          </div>
+        `;
+      }
+    } else if (question.questionType === "open-ended") {
+      // Open-ended question with textarea
+      optionsHtml = `
+        <div class="mb-3">
+          <label for="open-ended-${questionId}" class="form-label">Your answer:</label>
+          <textarea class="form-control" id="open-ended-${questionId}" rows="3" 
+            name="${questionId}">${currentAnswer || ""}</textarea>
+        </div>
+      `;
+
+      // Add photo URL input if the question has a photo
+      if (question.photoUrl) {
+        console.log(`YES`);
+        optionsHtml += `
+          <div class="mb-3">
+            <img src="${question.photoUrl}" class="img-fluid rounded mb-2" alt="Question image">
+          </div>
+        `;
+      }
     } else {
+      // Default to single correct answer
       optionsHtml = question.options
         .map(
           (opt) => `
@@ -267,6 +304,14 @@ function renderQuestions() {
       `
         )
         .join("");
+      if (question.photoUrl) {
+        console.log(`YES`);
+        optionsHtml += `
+            <div class="mb-3">
+              <img src="${question.photoUrl}" class="img-fluid rounded mb-2" alt="Question image">
+            </div>
+          `;
+      }
     }
 
     questionCard.innerHTML = `
@@ -282,39 +327,164 @@ function renderQuestions() {
 
   updateNavigationButtons();
   updateProgress();
+
+  // Add event listeners for all question types
   quizState.questions.forEach((question) => {
-    const inputs = document.querySelectorAll(`input[name="${question.id}"]`);
-
-    inputs.forEach((input) => {
-      input.addEventListener("change", (e) => {
-        if (question.questionType === "multiple-correct") {
-          // Handle multiple correct answers
-          const checkedOptions = Array.from(inputs)
-            .filter((i) => i.checked)
-            .map((i) => i.value);
-          quizState.answers[question.id] = checkedOptions;
-          handleAnswerSelection(
-            userData.id,
-            question.id,
-            question.text,
-            checkedOptions
-          );
-
-          // sendAnswerToServer(question.id, checkedOptions);
-        } else {
-          // Handle single correct and true-false answers
+    if (question.questionType === "open-ended") {
+      const textarea = document.querySelector(
+        `textarea[name="${question.id}"]`
+      );
+      if (textarea) {
+        textarea.addEventListener("input", (e) => {
           quizState.answers[question.id] = e.target.value;
           handleAnswerSelection(userData.id, question.id, question.text, [
             e.target.value,
           ]);
-          // sendAnswerToServer(question.id, [e.target.value]);
-        }
-
-        updateProgress();
+          updateProgress();
+        });
+      }
+    } else {
+      const inputs = document.querySelectorAll(`input[name="${question.id}"]`);
+      inputs.forEach((input) => {
+        input.addEventListener("change", (e) => {
+          if (question.questionType === "multiple-correct") {
+            const checkedOptions = Array.from(inputs)
+              .filter((i) => i.checked)
+              .map((i) => i.value);
+            quizState.answers[question.id] = checkedOptions;
+            handleAnswerSelection(
+              userData.id,
+              question.id,
+              question.text,
+              checkedOptions
+            );
+          } else {
+            quizState.answers[question.id] = e.target.value;
+            handleAnswerSelection(userData.id, question.id, question.text, [
+              e.target.value,
+            ]);
+          }
+          updateProgress();
+        });
       });
-    });
+    }
   });
 }
+// Render questions based on type
+// function renderQuestions() {
+//   elements.questionsContainer.innerHTML = "";
+
+//   quizState.questions.forEach((question, index) => {
+//     const questionNum = index + 1;
+//     const questionId = question.id;
+//     const currentAnswer = quizState.answers[questionId];
+
+//     const questionCard = document.createElement("div");
+//     questionCard.className = "question-card";
+//     questionCard.id = `question-${questionNum}`;
+//     questionCard.style.display = index === 0 ? "block" : "none";
+
+//     let optionsHtml = "";
+
+//     if (question.questionType === "multiple-correct") {
+//       optionsHtml = question.options
+//         .map(
+//           (opt) => `
+//         <li class="option-item">
+//           <label class="option-label">
+//             <input type="checkbox" name="${questionId}" class="option-input" value="${
+//             opt.id
+//           }"
+//               ${
+//                 currentAnswer && currentAnswer.includes(opt.id) ? "checked" : ""
+//               }>
+//             ${opt.text}
+//           </label>
+//         </li>
+//       `
+//         )
+//         .join("");
+//     } else if (question.questionType === "true-false") {
+//       optionsHtml = `
+//         <li class="option-item">
+//           <label class="option-label">
+//             <input type="radio" name="${questionId}" class="option-input" value="true"
+//               ${currentAnswer === "true" ? "checked" : ""}>
+//             True
+//           </label>
+//         </li>
+//         <li class="option-item">
+//           <label class="option-label">
+//             <input type="radio" name="${questionId}" class="option-input" value="false"
+//               ${currentAnswer === "false" ? "checked" : ""}>
+//             False
+//           </label>
+//         </li>
+//       `;
+//     } else {
+//       optionsHtml = question.options
+//         .map(
+//           (opt) => `
+//         <li class="option-item">
+//           <label class="option-label">
+//             <input type="radio" name="${questionId}" class="option-input" value="${
+//             opt.id
+//           }"
+//               ${currentAnswer === opt.id ? "checked" : ""}>
+//             ${opt.text}
+//           </label>
+//         </li>
+//       `
+//         )
+//         .join("");
+//     }
+
+//     questionCard.innerHTML = `
+//       <div class="question-number">Question ${questionNum}</div>
+//       <div class="question-text">${question.text}</div>
+//       <ul class="options-list" id="options-${questionNum}">
+//         ${optionsHtml}
+//       </ul>
+//     `;
+
+//     elements.questionsContainer.appendChild(questionCard);
+//   });
+
+//   updateNavigationButtons();
+//   updateProgress();
+//   quizState.questions.forEach((question) => {
+//     const inputs = document.querySelectorAll(`input[name="${question.id}"]`);
+
+//     inputs.forEach((input) => {
+//       input.addEventListener("change", (e) => {
+//         if (question.questionType === "multiple-correct") {
+//           // Handle multiple correct answers
+//           const checkedOptions = Array.from(inputs)
+//             .filter((i) => i.checked)
+//             .map((i) => i.value);
+//           quizState.answers[question.id] = checkedOptions;
+//           handleAnswerSelection(
+//             userData.id,
+//             question.id,
+//             question.text,
+//             checkedOptions
+//           );
+
+//           // sendAnswerToServer(question.id, checkedOptions);
+//         } else {
+//           // Handle single correct and true-false answers
+//           quizState.answers[question.id] = e.target.value;
+//           handleAnswerSelection(userData.id, question.id, question.text, [
+//             e.target.value,
+//           ]);
+//           // sendAnswerToServer(question.id, [e.target.value]);
+//         }
+
+//         updateProgress();
+//       });
+//     });
+//   });
+// }
 function handleAnswerSelection(userId, questionId, questionText, answer) {
   socket.emit("newAnswer", {
     userId,

@@ -137,6 +137,66 @@
         transform: translateY(-2px);
         box-shadow: 0 5px 15px rgba(79, 70, 229, 0.4);
       }
+      .answer-item {
+        padding: 1rem 0;
+        border-bottom: 1px solid #f3f4f6;
+      }
+
+      .answer-item:last-child {
+        border-bottom: none;
+      }
+
+      .question-text {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+
+      .user-answer {
+        background-color: var(--light-bg);
+        padding: 0.75rem;
+        border-radius: 8px;
+        margin-top: 0.5rem;
+      }
+
+      .modal-lg {
+        max-width: 800px;
+      }
+      /* Add these styles to your existing CSS */
+      .btn-sm {
+        padding: 0.25rem 0.75rem;
+        font-size: 0.875rem;
+      }
+
+      .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+      }
+
+      .btn-primary:hover {
+        background-color: var(--primary-hover);
+        border-color: var(--primary-hover);
+      }
+
+      .btn-outline-primary {
+        color: var(--primary-color);
+        border-color: var(--primary-color);
+      }
+
+      .btn-outline-primary:hover {
+        background-color: var(--primary-color);
+        color: white;
+      }
+      .view-answers-btn {
+        transition: all 0.3s ease;
+      }
+
+      .view-answers-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+      }
+      .modal-nav {
+        background-color: var(--primary-color);
+      }
     </style>
   </head>
   <body>
@@ -201,7 +261,39 @@
         </a>
       </div>
     </div>
-
+    <div
+      class="modal fade"
+      id="answersModal"
+      tabindex="-1"
+      aria-labelledby="answersModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header modal-nav text-white">
+            <h5 class="modal-title" id="answersModalLabel">User Answers</h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body" id="answersModalBody">
+            <!-- Answers will be inserted here -->
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
     <!-- Footer -->
     <div class="footer">
       <p class="mb-0">© 2025 FUMIQ School. All rights reserved.</p>

@@ -39,10 +39,7 @@ export class Authentication {
       this.logger.error(
         `Token is missing during verification of request ${req.baseUrl} with data: ${req.body}`
       );
-      res
-        .status(401)
-        .json({ success: false, error: { description: "Token is missing" } });
-      return;
+      throw new AppError(401, "Authorization", "Token is missing.");
     }
     try {
       const isBlacklisted = await this.caching.exists(`blacklist:${token}`);
