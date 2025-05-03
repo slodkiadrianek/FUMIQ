@@ -9,8 +9,8 @@ export const createQuiz: ObjectSchema = Joi.object({
       Joi.object({
         photo: Joi.optional(),
         correctAnswer: Joi.alternatives()
-          .try(Joi.string(), Joi.array().items(Joi.string()))
-          .required(),
+          .try(Joi.string(), Joi.array().items(Joi.string()),Joi.allow(null))
+          .optional(),
         options: Joi.array().items(Joi.string()).required().messages({
           "string.empty": "Option must be provided",
         }),

@@ -315,33 +315,33 @@ document
     formData.append("timeLimit", timeLimit);
 
     // Add questions data as JSON string
-    const questionsWithoutFiles = questions.map((q) => ({
+    const questionsWithoutFiles = questions.map((q) => (console.log(q),{
       photo: q.imageFile, // This will be handled in the FormData version
       questionText: q.questionText,
       questionType: q.questionType,
       correctAnswer: q.correctAnswer,
       options: q.options,
     }));
-    formData.append("questions", JSON.stringify(questionsWithoutFiles));
+    formData.append("questions", questionsWithoutFiles);
 
-    // Add image files with proper naming
-    questionCards.forEach((card, index) => {
-      const imageInput = card.querySelector(".question-image");
-      if (imageInput.files.length > 0) {
-        formData.append(`questionImage${index}`, imageInput.files[0]);
-      }
-    });
 
+    const bodyData = {};
     const token = sessionStorage.getItem("authToken");
-    console.log(formData.get("title"));
+    for (let [key, value] of formData.entries()) {
+      
+      bodyData[key] = value;
+
+      
+    }
+    console.log("FormData:", bodyData);
     try {
       const response = await fetch(`http://${base_url}/api/v1/quizez/`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
-          // Don't set Content-Type when using FormData, let the browser set it
+          "Content-Type": "application/json",
         },
-        body: formData,
+        body: JSON.stringify(bodyData),
       });
 
       const responseData = await response.json();
