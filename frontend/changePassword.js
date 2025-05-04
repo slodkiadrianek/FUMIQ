@@ -80,18 +80,17 @@ document.addEventListener("DOMContentLoaded", function () {
               newPassword,
               confirmPassword,
             }),
-          },
+          }
         );
 
         const data = await response.json();
 
-        if (!response.ok) {
+        if (!response.status === 204) {
           throw new Error(data.message || "Failed to change password");
         }
 
         // Show success message
-        successAlert.textContent =
-          data.message || "Password changed successfully!";
+        successAlert.textContent = "Password changed successfully!";
         successAlert.classList.remove("d-none");
 
         // Clear form

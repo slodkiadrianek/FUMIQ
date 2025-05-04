@@ -16,6 +16,8 @@ import { QuizRoutes } from "./api/v1/routes/quiz.route.js";
 import { UserService } from "./services/user.service.js";
 import { UserController } from "./api/v1/controllers/user.controller.js";
 import { UserRoutes } from "./api/v1/routes/user.route.js";
+import { swaggerUi, swaggerSpec } from "./swagger.js";
+
 export const app = express();
 app.use(helmet());
 app.use(
@@ -89,6 +91,8 @@ const userController: UserController = new UserController(logger, userService);
 const userRoutes: UserRoutes = new UserRoutes(userController, auth);
 
 //USE
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 app.use(authRoutes.router);
 app.use(quizRoutes.router);
 app.use(userRoutes.router);

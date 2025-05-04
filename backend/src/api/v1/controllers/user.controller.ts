@@ -4,15 +4,12 @@ import { Logger } from "../../../utils/logger.js";
 import { IUser } from "../../../models/user.model.js";
 
 export class UserController {
-  constructor(
-    private logger: Logger,
-    private userService: UserService,
-  ) {}
+  constructor(private logger: Logger, private userService: UserService) {}
 
   getUserById = async (
     req: Request,
     res: Response,
-    next: NextFunction,
+    next: NextFunction
   ): Promise<void> => {
     try {
       const userId = req.params.userId as string;
@@ -33,7 +30,7 @@ export class UserController {
   joinQuiz = async (
     req: Request,
     res: Response,
-    next: NextFunction,
+    next: NextFunction
   ): Promise<void> => {
     try {
       const code = req.body.code as string;
@@ -57,7 +54,7 @@ export class UserController {
   getQuestions = async (
     req: Request,
     res: Response,
-    next: NextFunction,
+    next: NextFunction
   ): Promise<void> => {
     try {
       const userId: string = req.params.userId;
@@ -79,7 +76,7 @@ export class UserController {
   submitQuiz = async (
     req: Request,
     res: Response,
-    next: NextFunction,
+    next: NextFunction
   ): Promise<void> => {
     try {
       const userId: string = req.params.userId;
@@ -94,7 +91,7 @@ export class UserController {
   changePassword = async (
     req: Request,
     res: Response,
-    next: NextFunction,
+    next: NextFunction
   ): Promise<void> => {
     try {
       const userId: string = req.params.userId;
@@ -103,9 +100,7 @@ export class UserController {
       this.logger.info("Attempting to change password", { userId });
       await this.userService.changePassword(userId, oldPassword, newPassword);
       this.logger.info("Password changed successfully", { userId });
-      res.status(200).json({
-        success: true,
-      });
+      res.status(204).send();
     } catch (error) {
       next(error);
     }
@@ -113,7 +108,7 @@ export class UserController {
   deleteUser = async (
     req: Request,
     res: Response,
-    next: NextFunction,
+    next: NextFunction
   ): Promise<void> => {
     try {
       const userId: string = req.params.userId;
@@ -121,9 +116,7 @@ export class UserController {
       this.logger.info("Attempting to delete user", { userId });
       await this.userService.deleteUser(userId, password);
       this.logger.info(`Account deleted successfully`, { userId });
-      res.status(200).json({
-        success: true,
-      });
+      res.status(204).send();
     } catch (error) {
       next(error);
     }
@@ -131,7 +124,7 @@ export class UserController {
   updateUser = async (
     req: Request,
     res: Response,
-    next: NextFunction,
+    next: NextFunction
   ): Promise<void> => {
     try {
       const userId: string = req.params.userId;
@@ -139,9 +132,7 @@ export class UserController {
       this.logger.info("Attempting to update user", { userId });
       await this.userService.updateUser(userId, updatedUser);
       this.logger.info(`User updated successfully`, { userId });
-      res.status(200).json({
-        success: true,
-      });
+      res.status(204).send();
     } catch (error) {
       next(error);
     }
@@ -149,7 +140,7 @@ export class UserController {
   getResult = async (
     req: Request,
     res: Response,
-    next: NextFunction,
+    next: NextFunction
   ): Promise<void> => {
     try {
       const userId: string = req.params.userId;
@@ -157,7 +148,7 @@ export class UserController {
       this.logger.info(`Attempting to get result`, { userId, sessionId });
       const result: number = await this.userService.getResult(
         userId,
-        sessionId,
+        sessionId
       );
       this.logger.info(`Result loaded successfully`, { userId, sessionId });
       res.status(200).json({

@@ -67,12 +67,12 @@ document.addEventListener("DOMContentLoaded", function () {
             body: JSON.stringify({
               password,
             }),
-          },
+          }
         );
 
         const data = await response.json();
 
-        if (!response.ok) {
+        if (!response.status === 204) {
           throw new Error(data.message || "Failed to delete profile");
         }
 
