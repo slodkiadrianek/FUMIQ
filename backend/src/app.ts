@@ -25,7 +25,7 @@ app.use(
     // origin: process.env.ORIGIN_LINK || "http://192.168.0.194:8080",
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
-  })
+  }),
 );
 
 app.use(express.json());
@@ -55,13 +55,13 @@ const emailService: EmailService = new EmailService(
   process.env.EMAIL_SERVICE,
   process.env.EMAIL_USER,
   process.env.EMAIL_PASS,
-  process.env.EMAIL_FROM
+  process.env.EMAIL_FROM,
 );
 export const logger: Logger = new Logger();
 const auth: Authentication = new Authentication(
   process.env.JWT_SECRET || "",
   logger,
-  caching as RedisCacheService
+  caching as RedisCacheService,
 );
 
 //AUTH
@@ -69,7 +69,7 @@ const authService: AuthService = new AuthService(
   logger,
   auth,
   caching as RedisCacheService,
-  emailService
+  emailService,
 );
 const authController: AuthController = new AuthController(logger, authService);
 const authRoutes: AuthRoutes = new AuthRoutes(authController, auth);
@@ -77,7 +77,7 @@ const authRoutes: AuthRoutes = new AuthRoutes(authController, auth);
 //QUIZ
 const quizService: QuizService = new QuizService(
   logger,
-  caching as RedisCacheService
+  caching as RedisCacheService,
 );
 const quizController: QuizController = new QuizController(logger, quizService);
 const quizRoutes: QuizRoutes = new QuizRoutes(quizController, auth);
@@ -85,12 +85,12 @@ const quizRoutes: QuizRoutes = new QuizRoutes(quizController, auth);
 //USER
 const userService: UserService = new UserService(
   logger,
-  caching as RedisCacheService
+  caching as RedisCacheService,
 );
 const userController: UserController = new UserController(
   logger,
   userService,
-  auth
+  auth,
 );
 const userRoutes: UserRoutes = new UserRoutes(userController, auth);
 

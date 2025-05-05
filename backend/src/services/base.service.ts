@@ -53,7 +53,7 @@ export class BaseService {
     type: string,
     id: string,
     table: Model<T>
-  ):Promise<T> => {
+  ): Promise<T> => {
     if (await this.caching.exists(`${type}-${id}`)) {
       const result: T | null = JSON.parse(
         (await this.caching.get(`${type}-${id}`)) || ""
@@ -78,11 +78,7 @@ export class BaseService {
       this.logger.error(`${type} with this ID does not exist"`, { id });
       throw new AppError(404, type, `${type} with this ID does not exist`);
     }
-    await this.caching.set(
-      `${type}-${id}`,
-      JSON.stringify(result),
-      300
-    );
+    await this.caching.set(`${type}-${id}`, JSON.stringify(result), 300);
     return result;
   };
   updateItem = async <T>(
@@ -90,7 +86,7 @@ export class BaseService {
     id: string,
     data: UpdateQuery<T>,
     table: Model<T>
-  ):Promise<T> => {
+  ): Promise<T> => {
     const result: T | null = await table.findOneAndUpdate(
       { _id: id },
       {
@@ -104,18 +100,14 @@ export class BaseService {
       this.logger.error("Warehouse with this ID does not exist", { id });
       throw new AppError(404, type, `${type} with this ID does not exist`);
     }
-    await this.caching.set(
-      `${type}-${id}`,
-      JSON.stringify(result),
-      300
-    );
+    await this.caching.set(`${type}-${id}`, JSON.stringify(result), 300);
     return result;
   };
   deleteItem = async <T>(
     type: string,
     id: string,
     table: Model<T>
-  ):Promise<string> => {
+  ): Promise<string> => {
     const result: DeleteResult | null = await table.deleteOne({ _id: id });
     if (!result) {
       this.logger.error(`${type} with this ID does not exist", { id }`);
