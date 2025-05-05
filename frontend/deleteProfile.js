@@ -70,15 +70,15 @@ document.addEventListener("DOMContentLoaded", function () {
           }
         );
 
-        const data = await response.json();
+        if (response.status !== 204) {
+          const data = await response.json();
 
-        if (!response.status === 204) {
-          throw new Error(data.message || "Failed to delete profile");
+          throw new Error(data.error.description || "Failed to delete profile");
         }
 
         // Show success message
         successAlert.textContent =
-          data.message || "Your profile has been deleted successfully.";
+          "Your profile has been deleted successfully.";
         successAlert.classList.remove("d-none");
 
         // Clear local storage and redirect

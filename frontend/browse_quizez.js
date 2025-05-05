@@ -75,9 +75,8 @@ async function deleteTest(testId) {
         },
       }
     );
-    const data = await response.json();
-    if (data.success) {
-      fetchTests(); // Refresh the list
+    if (response.status === 204) {
+      fetchTests();
     } else {
       alert("Failed to delete test.");
     }

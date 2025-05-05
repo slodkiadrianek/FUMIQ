@@ -362,8 +362,8 @@ document
         },
         body: JSON.stringify(bodyData),
       });
-      const responseData = await response.json();
-      if (!response.ok || !responseData.success) {
+      if (response.status !== 201) {
+        const responseData = await response.json();
         success_message.classList.add("d-none");
         errorMessage.innerHTML =
           responseData.error?.description || "Failed to create quiz";

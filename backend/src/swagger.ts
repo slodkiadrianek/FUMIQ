@@ -16,7 +16,7 @@ export const options: swaggerJSDoc.Options = {
     },
     servers: [
       {
-        url: "http://localhost:3000",
+        url: `http://${process.env.SERVER_IP || "localhost"}:3000`,
       },
     ],
   },

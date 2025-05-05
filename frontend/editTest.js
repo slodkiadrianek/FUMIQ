@@ -417,33 +417,29 @@ document
         body: JSON.stringify(testData),
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+      if (response.status !== 204) {
+        const responseData = await response.json();
 
-      const responseData = await response.json();
-
-      if (!responseData.success) {
         throw new Error(
           responseData.error?.description || "Failed to save test"
         );
+      } else {
+        // Success handling
+        errorMessage.classList.add("d-none");
+        success_message.classList.remove("d-none");
+        success_message.innerHTML = testId
+          ? "Quiz has been updated successfully"
+          : "Quiz has been created successfully";
+
+        // Reset form if creating new test
+        questionsContainer.innerHTML = "";
+        questionCount = 0;
+        document.getElementById("create-test-form").reset();
+
+        // Scroll to the top to show the success message
+        window.scrollTo(0, 0);
+        window.location.href = `viewTest.html?id=${testId}`;
       }
-
-      // Success handling
-      errorMessage.classList.add("d-none");
-      success_message.classList.remove("d-none");
-      success_message.innerHTML = testId
-        ? "Quiz has been updated successfully"
-        : "Quiz has been created successfully";
-
-      // Reset form if creating new test
-      questionsContainer.innerHTML = "";
-      questionCount = 0;
-      document.getElementById("create-test-form").reset();
-
-      // Scroll to the top to show the success message
-      window.scrollTo(0, 0);
-      window.location.href = `viewTest.html?id=${testId}`;
     } catch (error) {
       console.error("Error saving test:", error);
       success_message.classList.add("d-none");
