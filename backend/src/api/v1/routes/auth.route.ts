@@ -238,7 +238,7 @@ export class AuthRoutes {
     /**
      * @swagger
      * /api/v1/auth/reset-password/{token}:
-     *   post:
+     *   get:
      *     summary: Reset user password
      *     tags: [Auth]
      *     requestBody:

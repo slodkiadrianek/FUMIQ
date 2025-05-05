@@ -83,7 +83,7 @@ export class AuthService extends BaseService {
     await this.emailService.sendEmail(
       email,
       "Password change",
-      `http://${process.env.SERVER_IP}:3000/api/v1/auth/reset-password/${token}`
+      `${process.env.ORIGIN_LINK}/newPassword.html?token=${token}`
     );
     return;
   };
@@ -101,7 +101,7 @@ export class AuthService extends BaseService {
   };
   activateUser = async (token: string): Promise<IUser> => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || "");
-    console.log(decoded);
+    decoded;
     const user: IUser | null = await User.findOne({
       email: (decoded as { user: { email: string } }).user.email,
     });

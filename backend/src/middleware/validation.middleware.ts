@@ -10,7 +10,6 @@ export class ValidationMiddleware {
       if (req.body.email) {
         req.body.email = req.body.email.trim().toLowerCase();
       }
-      console.log(req.body);
       const { error } = schema.validate(req[property], { abortEarly: false });
       if (error) {
         res.status(400).json({
