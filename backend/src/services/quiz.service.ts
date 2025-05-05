@@ -82,7 +82,6 @@ export class QuizService extends BaseService {
     const quizSession: ITakenQuiz | null = await TakenQuiz.findOne({
       _id: sessionId,
     });
-    console.log(quizSession, "quizSession");
     if (!quizSession) {
       this.logger.error(`Quiz with id ${sessionId} not found`);
       throw new Error(`Quiz with id ${sessionId} not found`);
@@ -103,6 +102,31 @@ export class QuizService extends BaseService {
       }[];
     }[]
   > => {
+    if (await this.caching.exists(`Quiz-Results-${sessionId}`)) {
+      const result:
+        | {
+            name: string;
+            score: number;
+            userAnswers: {
+              questionText: string;
+              answer: string;
+            }[];
+          }[]
+        | null = JSON.parse(
+        (await this.caching.get(`Quiz-Results-${sessionId}`)) || ""
+      );
+      if (!result) {
+        this.logger.error(
+          `An error occurred while retrieving Quiz-Results-${sessionId}  from the cache.`
+        );
+        throw new AppError(
+          404,
+          "Quiz-Result",
+          `An error occurred while retrieving Quiz-Results-${sessionId}  from the cache.`
+        );
+      }
+      return result;
+    }
     const result: {
       name: string;
       score: number;
@@ -166,6 +190,11 @@ export class QuizService extends BaseService {
       score = Math.ceil((score / answers.length) * 100);
       result.push({ name, score, userAnswers: userAnswersInfo });
     }
+    await this.caching.set(
+      `Quiz-Results-${sessionId}`,
+      JSON.stringify(result),
+      300
+    );
     return result;
   };
   getAllSessions = async (

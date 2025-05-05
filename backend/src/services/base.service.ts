@@ -27,7 +27,6 @@ export class BaseService {
     userId: string,
     table: Model<T>
   ): Promise<T[]> => {
-    await this.caching.del(`${type}-${userId}`);
     if (await this.caching.exists(`${type}-${userId}`)) {
       const result: T[] | null = JSON.parse(
         (await this.caching.get(`${type}-${userId}`)) || ""

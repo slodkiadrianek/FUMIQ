@@ -20,7 +20,7 @@ export class QuizController {
       if (!(req as CustomRequest).user.id) {
         throw new AppError(400, "User", "User id not found");
       }
-      console.log(req.body);
+      req.body;
       const data: Omit<IQuiz, "_id"> = {
         ...req.body,
         userId: (req as CustomRequest).user.id,

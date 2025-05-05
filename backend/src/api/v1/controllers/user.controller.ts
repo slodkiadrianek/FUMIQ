@@ -2,9 +2,14 @@ import { Request, Response, NextFunction } from "express";
 import { UserService } from "../../../services/user.service.js";
 import { Logger } from "../../../utils/logger.js";
 import { IUser } from "../../../models/user.model.js";
+import { Authentication } from "../../../middleware/auth.middleware.js";
 
 export class UserController {
-  constructor(private logger: Logger, private userService: UserService) {}
+  constructor(
+    private logger: Logger,
+    private userService: UserService,
+    private authenticator: Authentication
+  ) {}
 
   getUserById = async (
     req: Request,
@@ -116,6 +121,7 @@ export class UserController {
       this.logger.info("Attempting to delete user", { userId });
       await this.userService.deleteUser(userId, password);
       this.logger.info(`Account deleted successfully`, { userId });
+      this.authenticator.blacklist(req, res, next);
       res.status(204).send();
     } catch (error) {
       next(error);

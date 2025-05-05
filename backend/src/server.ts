@@ -5,7 +5,6 @@ import { RedisCacheService } from "./types/common.type.js";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import { ITakenQuiz, TakenQuiz } from "./models/takenQuiz.model.js";
-
 const server = createServer(app);
 
 const io = new Server(server, {
@@ -16,15 +15,15 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
-  console.log(`New client connected: ${socket.id}`);
+  `New client connected: ${socket.id}`;
 
   socket.on("message", (data) => {
-    console.log(`Message received: ${data}`);
+    `Message received: ${data}`;
     io.emit("message", data);
   });
 
   socket.on("joinSession", (data) => {
-    console.log(`\n\n`, data);
+    data;
     if (data.sessionId && typeof data.sessionId === "string") {
       const sessionId = data.sessionId;
       io.emit(`newUser-${sessionId}`, data);
@@ -72,6 +71,7 @@ io.on("connection", (socket) => {
         }
       }
       await sessionQuiz.save();
+
       io.emit(`newAnswer-${data.sessionId}`, {
         userId: data.userId,
         questionId: data.questionId,
@@ -85,7 +85,7 @@ io.on("connection", (socket) => {
     }
   });
   socket.on("submitQuiz", (data) => {
-    console.log(`submitQuiz-${data.sessionId}`);
+    `submitQuiz-${data.sessionId}`;
     io.emit(`submitQuiz-${data.sessionId}`, { userId: data.userId });
   });
 
@@ -112,7 +112,7 @@ io.on("connection", (socket) => {
         answer,
         timestamp: new Date(),
       });
-      console.log(`Sent`);
+      `Sent`;
     } catch (error) {
       console.error("Error saving answer:", error);
       socket.emit("error", { message: "Failed to save answer" });
@@ -120,17 +120,23 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    console.log(`Client disconnected: ${socket.id}`);
+    `Client disconnected: ${socket.id}`;
   });
 });
 
 // Start the server
-server.listen(3000, async () => {
-  new Db(process.env.DB_LINK || "");
-  await (caching as RedisCacheService).set("key", "value");
-  const value = await (caching as RedisCacheService).get("key");
-  if (value) {
-    console.log(`Caching service is working`);
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, async () => {
+  try {
+    new Db(process.env.DB_LINK || "");
+    await (caching as RedisCacheService).set("key", "value");
+    const value = await (caching as RedisCacheService).get("key");
+    if (value) {
+      console.log("Caching service is working");
+    }
+    console.log(`Server is running on port ${PORT}`);
+  } catch (error) {
+    console.error("Failed to start server:", error);
+    process.exit(1);
   }
-  console.log(`Server is running on port 3000`);
 });

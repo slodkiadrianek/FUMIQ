@@ -17,6 +17,77 @@ export class QuizRoutes {
   }
 
   protected initializeRoutes(): void {
+    /**
+     * @swagger
+     * /api/v1/auth/register:
+     *   post:
+     *     summary: Register a new user
+     *     tags: [Auth]
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             required:
+     *             properties:
+     *               firstname:
+     *                 type: string
+     *                 example: Joe
+     *               lastname:
+     *                 type: string
+     *                 example: Doe
+     *               email:
+     *                 type: string
+     *                 example: jode@mail.com
+     *               password:
+     *                 type: string
+     *                 example: Password123!
+     *               confirmPassword:
+     *                 type: string
+     *                 example: Password123!
+     *     responses:
+     *       200:
+     *         description: User
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 success:
+     *                   type: boolean
+     *                   example: true
+     *                 data:
+     *                   type: object
+     *                   properties:
+     *                     user:
+     *                       type: object
+     *                       properties:
+     *                         _id:
+     *                           type: string
+     *                           example: 1234567890abcdef12345678
+     *                         firstname:
+     *                           type: string
+     *                           example: Joe
+     *                         lastname:
+     *                           type: string
+     *                           example: Doe
+     *                         email:
+     *                           type: string
+     *                           example: joedoe@mail.com
+     *                         isActivated:
+     *                           type: boolean
+     *                           example: false
+     *                         createdAt:
+     *                           type: string
+     *                           example: 2023-10-01T12:00:00.000Z
+     *                         updatedAt:
+     *                           type: string
+     *                           example: 2023-10-01T12:00:00.000Z
+     *                         password:
+     *                           type: string
+     *                           example: dn723udgh297380dg32pdjasidhb97823
+     */
     this.router.post(
       "/api/v1/quizzes/",
       ValidationMiddleware.validate(createQuiz, "body"),

@@ -57,7 +57,7 @@ const emailService: EmailService = new EmailService(
   process.env.EMAIL_PASS,
   process.env.EMAIL_FROM
 );
-const logger: Logger = new Logger();
+export const logger: Logger = new Logger();
 const auth: Authentication = new Authentication(
   process.env.JWT_SECRET || "",
   logger,
@@ -87,7 +87,11 @@ const userService: UserService = new UserService(
   logger,
   caching as RedisCacheService
 );
-const userController: UserController = new UserController(logger, userService);
+const userController: UserController = new UserController(
+  logger,
+  userService,
+  auth
+);
 const userRoutes: UserRoutes = new UserRoutes(userController, auth);
 
 //USE

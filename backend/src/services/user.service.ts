@@ -7,7 +7,6 @@ import { Types } from "mongoose";
 import { AppError } from "../models/error.model.js";
 import bcrypt from "bcryptjs";
 import { IQuiz } from "../models/quiz.model.js";
-import { time } from "console";
 export class UserService extends BaseService {
   constructor(logger: Logger, caching: RedisCacheService) {
     super(logger, caching);
@@ -147,7 +146,6 @@ export class UserService extends BaseService {
     }
     for (const el of sesssionQuiz.competitors) {
       if (el.userId.toString() === userId) {
-        console.log("haj");
         el.finished = true;
       }
     }
@@ -181,6 +179,22 @@ export class UserService extends BaseService {
     return this.updateItem("User", userId, data, User);
   };
   getResult = async (userId: string, sessionId: string): Promise<number> => {
+    if (await this.caching.exists(`Quiz-Result-${sessionId}-${userId}`)) {
+      const result: number | null = JSON.parse(
+        (await this.caching.get(`Quiz-Result-${sessionId}-${userId}`)) || ""
+      );
+      if (!result) {
+        this.logger.error(
+          `An error occurred while retrieving Quiz-Result-${sessionId} for ${userId} from the cache.`
+        );
+        throw new AppError(
+          404,
+          "Quiz-Result",
+          `An error occurred while retrieving Quiz-Result-${sessionId} for ${userId} from the cache.`
+        );
+      }
+      return result;
+    }
     const quizSession = await TakenQuiz.findOne({ _id: sessionId })
       .populate("quizId")
       .lean<ITakenQuiz & { quizId: IQuiz }>();
@@ -223,6 +237,11 @@ export class UserService extends BaseService {
       }
     }
     score = Math.ceil((score / answers.length) * 100);
+    await this.caching.set(
+      `Quiz-Result-${sessionId}-${userId}`,
+      JSON.stringify(score),
+      300
+    );
     return score;
   };
 }

@@ -316,8 +316,7 @@ export class UserRoutes {
       this.auth.verify,
       ValidationMiddleware.validate(userId, "params"),
       ValidationMiddleware.validate(deleteUser),
-      this.auth.blacklist,
-      this.userController.deleteUser
+      this.userController.deleteUser,
     );
     /**
      * @swagger

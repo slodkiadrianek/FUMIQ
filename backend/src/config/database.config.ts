@@ -10,7 +10,7 @@ export class Db {
     try {
       if (this.dbLink) {
         await mongoose.connect(this.dbLink);
-        console.log(`Database connected `);
+        `Database connected `;
       } else {
         throw new Error("You have to specifie db link");
       }

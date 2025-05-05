@@ -56,6 +56,10 @@ export const passwordUser: ObjectSchema = Joi.object({
       "string.pattern.base":
         "Password must contain at least 1 lowercase letter, 1 uppercase letter, 1 digit, and 1 special character. It must be at least 8 characters long.",
     }),
+  confirmPassword: Joi.string()
+    .valid(Joi.ref("password"))
+    .required()
+    .messages({ "any.only": "Passwords do not match" }),
 });
 
 export const changePasswordUser: ObjectSchema = Joi.object({
