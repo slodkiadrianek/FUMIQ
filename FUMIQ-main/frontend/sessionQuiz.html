@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FUMIQ - Quiz</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap Icons -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <!-- Animate.css for animations -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-color: #4f46e5;
+        --primary-hover: #4338ca;
+        --secondary-color: #10b981;
+        --secondary-hover: #059669;
+        --light-bg: #f3f4f6;
+        --dark-text: #1f2937;
+      }
+
+      body {
+        background: linear-gradient(135deg, #f0f4ff 0%, #e6f7ff 100%);
+        min-height: 100vh;
+        font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      }
+
+      .navbar {
+        background-color: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 20px;
+        margin: 1rem;
+        padding: 0.75rem 1.5rem;
+      }
+
+      .navbar-brand {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+      }
+
+      .navbar-brand i {
+        font-size: 2rem;
+        margin-right: 0.5rem;
+      }
+
+      .nav-link {
+        color: var(--dark-text);
+        font-weight: 500;
+        margin-left: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .nav-link:hover {
+        color: var(--primary-color);
+        transform: translateY(-2px);
+      }
+
+      .quiz-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+
+      .quiz-header {
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+        text-align: center;
+      }
+
+      .quiz-header h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+      }
+
+      .quiz-header p {
+        font-size: 1.1rem;
+        color: var(--dark-text);
+        margin-bottom: 1.5rem;
+      }
+
+      .question-card {
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 20px;
+        padding: 1.5rem;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1.5rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .question-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      }
+
+      .question-number {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+      }
+
+      .question-text {
+        font-size: 1.1rem;
+        color: var(--dark-text);
+        margin-bottom: 1.5rem;
+      }
+
+      .options-list {
+        list-style-type: none;
+        padding-left: 0;
+      }
+
+      .option-item {
+        margin-bottom: 0.75rem;
+      }
+
+      .option-label {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        background-color: var(--light-bg);
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .option-label:hover {
+        background-color: #e0e7ff;
+      }
+
+      .option-input {
+        margin-right: 1rem;
+      }
+
+      .btn-primary, .btn-success {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary:hover {
+        background-color: var(--primary-hover);
+        border-color: var(--primary-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(79, 70, 229, 0.4);
+      }
+
+      .btn-secondary {
+        background-color: white;
+        border: 1px solid #d1d5db;
+        color: var(--dark-text);
+        padding: 0.75rem 1.5rem;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+      }
+
+      .btn-secondary:hover {
+        background-color: var(--light-bg);
+        transform: translateY(-2px);
+      }
+
+      .timer {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 0.5rem 1.25rem;
+        border-radius: 10px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .progress-container {
+        margin: 1.5rem 0;
+      }
+
+      .progress-bar {
+        height: 8px;
+        background-color: var(--light-bg);
+        border-radius: 4px;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background-color: var(--primary-color);
+        border-radius: 4px;
+        transition: width 0.4s ease;
+      }
+
+      .footer {
+        text-align: center;
+        padding: 1.5rem;
+        color: #6b7280;
+        font-size: 0.875rem;
+        margin-top: 2rem;
+      }
+
+      @media (max-width: 768px) {
+        .quiz-header h1 {
+          font-size: 1.6rem;
+        }
+
+        .quiz-footer {
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        .quiz-footer .btn {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+          <i class="bi bi-box logo-icon"></i>
+          FUMIQ
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="dashboard.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="create_quiz.html">Create</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="joinQuiz.html">Join</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="browse_quizez.html">Tests</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="profile.html">Profile</a>
+            </li>
+            <li class="nav-item">
+              <a id="btn-logout" href="logout.html" class="nav-link">Logout</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Quiz Content -->
+    <div class="quiz-container">
+      <!-- Loading State -->
+      <div
+        id="loading-state"
+        class="quiz-header animate__animated animate__fadeIn"
+      >
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <h3>Loading Quiz Questions</h3>
+        <p>Please wait while we prepare your quiz...</p>
+      </div>
+
+      <!-- Error State (hidden by default) -->
+      <div
+        id="error-state"
+        class="quiz-header animate__animated animate__fadeIn"
+        style="display: none"
+      >
+        <i
+          class="bi bi-exclamation-octagon text-danger"
+          style="font-size: 2.5rem"
+        ></i>
+        <h3>Failed to Load Quiz</h3>
+        <p id="error-message">
+          We couldn't load the quiz questions. Please try again later.
+        </p>
+        <button id="retry-btn" class="btn btn-primary mt-3">
+          <i class="bi bi-arrow-clockwise"></i> Try Again
+        </button>
+      </div>
+
+      <!-- Quiz Content (hidden by default) -->
+      <div id="quiz-content" style="display: none">
+        <!-- Quiz Header -->
+        <div class="quiz-header animate__animated animate__fadeIn">
+          <h1 id="quiz-title">Mathematics Quiz</h1>
+          <p id="quiz-description">
+            Test your knowledge of basic mathematics concepts
+          </p>
+
+          <!-- Progress bar -->
+          <div class="progress-container">
+            <div class="d-flex justify-content-between mb-2">
+              <span id="progress-text">Progress: 0/0 (0%)</span>
+              
+            </div>
+            <div class="progress-bar">
+              <div
+                id="progress-fill"
+                class="progress-fill"
+                style="width: 0%"
+              ></div>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-center gap-3 mt-3">
+            <span class="timer" id="quiz-timer"
+              ><i class="bi bi-clock"></i>
+              <span id="time-display">00:00</span></span
+            >
+          </div>
+        </div>
+
+        <!-- Questions Container -->
+        <form id="quiz-form">
+          <div id="questions-container">
+            <!-- Questions will be dynamically inserted here -->
+          </div>
+
+          <!-- Quiz Navigation -->
+          <div class="d-flex justify-content-between align-items-center mt-4">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              id="prev-btn"
+              disabled
+            >
+              <i class="bi bi-arrow-left"></i> Previous
+            </button>
+            <div>
+              <button type="button" class="btn btn-primary" id="next-btn">
+                Next <i class="bi bi-arrow-right"></i>
+              </button>
+              <button
+                type="button"
+                class="btn btn-success d-none"
+                id="submit-quiz-btn"
+                data-bs-toggle="modal"
+                data-bs-target="#submitModal"
+              >
+                Submit Quiz
+                <i class="bi bi-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Submit Confirmation Modal -->
+    <div
+      class="modal fade"
+      id="submitModal"
+      tabindex="-1"
+      aria-labelledby="submitModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title" id="submitModalLabel">
+              <i class="bi bi-check-circle me-2"></i> Submit Quiz
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p id="answered-count-text">
+              You have answered 0 out of 0 questions.
+            </p>
+            <p>Are you sure you want to submit your quiz?</p>
+            <div class="alert alert-warning mt-3">
+              <i class="bi bi-exclamation-triangle me-2"></i> You won't be able
+              to make changes after submission.
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Continue Quiz
+            </button>
+            <button type="button" class="btn btn-primary" id="confirm-submit">
+              Submit Anyway
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p class="mb-0">© 2025 FUMIQ School. All rights reserved.</p>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+
+    <script type="module" src="verify.js"></script>
+    <script type="module" src="sessionQuiz.js"></script>
+  </body>
+</html>

@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Join Quiz - FUMIQ</title>
+        <!-- Bootstrap CSS -->
+        <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+        <!-- Bootstrap Icons -->
+        <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css"
+            rel="stylesheet"
+        />
+        <!-- Animate.css for animations -->
+        <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+            rel="stylesheet"
+        />
+        <style>
+            /* Reusing the same styles as the dashboard */
+            :root {
+                --primary-color: #4f46e5;
+                --primary-hover: #4338ca;
+                --secondary-color: #10b981;
+                --secondary-hover: #059669;
+                --light-bg: #f3f4f6;
+                --dark-text: #1f2937;
+            }
+
+            body {
+                background: linear-gradient(135deg, #f0f4ff 0%, #e6f7ff 100%);
+                min-height: 100vh;
+                font-family:
+                    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            }
+
+            .navbar {
+                background-color: rgba(255, 255, 255, 0.9);
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                border-radius: 20px;
+                margin: 1rem;
+                padding: 0.75rem 1.5rem;
+            }
+
+            .navbar-brand {
+                font-size: 1.5rem;
+                font-weight: 700;
+                color: var(--primary-color);
+                display: flex;
+                align-items: center;
+            }
+
+            .navbar-brand i {
+                font-size: 2rem;
+                margin-right: 0.5rem;
+            }
+
+            .nav-link {
+                color: var(--dark-text);
+                font-weight: 500;
+                margin-left: 1rem;
+                transition: all 0.3s ease;
+            }
+
+            .nav-link:hover {
+                color: var(--primary-color);
+                transform: translateY(-2px);
+            }
+
+            .join-quiz-container {
+                max-width: 800px;
+                margin: 2rem auto;
+                padding: 0 1rem;
+            }
+
+            .join-quiz-section {
+                background-color: rgba(255, 255, 255, 0.9);
+                border-radius: 20px;
+                padding: 2rem;
+                box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+                margin-bottom: 2rem;
+                text-align: center;
+            }
+
+            .join-quiz-section h1 {
+                font-size: 2.5rem;
+                font-weight: 700;
+                color: var(--primary-color);
+                margin-bottom: 1rem;
+            }
+
+            .join-quiz-section p {
+                font-size: 1.1rem;
+                color: var(--dark-text);
+                margin-bottom: 1.5rem;
+            }
+
+            .form-control {
+                border-radius: 10px;
+                padding: 0.75rem 1rem;
+                border: 1px solid #e5e7eb;
+                transition: all 0.3s ease;
+            }
+
+            .form-control:focus {
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            }
+
+            .btn-primary {
+                background-color: var(--primary-color);
+                border-color: var(--primary-color);
+                padding: 0.75rem 1.5rem;
+                font-weight: 500;
+                border-radius: 10px;
+                transition: all 0.3s ease;
+            }
+
+            .btn-primary:hover {
+                background-color: var(--primary-hover);
+                border-color: var(--primary-hover);
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(79, 70, 229, 0.4);
+            }
+
+            .footer {
+                text-align: center;
+                padding: 1.5rem;
+                color: #6b7280;
+                font-size: 0.875rem;
+                margin-top: 2rem;
+            }
+
+            @media (max-width: 768px) {
+                .join-quiz-section h1 {
+                    font-size: 2rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    <i class="bi bi-box logo-icon"></i>
+                    FUMIQ
+                </a>
+                <button
+                    class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav"
+                    aria-controls="navbarNav"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
+                >
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="dashboard.html">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="create_quiz.html"
+                                >Create</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="joinQuiz.html"
+                                >Join</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="browse_quizez.html"
+                                >Tests</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="profile.html">Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                id="btn-logout"
+                                href="logout.html"
+                                class="nav-link"
+                                >Logout</a
+                            >
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="join-quiz-container">
+            <!-- Join Quiz Section -->
+            <div class="join-quiz-section animate__animated animate__fadeIn">
+                <h1>Join a Quiz</h1>
+                <p>
+                    Enter the quiz code provided by your instructor to join the
+                    quiz and start answering questions.
+                </p>
+                <form>
+                    <div
+                        id="error-message"
+                        class="alert alert-danger d-none"
+                        role="alert"
+                    ></div>
+                    <div class="mb-3">
+                        <input
+                            type="text"
+                            id="code"
+                            class="form-control"
+                            placeholder="Enter Quiz Code"
+                            required
+                        />
+                    </div>
+                    <button id="join" type="submit" class="btn btn-primary">
+                        Join Quiz
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p class="mb-0">© 2025 FUMIQ School. All rights reserved.</p>
+        </div>
+
+        <!-- Bootstrap JS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+        <script type="module" src="verify.js"></script>
+        <script type="module" src="joinQuiz.js"></script>
+    </body>
+</html>

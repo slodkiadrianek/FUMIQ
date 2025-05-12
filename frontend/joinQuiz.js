@@ -18,11 +18,10 @@ async function joinQuiz() {
       body: JSON.stringify({
         code,
       }),
-    },
+    }
   );
 
   const responseData = await response.json();
-  console.log(responseData);
   if (!responseData.success) {
     errorMessage.classList.remove("d-none");
     errorMessage.innerHTML = responseData.error.description;

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FUMIQ - Create Tests</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap Icons -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <!-- Animate.css for animations -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      /* Reusing the same styles as the login, register, and reset password pages */
+      :root {
+        --primary-color: #4f46e5;
+        --primary-hover: #4338ca;
+        --secondary-color: #10b981;
+        --secondary-hover: #059669;
+        --light-bg: #f3f4f6;
+        --dark-text: #1f2937;
+      }
+
+      body {
+        background: linear-gradient(135deg, #f0f4ff 0%, #e6f7ff 100%);
+        min-height: 100vh;
+        font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      }
+
+      .navbar {
+        background-color: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 20px;
+        margin: 1rem;
+        padding: 0.75rem 1.5rem;
+      }
+
+      .navbar-brand {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+      }
+
+      .navbar-brand i {
+        font-size: 2rem;
+        margin-right: 0.5rem;
+      }
+
+      .nav-link {
+        color: var(--dark-text);
+        font-weight: 500;
+        margin-left: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .nav-link:hover {
+        color: var(--primary-color);
+        transform: translateY(-2px);
+      }
+
+      .dashboard-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+
+      .welcome-section {
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+      }
+
+      .welcome-section h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+      }
+
+      .welcome-section p {
+        font-size: 1.1rem;
+        color: var(--dark-text);
+        margin-bottom: 1.5rem;
+      }
+
+      .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary:hover {
+        background-color: var(--primary-hover);
+        border-color: var(--primary-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(79, 70, 229, 0.4);
+      }
+
+      .test-form {
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+      }
+
+      .question-card {
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 20px;
+        padding: 1.5rem;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1.5rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .question-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      }
+
+      .question-card h4 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+      }
+
+      .footer {
+        text-align: center;
+        padding: 1.5rem;
+        color: #6b7280;
+        font-size: 0.875rem;
+        margin-top: 2rem;
+      }
+
+      @media (max-width: 768px) {
+        .welcome-section h1 {
+          font-size: 2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+          <i class="bi bi-box logo-icon"></i>
+          FUMIQ
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="dashboard.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="create_quiz.html">Create</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="joinQuiz.html">Join</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="browse_quizez.html">Tests</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="profile.html">Profile</a>
+            </li>
+            <li class="nav-item">
+              <a id="btn-logout" href="logout.html" class="nav-link">Logout</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="dashboard-container">
+      <!-- Welcome Section -->
+      <div class="welcome-section animate__animated animate__fadeIn">
+        <h1>Create a New Test</h1>
+        <p>
+          Design your test by adding questions, setting time limits, and
+          customizing the experience for your students.
+        </p>
+      </div>
+
+      <!-- Test Creation Form -->
+      <div class="test-form animate__animated animate__fadeInUp">
+        <form id="create-test-form" novalidate>
+          <!-- Test Title -->
+          <div class="mb-4">
+            <label for="test-title" class="form-label">Test Title</label>
+            <input
+              type="text"
+              class="form-control"
+              id="test-title"
+              placeholder="Enter test title"
+              required
+            />
+          </div>
+
+          <!-- Test Description -->
+          <div class="mb-4">
+            <label for="test-description" class="form-label"
+              >Test Description</label
+            >
+            <textarea
+              class="form-control"
+              id="test-description"
+              rows="3"
+              placeholder="Enter test description"
+              required
+            ></textarea>
+          </div>
+
+          <!-- Time Limit -->
+          <div class="mb-4">
+            <label for="time-limit" class="form-label"
+              >Time Limit (minutes)</label
+            >
+            <input
+              type="number"
+              class="form-control"
+              id="time-limit"
+              placeholder="Enter time limit"
+              min="1"
+              required
+            />
+          </div>
+
+          <!-- Questions Section -->
+          <div id="questions-container">
+            <!-- Questions will be dynamically added here -->
+          </div>
+
+          <!-- Add Question Button -->
+          <div class="d-grid gap-2 mb-4">
+            <button type="button" class="btn btn-primary" id="add-question">
+              <i class="bi bi-plus-circle"></i> Add Question
+            </button>
+          </div>
+
+          <!-- Save Test Button -->
+          <div class="d-grid gap-2 mt-4">
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-save"></i> Save Test
+            </button>
+            <div
+              id="error-message"
+              class="alert alert-danger d-none bi bi-trash"
+              role="alert"
+            ></div>
+            <div
+              id="success-message"
+              class="alert alert-success d-none"
+              role="alert"
+            ></div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p class="mb-0">© 2025 FUMIQ School. All rights reserved.</p>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="verify.js"></script>
+    <!-- Script for Enhanced Functionality -->
+    <script type="module" src="create_quiz.js">
+      
+    </script>
+  </body>
+</html>

@@ -119,7 +119,6 @@ async function loadQuiz() {
     );
 
     const data = await response.json();
-    console.log(data);
     if (!data.success) {
       throw new Error(data.error.description || "Failed to load quiz");
     }

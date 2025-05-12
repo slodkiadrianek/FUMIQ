@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        },
+        }
       );
 
       const { data } = await response.json();
@@ -68,18 +68,16 @@ document.addEventListener("DOMContentLoaded", function () {
             lastname: lastName,
             email,
           }),
-        },
+        }
       );
 
-      const data = await response.json();
-
-      if (!response.ok) {
+      if (response.status !== 204) {
+        const data = await response.json();
         throw new Error(data.message || "Failed to update profile");
       }
 
       // Show success message
-      successAlert.textContent =
-        data.message || "Profile updated successfully!";
+      successAlert.textContent =  "Profile updated successfully!";
       successAlert.classList.remove("d-none");
 
       // Optionally redirect after success

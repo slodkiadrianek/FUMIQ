@@ -20,9 +20,9 @@ reset_form.addEventListener("submit", async function (event) {
       body: JSON.stringify(data),
     });
 
-    const responseData = await res.json();
-    console.log("Success:", responseData);
-    if (!res.status === 204) {
+    if (res.status !== 204) {
+      const responseData = await res.json();
+
       success_message.classList.add("d-none");
       errorMessage.innerHTML = responseData.error.description;
       errorMessage.classList.remove("d-none");
