@@ -1,374 +1,339 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>FUMIQ - Profile</title>
-        <!-- Bootstrap CSS -->
-        <link
-            href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
-            rel="stylesheet"
-        />
-        <!-- Bootstrap Icons -->
-        <link
-            href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css"
-            rel="stylesheet"
-        />
-        <!-- Animate.css for animations -->
-        <link
-            href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
-            rel="stylesheet"
-        />
-        <!-- Chart.js for charts -->
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <style>
-            /* Reusing the same styles as the login, register, and reset password pages */
-            :root {
-                --primary-color: #4f46e5;
-                --primary-hover: #4338ca;
-                --secondary-color: #10b981;
-                --secondary-hover: #059669;
-                --light-bg: #f3f4f6;
-                --dark-text: #1f2937;
-            }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FUMIQ - Profile</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap Icons -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <!-- Animate.css for animations -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+      rel="stylesheet"
+    />
+    <!-- Chart.js for charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      /* Reusing the same styles as the login, register, and reset password pages */
+      :root {
+        --primary-color: #4f46e5;
+        --primary-hover: #4338ca;
+        --secondary-color: #10b981;
+        --secondary-hover: #059669;
+        --light-bg: #f3f4f6;
+        --dark-text: #1f2937;
+      }
 
-            body {
-                background: linear-gradient(135deg, #f0f4ff 0%, #e6f7ff 100%);
-                min-height: 100vh;
-                font-family:
-                    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            }
+      body {
+        background: linear-gradient(135deg, #f0f4ff 0%, #e6f7ff 100%);
+        min-height: 100vh;
+        font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      }
 
-            .navbar {
-                background-color: rgba(255, 255, 255, 0.9);
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-                border-radius: 20px;
-                margin: 1rem;
-                padding: 0.75rem 1.5rem;
-            }
+      .navbar {
+        background-color: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 20px;
+        margin: 1rem;
+        padding: 0.75rem 1.5rem;
+      }
 
-            .navbar-brand {
-                font-size: 1.5rem;
-                font-weight: 700;
-                color: var(--primary-color);
-                display: flex;
-                align-items: center;
-            }
+      .navbar-brand {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+      }
 
-            .navbar-brand i {
-                font-size: 2rem;
-                margin-right: 0.5rem;
-            }
+      .navbar-brand i {
+        font-size: 2rem;
+        margin-right: 0.5rem;
+      }
 
-            .nav-link {
-                color: var(--dark-text);
-                font-weight: 500;
-                margin-left: 1rem;
-                transition: all 0.3s ease;
-            }
+      .nav-link {
+        color: var(--dark-text);
+        font-weight: 500;
+        margin-left: 1rem;
+        transition: all 0.3s ease;
+      }
 
-            .nav-link:hover {
-                color: var(--primary-color);
-                transform: translateY(-2px);
-            }
+      .nav-link:hover {
+        color: var(--primary-color);
+        transform: translateY(-2px);
+      }
 
-            .dashboard-container {
-                max-width: 1200px;
-                margin: 2rem auto;
-                padding: 0 1rem;
-            }
+      .dashboard-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
 
-            .welcome-section {
-                background-color: rgba(255, 255, 255, 0.9);
-                border-radius: 20px;
-                padding: 2rem;
-                box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-                margin-bottom: 2rem;
-            }
+      .welcome-section {
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+      }
 
-            .welcome-section h1 {
-                font-size: 2.5rem;
-                font-weight: 700;
-                color: var(--primary-color);
-                margin-bottom: 1rem;
-            }
+      .welcome-section h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+      }
 
-            .welcome-section p {
-                font-size: 1.1rem;
-                color: var(--dark-text);
-                margin-bottom: 1.5rem;
-            }
+      .welcome-section p {
+        font-size: 1.1rem;
+        color: var(--dark-text);
+        margin-bottom: 1.5rem;
+      }
 
-            .profile-card {
-                background-color: rgba(255, 255, 255, 0.95);
-                border-radius: 15px;
-                padding: 1.5rem;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-                margin-bottom: 1.5rem;
-                transition:
-                    transform 0.3s ease,
-                    box-shadow 0.3s ease;
-                border: 1px solid rgba(0, 0, 0, 0.05);
-            }
+      .profile-card {
+        background-color: rgba(255, 255, 255, 0.95);
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1.5rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+      }
 
-            .profile-card:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-            }
+      .profile-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+      }
 
-            .profile-card h4 {
-                font-size: 1.5rem;
-                font-weight: 700;
-                color: var(--primary-color);
-                margin-bottom: 1rem;
-                display: flex;
-                align-items: center;
-            }
+      .profile-card h4 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+      }
 
-            .profile-card h4 i {
-                font-size: 1.5rem;
-                margin-right: 0.75rem;
-                color: var(--primary-color);
-            }
+      .profile-card h4 i {
+        font-size: 1.5rem;
+        margin-right: 0.75rem;
+        color: var(--primary-color);
+      }
 
-            .profile-card p {
-                font-size: 1rem;
-                color: var(--dark-text);
-                margin-bottom: 0.75rem;
-                line-height: 1.5;
-            }
+      .profile-card p {
+        font-size: 1rem;
+        color: var(--dark-text);
+        margin-bottom: 0.75rem;
+        line-height: 1.5;
+      }
 
-            .profile-card .profile-meta {
-                display: flex;
-                gap: 1rem;
-                margin-bottom: 1.5rem;
-                flex-wrap: wrap;
-            }
+      .profile-card .profile-meta {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+      }
 
-            .profile-card .profile-meta span {
-                font-size: 0.9rem;
-                color: #6b7280;
-                background-color: rgba(243, 244, 246, 0.8);
-                padding: 0.5rem 0.75rem;
-                border-radius: 8px;
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-            }
+      .profile-card .profile-meta span {
+        font-size: 0.9rem;
+        color: #6b7280;
+        background-color: rgba(243, 244, 246, 0.8);
+        padding: 0.5rem 0.75rem;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
 
-            .profile-card .profile-meta span i {
-                font-size: 1rem;
-            }
+      .profile-card .profile-meta span i {
+        font-size: 1rem;
+      }
 
-            .profile-card .btn-group {
-                display: flex;
-                gap: 0.75rem;
-                margin-top: 1.5rem;
-                flex-wrap: wrap;
-            }
+      .profile-card .btn-group {
+        display: flex;
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+        flex-wrap: wrap;
+      }
 
-            .profile-card .btn-group .btn {
-                flex: 1;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 0.5rem;
-                padding: 0.75rem 1rem;
-                font-size: 0.9rem;
-                border-radius: 10px;
-                transition: all 0.3s ease;
-            }
+      .profile-card .btn-group .btn {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+      }
 
-            .profile-card .btn-group .btn-primary {
-                background-color: var(--primary-color);
-                border-color: var(--primary-color);
-            }
+      .profile-card .btn-group .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+      }
 
-            .profile-card .btn-group .btn-primary:hover {
-                background-color: var(--primary-hover);
-                border-color: var(--primary-hover);
-                transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3);
-            }
+      .profile-card .btn-group .btn-primary:hover {
+        background-color: var(--primary-hover);
+        border-color: var(--primary-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3);
+      }
 
-            .profile-card .btn-group .btn-secondary {
-                background-color: #6b7280;
-                border-color: #6b7280;
-                color: #fff;
-            }
+      .profile-card .btn-group .btn-secondary {
+        background-color: #6b7280;
+        border-color: #6b7280;
+        color: #fff;
+      }
 
-            .profile-card .btn-group .btn-secondary:hover {
-                background-color: #4b5563;
-                border-color: #4b5563;
-                transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(107, 114, 128, 0.3);
-            }
+      .profile-card .btn-group .btn-secondary:hover {
+        background-color: #4b5563;
+        border-color: #4b5563;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(107, 114, 128, 0.3);
+      }
 
-            .profile-card .btn-group .btn-danger {
-                background-color: #ef4444;
-                border-color: #ef4444;
-                color: #fff;
-            }
+      .profile-card .btn-group .btn-danger {
+        background-color: #ef4444;
+        border-color: #ef4444;
+        color: #fff;
+      }
 
-            .profile-card .btn-group .btn-danger:hover {
-                background-color: #dc2626;
-                border-color: #dc2626;
-                transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
-            }
+      .profile-card .btn-group .btn-danger:hover {
+        background-color: #dc2626;
+        border-color: #dc2626;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+      }
 
-            .chart-container {
-                background-color: rgba(255, 255, 255, 0.95);
-                border-radius: 15px;
-                padding: 1.5rem;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-                margin-bottom: 1.5rem;
-            }
+      .chart-container {
+        background-color: rgba(255, 255, 255, 0.95);
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1.5rem;
+      }
 
-            .footer {
-                text-align: center;
-                padding: 1.5rem;
-                color: #6b7280;
-                font-size: 0.875rem;
-                margin-top: 2rem;
-            }
+      .footer {
+        text-align: center;
+        padding: 1.5rem;
+        color: #6b7280;
+        font-size: 0.875rem;
+        margin-top: 2rem;
+      }
 
-            @media (max-width: 768px) {
-                .welcome-section h1 {
-                    font-size: 2rem;
-                }
+      @media (max-width: 768px) {
+        .welcome-section h1 {
+          font-size: 2rem;
+        }
 
-                .profile-card .profile-meta {
-                    flex-direction: column;
-                }
+        .profile-card .profile-meta {
+          flex-direction: column;
+        }
 
-                .profile-card .btn-group {
-                    flex-direction: column;
-                }
-            }
-        </style>
-    </head>
-    <body>
-        <!-- Navbar -->
-        <nav class="navbar navbar-expand-lg navbar-light">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="#">
-                    <i class="bi bi-box logo-icon"></i>
-                    FUMIQ
-                </a>
-                <button
-                    class="navbar-toggler"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#navbarNav"
-                    aria-controls="navbarNav"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation"
-                >
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="dashboard.html">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="create_quiz.html"
-                                >Create</a
-                            >
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="joinQuiz.html">Join</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="browse_quizez.html"
-                                >Tests</a
-                            >
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="profile.html">Profile</a>
-                        </li>
-                        <li class="nav-item">
-                            <a
-                                id="btn-logout"
-                                href="logout.html"
-                                class="nav-link"
-                                >Logout</a
-                            >
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-
-        <!-- Main Content -->
-        <div class="dashboard-container">
-            <!-- Welcome Section -->
-            <div class="welcome-section animate__animated animate__fadeIn">
-                <h1>User Profile</h1>
-                <p>View and manage your profile information and performance.</p>
-            </div>
-
-            <!-- Profile Card -->
-            <div class="profile-card animate__animated animate__fadeInUp">
-                <h4>
-                    <i class="bi bi-person-circle"></i>
-                    <span id="userName">Loading...</span>
-                </h4>
-                <p>Email: <span id="userEmail">Loading...</span></p>
-                <div class="profile-meta">
-                    <span
-                        ><i class="bi bi-calendar"></i>Joined:
-                        <span id="joinDate">Loading...</span></span
-                    >
-                    <span
-                        ><i class="bi bi-bar-chart"></i>Tests Created:
-                        <span id="testsCreated">Loading...</span></span
-                    >
-                    <span
-                        ><i class="bi bi-check-circle"></i>Tests Completed:
-                        <span id="testsCompleted">Loading...</span></span
-                    >
-                </div>
-                <div class="btn-group">
-                    <a href="editProfile.html" class="btn btn-primary rounded">
-                        Edit Profile
-                    </a>
-                    <a
-                        class="btn btn-secondary rounded"
-                        href="changePassword.html"
-                        >Change Password</a
-                    >
-                    <a href="deleteProfile.html" class="btn btn-danger rounded">
-                        Delete Account
-                    </a>
-                </div>
-            </div>
-
-            <!-- Charts Section -->
-            <div class="chart-container animate__animated animate__fadeInUp">
-                <h4><i class="bi bi-graph-up"></i>Performance Overview</h4>
-                <canvas id="performanceChart"></canvas>
-            </div>
-
-            <div class="chart-container animate__animated animate__fadeInUp">
-                <h4>
-                    <i class="bi bi-pie-chart"></i>Test Results Distribution
-                </h4>
-                <canvas id="resultsChart"></canvas>
-            </div>
+        .profile-card .btn-group {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+          <i class="bi bi-box logo-icon"></i>
+          FUMIQ
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="dashboard.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="create_quiz.html">Create</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="joinQuiz.html">Join</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="browse_quizez.html">Tests</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="profile.html">Profile</a>
+            </li>
+            <li class="nav-item">
+              <a id="btn-logout" href="logout.html" class="nav-link">Logout</a>
+            </li>
+          </ul>
         </div>
+      </div>
+    </nav>
 
-        <!-- Footer -->
-        <div class="footer">
-            <p class="mb-0">© 2025 FUMIQ School. All rights reserved.</p>
+    <!-- Main Content -->
+    <div class="dashboard-container">
+      <!-- Welcome Section -->
+      <div class="welcome-section animate__animated animate__fadeIn">
+        <h1>User Profile</h1>
+        <p>View and manage your profile information and performance.</p>
+      </div>
+
+      <!-- Profile Card -->
+      <div class="profile-card animate__animated animate__fadeInUp">
+        <h4>
+          <i class="bi bi-person-circle"></i>
+          <span id="userName">Loading...</span>
+        </h4>
+        <p>Email: <span id="userEmail">Loading...</span></p>
+        <div class="profile-meta">
+          <span
+            ><i class="bi bi-calendar"></i>Joined:
+            <span id="joinDate">Loading...</span></span
+          >
         </div>
+        <div class="btn-group">
+          <a href="editProfile.html" class="btn btn-primary rounded">
+            Edit Profile
+          </a>
+          <a class="btn btn-secondary rounded" href="changePassword.html"
+            >Change Password</a
+          >
+          <a href="deleteProfile.html" class="btn btn-danger rounded">
+            Delete Account
+          </a>
+        </div>
+      </div>
+    </div>
 
-        <!-- Bootstrap JS -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <!-- Footer -->
+    <div class="footer">
+      <p class="mb-0">© 2025 FUMIQ School. All rights reserved.</p>
+    </div>
 
-        <!-- Script for Fetching Data and Displaying Charts -->
-        <script type="module" src="verify.js"></script>
-        <script type="module" src="profile.js"></script>
-    </body>
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Script for Fetching Data and Displaying Charts -->
+    <script type="module" src="verify.js"></script>
+    <script type="module" src="profile.js"></script>
+  </body>
 </html>
