@@ -48,7 +48,7 @@ async function fetchTests() {
       testList.appendChild(testCard);
     });
   } else {
-    // alert("No quizez to display.");
+    alert("No quizez to display.");
   }
 }
 

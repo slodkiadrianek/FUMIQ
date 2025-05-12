@@ -83,9 +83,9 @@ document.addEventListener("DOMContentLoaded", function () {
           }
         );
 
-        if (response.status !== 204) {
-          const data = await response.json();
+        const data = await response.json();
 
+        if (!response.status === 204) {
           throw new Error(data.message || "Failed to change password");
         }
 
