@@ -78,8 +78,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       // Show success message
-      successAlert.textContent =
-        data.message || "Profile updated successfully!";
+      successAlert.textContent = "Profile updated successfully!";
       successAlert.classList.remove("d-none");
 
       // Optionally redirect after success

@@ -35,34 +35,51 @@ async function fetchTestDetails() {
             (question, index) => `
             <div class="question-card">
               <h4>Question ${index + 1}: ${question.questionText}</h4>
-              <div class="options">
-                ${question.options
-                  .map(
-                    (option, i) => `
-                    <div class="option">
-                      <input
-                        type="${
-                          question.questionType === "multiple-correct"
-                            ? "checkbox"
-                            : "radio"
-                        }"
-                        name="question-${index}"
-                        id="question-${index}-option-${i}"
-                        disabled
-                      />
-                      <label for="question-${index}-option-${i}">${String.fromCharCode(
-                      65 + i
-                    )}. ${option}</label>
-                    </div>
-                  `
-                  )
-                  .join("")}
-              </div>
+              ${
+                question.photoUrl
+                  ? `<div class="question-image">
+                      <img src="${question.photoUrl}" alt="Question ${
+                      index + 1
+                    } image" class="img-fluid">
+                     </div>`
+                  : ""
+              }
+              ${
+                question.questionType === "open-ended"
+                  ? `<div class="open-ended-notice">
+                      <p><em>This is an open-ended question</em></p>
+                     </div>`
+                  : `<div class="options">
+                      ${question.options
+                        .map(
+                          (option, i) => `
+                          <div class="option">
+                            <input
+                              type="${
+                                question.questionType === "multiple-correct"
+                                  ? "checkbox"
+                                  : "radio"
+                              }"
+                              name="question-${index}"
+                              id="question-${index}-option-${i}"
+                              disabled
+                            />
+                            <label for="question-${index}-option-${i}">${String.fromCharCode(
+                            65 + i
+                          )}. ${option}</label>
+                          </div>
+                        `
+                        )
+                        .join("")}
+                     </div>`
+              }
               <p class="correct-answer">
                 Correct Answer: ${
                   Array.isArray(question.correctAnswer)
                     ? question.correctAnswer.join(", ")
-                    : question.correctAnswer
+                    : question.correctAnswer !== null
+                    ? question.correctAnswer
+                    : "Evaluation required"
                 }
               </p>
             </div>

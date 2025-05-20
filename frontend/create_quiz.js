@@ -362,6 +362,7 @@ document
         },
         body: JSON.stringify(bodyData),
       });
+      console.log(response);
       if (response.status !== 201) {
         const responseData = await response.json();
         success_message.classList.add("d-none");

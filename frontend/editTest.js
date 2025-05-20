@@ -25,12 +25,21 @@ const handleQuestionTypeChange = (questionCard, questionType) => {
   const correctAnswerTrueFalse = questionCard.querySelector(
     ".correct-answer-true-false"
   );
+  const correctAnswerOpenEnded = questionCard.querySelector(
+    ".correct-answer-open-ended"
+  );
+  const correctAnswerLabel = questionCard.querySelector(
+    ".correct-answer-label"
+  );
+  const optionInputs = questionCard.querySelectorAll(".option-input");
 
   // Hide all first
   optionsContainer.style.display = "none";
   correctAnswerSingle.style.display = "none";
   correctAnswerMultiple.style.display = "none";
   correctAnswerTrueFalse.style.display = "none";
+  correctAnswerOpenEnded.style.display = "none";
+  correctAnswerLabel.style.display = "block";
 
   // Reset required attributes
   toggleRequired(correctAnswerSingle.querySelector("select"), false);
@@ -41,21 +50,27 @@ const handleQuestionTypeChange = (questionCard, questionType) => {
     toggleRequired(checkboxes[0], false);
   }
   toggleRequired(correctAnswerTrueFalse.querySelector("select"), false);
+  optionInputs.forEach((input) => toggleRequired(input, false));
 
   // Show appropriate elements based on question type
   if (questionType === "single-correct") {
     optionsContainer.style.display = "block";
     correctAnswerSingle.style.display = "block";
     toggleRequired(correctAnswerSingle.querySelector("select"), true);
+    optionInputs.forEach((input) => toggleRequired(input, true));
   } else if (questionType === "multiple-correct") {
     optionsContainer.style.display = "block";
     correctAnswerMultiple.style.display = "block";
     if (checkboxes.length > 0) {
       toggleRequired(checkboxes[0], true);
     }
+    optionInputs.forEach((input) => toggleRequired(input, true));
   } else if (questionType === "true-false") {
     correctAnswerTrueFalse.style.display = "block";
     toggleRequired(correctAnswerTrueFalse.querySelector("select"), true);
+  } else if (questionType === "open-ended") {
+    correctAnswerOpenEnded.style.display = "block";
+    correctAnswerLabel.style.display = "none";
   }
 };
 
@@ -71,6 +86,15 @@ const createQuestionCard = (questionNumber, questionData = null) => {
     : "single-correct";
   const options = questionData ? questionData.options : ["", "", "", ""];
   let correctAnswer = questionData ? questionData.correctAnswer : "";
+
+  // Handle photoUrl based on the data structure
+  let photoUrl = null;
+  if (questionData) {
+    // Direct photoUrl property
+    photoUrl = questionData.photoUrl;
+  }
+
+  console.log("Creating question card with photoUrl:", photoUrl);
 
   // For multiple-correct, ensure correctAnswer is an array
   if (questionType === "multiple-correct" && !Array.isArray(correctAnswer)) {
@@ -90,6 +114,39 @@ const createQuestionCard = (questionNumber, questionData = null) => {
         required
       />
     </div>
+    
+    <!-- Image Upload Section -->
+    <div class="mb-3">
+      <label for="question-image-${questionCount}" class="form-label">Question Image (Optional)</label>
+      <input
+        type="file"
+        class="form-control question-image"
+        id="question-image-${questionCount}"
+        accept="image/*"
+      />
+      <small class="text-muted">You can upload an image to accompany the question</small>
+      ${
+        photoUrl
+          ? `
+        <div class="mt-2">
+          <div class="current-image-container">
+            <img src="${photoUrl}" alt="Question Image" class="img-thumbnail" style="max-height: 150px;"/>
+            <div class="mt-1">
+              <small class="text-muted">Current image: ${photoUrl
+                .split("/")
+                .pop()}</small>
+            </div>
+          </div>
+        </div>`
+          : ""
+      }
+      ${
+        photoUrl
+          ? `<input type="hidden" class="current-photo-url" value="${photoUrl}">`
+          : ""
+      }
+    </div>
+    
     <div class="mb-3">
       <label for="question-type-${questionCount}" class="form-label">Question Type</label>
       <select class="form-control question-type" id="question-type-${questionCount}" required>
@@ -102,8 +159,12 @@ const createQuestionCard = (questionNumber, questionData = null) => {
         <option value="true-false" ${
           questionType === "true-false" ? "selected" : ""
         }>True/False</option>
+        <option value="open-ended" ${
+          questionType === "open-ended" ? "selected" : ""
+        }>Open Ended (No Correct Answer)</option>
       </select>
     </div>
+    
     <div class="mb-3 options-container" id="options-container-${questionCount}">
       <label class="form-label">Options (A, B, C, D)</label>
       <div class="mb-2">
@@ -143,8 +204,9 @@ const createQuestionCard = (questionNumber, questionData = null) => {
         />
       </div>
     </div>
+    
     <div class="mb-3 correct-answer-container" id="correct-answer-container-${questionCount}">
-      <label class="form-label">Correct Answer</label>
+      <label class="form-label correct-answer-label">Correct Answer</label>
       <div class="correct-answer-single" id="correct-answer-single-${questionCount}">
         <select class="form-control">
           <option value="A" ${
@@ -197,6 +259,11 @@ const createQuestionCard = (questionNumber, questionData = null) => {
           }>False</option>
         </select>
       </div>
+      <div class="correct-answer-open-ended" id="correct-answer-open-ended-${questionCount}" style="display: none;">
+        <div class="alert alert-info">
+          This is an open-ended question. There is no correct answer specified.
+        </div>
+      </div>
     </div>
     <button type="button" class="btn btn-danger btn-sm remove-question">
       <i class="bi bi-trash"></i> Remove Question
@@ -245,8 +312,7 @@ async function loadTestForEditing(testId) {
     if (!token) {
       throw new Error("Authentication token not found. Please log in again.");
     }
-    // console.log(te);
-    console.log(token);
+
     const response = await fetch(
       `http://${base_url}/api/v1/quizzes/${testId}`,
       {
@@ -256,12 +322,13 @@ async function loadTestForEditing(testId) {
         },
       }
     );
-    console.log(response);
+
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
     const testData = await response.json();
+    console.log("Loaded test data:", testData);
 
     if (!testData.success) {
       throw new Error(
@@ -279,6 +346,7 @@ async function loadTestForEditing(testId) {
     questionsContainer.innerHTML = "";
 
     if (test.questions && test.questions.length > 0) {
+      console.log("Questions found:", test.questions);
       test.questions.forEach((question, index) => {
         questionCount = index + 1;
         const questionCard = createQuestionCard(questionCount, question);
@@ -320,6 +388,7 @@ document
       const testTitle = document.getElementById("test-title").value;
       const testDescription = document.getElementById("test-description").value;
       const timeLimit = document.getElementById("time-limit").value;
+      const testId = document.getElementById("test-id").value;
 
       const questionCards = document.querySelectorAll(".question-card");
 
@@ -327,14 +396,19 @@ document
         throw new Error("Please add at least one question.");
       }
 
+      // Process each question card
       const questions = [];
 
-      // Validate all questions
       for (let i = 0; i < questionCards.length; i++) {
         const card = questionCards[i];
         const questionNumber = i + 1;
         const questionText = card.querySelector(".question-text").value;
         const questionType = card.querySelector(".question-type").value;
+        const imageInput = card.querySelector(".question-image");
+        let currentPhotoUrlInput = card.querySelector(".current-photo-url");
+        let currentPhotoUrl = currentPhotoUrlInput
+          ? currentPhotoUrlInput.value
+          : null;
 
         if (!questionText) {
           throw new Error(
@@ -343,7 +417,6 @@ document
         }
 
         let correctAnswer;
-
         if (questionType === "single-correct") {
           correctAnswer = card.querySelector(
             ".correct-answer-single select"
@@ -366,15 +439,16 @@ document
             ".correct-answer-true-false select"
           ).value;
         }
+        // Open-ended questions don't need a correct answer
 
         const optionInputs = card.querySelectorAll(".option-input");
         const options =
-          questionType !== "true-false"
+          questionType !== "true-false" && questionType !== "open-ended"
             ? Array.from(optionInputs).map((input) => input.value)
             : [];
 
         // Validate options for non-true-false questions
-        if (questionType !== "true-false") {
+        if (questionType !== "true-false" && questionType !== "open-ended") {
           for (let j = 0; j < options.length; j++) {
             if (!options[j]) {
               throw new Error(
@@ -384,11 +458,50 @@ document
           }
         }
 
+        // Handle image upload if new image is selected
+        let photoUrl = currentPhotoUrl;
+        if (imageInput.files.length > 0) {
+          const imageFile = imageInput.files[0];
+          const imageFormData = new FormData();
+          imageFormData.append("photos", imageFile);
+
+          try {
+            console.log(
+              "Uploading image to:",
+              "http://localhost:3007/upload"
+            );
+            const uploadResponse = await fetch(
+              `http://localhost:3007/upload`,
+              {
+                method: "POST",
+                body: imageFormData,
+              }
+            );
+
+            if (!uploadResponse.ok) {
+              throw new Error(
+                `Image upload failed for question ${questionNumber}`
+              );
+            }
+
+            const uploadResult = await uploadResponse.json();
+            console.log("Upload result:", uploadResult);
+            photoUrl = uploadResult.photoUrls[0];
+            console.log("New photo URL:", photoUrl);
+          } catch (error) {
+            console.error("Error uploading image:", error);
+            throw new Error(
+              `Error uploading image for question ${questionNumber}: ${error.message}`
+            );
+          }
+        }
+
         questions.push({
           questionText,
           questionType,
           correctAnswer,
           options,
+          photoUrl,
         });
       }
 
@@ -418,9 +531,9 @@ document
         body: JSON.stringify(testData),
       });
 
-      if (response.status !== 204) {
+      const successStatusCodes = [200, 201, 204];
+      if (!successStatusCodes.includes(response.status)) {
         const responseData = await response.json();
-
         throw new Error(
           responseData.error?.description || "Failed to save test"
         );
@@ -433,13 +546,19 @@ document
           : "Quiz has been created successfully";
 
         // Reset form if creating new test
-        questionsContainer.innerHTML = "";
-        questionCount = 0;
-        document.getElementById("create-test-form").reset();
+        if (!testId) {
+          questionsContainer.innerHTML = "";
+          questionCount = 0;
+          document.getElementById("create-test-form").reset();
+        }
 
         // Scroll to the top to show the success message
         window.scrollTo(0, 0);
-        window.location.href = `viewTest.html?id=${testId}`;
+
+        // Redirect if we have a test ID
+        if (testId) {
+          window.location.href = `viewTest.html?id=${testId}`;
+        }
       }
     } catch (error) {
       console.error("Error saving test:", error);
