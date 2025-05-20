@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Account Activation | FUMIQ</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap Icons -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <!-- Animate.css for animations -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-color: #4f46e5;
+        --primary-hover: #4338ca;
+        --secondary-color: #10b981;
+        --secondary-hover: #059669;
+        --light-bg: #f3f4f6;
+        --dark-text: #1f2937;
+        --success-color: #10b981;
+        --error-color: #ef4444;
+      }
+
+      body {
+        background: linear-gradient(135deg, #f0f4ff 0%, #e6f7ff 100%);
+        min-height: 100vh;
+        font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .navbar {
+        background-color: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 20px;
+        margin: 1rem;
+        padding: 0.75rem 1.5rem;
+      }
+
+      .navbar-brand {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+      }
+
+      .navbar-brand i {
+        font-size: 2rem;
+        margin-right: 0.5rem;
+      }
+
+      .activation-container {
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+
+      .activation-card {
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+
+      .activation-icon {
+        font-size: 4rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .activation-icon.success {
+        color: var(--success-color);
+      }
+
+      .activation-icon.error {
+        color: var(--error-color);
+      }
+
+      .activation-icon.pending {
+        color: var(--primary-color);
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .activation-card h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+      }
+
+      .activation-card p {
+        font-size: 1.1rem;
+        color: var(--dark-text);
+        margin-bottom: 2rem;
+      }
+
+      .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary:hover {
+        background-color: var(--primary-hover);
+        border-color: var(--primary-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(79, 70, 229, 0.4);
+      }
+
+      .status-message {
+        padding: 1rem;
+        border-radius: 10px;
+        margin-bottom: 1.5rem;
+        font-weight: 500;
+      }
+
+      .status-message.success {
+        background-color: rgba(16, 185, 129, 0.1);
+        color: var(--success-color);
+      }
+
+      .status-message.error {
+        background-color: rgba(239, 68, 68, 0.1);
+        color: var(--error-color);
+      }
+
+      .footer {
+        text-align: center;
+        padding: 1.5rem;
+        color: #6b7280;
+        font-size: 0.875rem;
+        margin-top: 2rem;
+      }
+
+      @media (max-width: 768px) {
+        .activation-card {
+          padding: 1.5rem;
+        }
+
+        .activation-card h1 {
+          font-size: 1.75rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+          <i class="bi bi-box logo-icon"></i>
+          FUMIQ
+        </a>
+      </div>
+    </nav>
+
+    <!-- Activation Content -->
+    <div class="activation-container">
+      <div class="activation-card animate__animated animate__fadeIn">
+        <i class="bi bi-envelope-check activation-icon pending"></i>
+        <h1>Activating Your Account</h1>
+        <div id="statusMessage" class="status-message">
+          Please wait while we verify your account...
+        </div>
+        <p>
+          We're activating your FUMIQ account. This should only take a moment.
+        </p>
+        <div id="successContent" style="display: none">
+          <a href="dashboard.html" class="btn btn-primary">Go to Dashboard</a>
+        </div>
+        <div id="errorContent" style="display: none">
+          <a href="register.html" class="btn btn-primary"
+            >Try Registering Again</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p class="mb-0">© 2025 FUMIQ School. All rights reserved.</p>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Activation Script -->
+    <script src="activateUser.js" type="module">
+     
+    </script>
+  </body>
+</html>

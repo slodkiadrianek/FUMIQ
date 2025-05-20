@@ -240,7 +240,9 @@ export class UserService extends BaseService {
     await this.caching.set(
       `Quiz-Result-${sessionId}-${userId}`,
       JSON.stringify(score),
-      300
+      {
+        EX:30
+      }
     );
     return score;
   };

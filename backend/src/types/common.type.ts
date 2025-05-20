@@ -1,7 +1,11 @@
 import { Request } from "express";
 
 export interface RedisCacheService {
-  set(key: string, value: string, ttl?: number): Promise<void>;
+  set(
+    key: string,
+    value: string,
+    options?: { EX?: number; PX?: number; NX?: boolean; XX?: boolean }
+  ): Promise<"OK" | null>;
 
   get(key: string): Promise<string | null>;
 

@@ -245,7 +245,8 @@ async function loadTestForEditing(testId) {
     if (!token) {
       throw new Error("Authentication token not found. Please log in again.");
     }
-
+    // console.log(te);
+    console.log(token);
     const response = await fetch(
       `http://${base_url}/api/v1/quizzes/${testId}`,
       {
@@ -255,7 +256,7 @@ async function loadTestForEditing(testId) {
         },
       }
     );
-
+    console.log(response);
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }

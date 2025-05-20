@@ -17,7 +17,9 @@ export class BaseService {
       await this.caching.set(
         `${type}-${result._id}`,
         JSON.stringify(result),
-        300
+        {
+          EX:30
+        }
       );
     }
     return result;
@@ -46,7 +48,9 @@ export class BaseService {
     const result: T[] = await table.find({
       userId: new Types.ObjectId(userId),
     });
-    await this.caching.set(`${type}-${userId}`, JSON.stringify(result), 300);
+    await this.caching.set(`${type}-${userId}`, JSON.stringify(result),{
+      EX:300
+    });
     return result;
   };
   getItemById = async <T>(
@@ -78,7 +82,7 @@ export class BaseService {
       this.logger.error(`${type} with this ID does not exist"`, { id });
       throw new AppError(404, type, `${type} with this ID does not exist`);
     }
-    await this.caching.set(`${type}-${id}`, JSON.stringify(result), 300);
+    // await this.caching.set(`${type}-${id}`, JSON.stringify(result), 300);
     return result;
   };
   updateItem = async <T>(
@@ -100,7 +104,9 @@ export class BaseService {
       this.logger.error("Warehouse with this ID does not exist", { id });
       throw new AppError(404, type, `${type} with this ID does not exist`);
     }
-    await this.caching.set(`${type}-${id}`, JSON.stringify(result), 300);
+    await this.caching.set(`${type}-${id}`, JSON.stringify(result), {
+      EX:30
+    });
     return result;
   };
   deleteItem = async <T>(
