@@ -82,7 +82,9 @@ export class BaseService {
       this.logger.error(`${type} with this ID does not exist"`, { id });
       throw new AppError(404, type, `${type} with this ID does not exist`);
     }
-    // await this.caching.set(`${type}-${id}`, JSON.stringify(result), 300);
+    await this.caching.set(`${type}-${id}`, JSON.stringify(result), {
+      EX:300
+    });
     return result;
   };
   updateItem = async <T>(
@@ -101,7 +103,7 @@ export class BaseService {
       }
     );
     if (!result) {
-      this.logger.error("Warehouse with this ID does not exist", { id });
+      this.logger.error("Quiz with this ID does not exist", { id });
       throw new AppError(404, type, `${type} with this ID does not exist`);
     }
     await this.caching.set(`${type}-${id}`, JSON.stringify(result), {

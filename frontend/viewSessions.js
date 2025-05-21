@@ -293,9 +293,6 @@ function displaySessions(sessions) {
                 <i class="bi bi-calendar-x"></i>
                 <h4>No Sessions Available</h4>
                 <p>There are no active sessions for this quiz yet.</p>
-                <a href="create_session.html?quizId=${quizId}" class="btn btn-primary mt-2">
-                    <i class="bi bi-plus-circle"></i> Create New Session
-                </a>
             </div>
         `;
     return;
