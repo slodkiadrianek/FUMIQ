@@ -78,13 +78,12 @@ async function sendResetRequest(newPassword) {
     const response = await fetch(
       `http://${base_url}/api/v1/auth/activate/${resetToken.value}`,
       {
-        method: "GET",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${resetToken.value}`,
         },
         body: JSON.stringify({
-          assword: newPassword,
+          password: newPassword,
           confirmPassword: newPassword,
         }),
       }
