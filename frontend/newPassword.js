@@ -76,7 +76,7 @@ function validatePasswords(newPassword, confirmPassword) {
 async function sendResetRequest(newPassword) {
   try {
     const response = await fetch(
-      `http://${base_url}/api/v1/auth/activate/${resetToken.value}`,
+      `http://${base_url}/api/v1/auth/reset-password/${resetToken.value}`,
       {
         method: "POST",
         headers: {
@@ -89,9 +89,9 @@ async function sendResetRequest(newPassword) {
       }
     );
 
-    const data = await response.json();
 
-    if (!response.ok) {
+    if (response.status !== 204) {
+          const data = await response.json();
       throw new Error(data.message || "Failed to reset password");
     }
 
