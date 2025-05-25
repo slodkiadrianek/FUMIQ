@@ -272,7 +272,7 @@ export class AuthRoutes {
     /**
      * @swagger
      * /api/v1/auth/activate/{token}:
-     *   get:
+     *   post:
      *     summary: Activate user account
      *     tags: [Auth]
      *     parameters:
