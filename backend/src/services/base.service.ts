@@ -14,13 +14,9 @@ export class BaseService {
       ...data,
     });
     if (result instanceof Types.ObjectId) {
-      await this.caching.set(
-        `${type}-${result._id}`,
-        JSON.stringify(result),
-        {
-          EX:30
-        }
-      );
+      await this.caching.set(`${type}-${result._id}`, JSON.stringify(result), {
+        EX: 30,
+      });
     }
     return result;
   };
@@ -29,27 +25,27 @@ export class BaseService {
     userId: string,
     table: Model<T>
   ): Promise<T[]> => {
-    if (await this.caching.exists(`${type}-${userId}`)) {
-      const result: T[] | null = JSON.parse(
-        (await this.caching.get(`${type}-${userId}`)) || ""
-      );
-      if (!result) {
-        this.logger.error(
-          `An error occurred while retrieving ${type} for ${userId} from the cache.`
-        );
-        throw new AppError(
-          404,
-          type,
-          `An error occurred while retrieving ${type} for ${userId} from the cache.`
-        );
-      }
-      return result;
-    }
+    // if (await this.caching.exists(`${type}-${userId}`)) {
+    //   const result: T[] | null = JSON.parse(
+    //     (await this.caching.get(`${type}-${userId}`)) || ""
+    //   );
+    //   if (!result) {
+    //     this.logger.error(
+    //       `An error occurred while retrieving ${type} for ${userId} from the cache.`
+    //     );
+    //     throw new AppError(
+    //       404,
+    //       type,
+    //       `An error occurred while retrieving ${type} for ${userId} from the cache.`
+    //     );
+    //   }
+    //   return result;
+    // }
     const result: T[] = await table.find({
       userId: new Types.ObjectId(userId),
     });
-    await this.caching.set(`${type}-${userId}`, JSON.stringify(result),{
-      EX:300
+    await this.caching.set(`${type}-${userId}`, JSON.stringify(result), {
+      EX: 300,
     });
     return result;
   };
@@ -83,7 +79,7 @@ export class BaseService {
       throw new AppError(404, type, `${type} with this ID does not exist`);
     }
     await this.caching.set(`${type}-${id}`, JSON.stringify(result), {
-      EX:300
+      EX: 300,
     });
     return result;
   };
@@ -107,7 +103,7 @@ export class BaseService {
       throw new AppError(404, type, `${type} with this ID does not exist`);
     }
     await this.caching.set(`${type}-${id}`, JSON.stringify(result), {
-      EX:30
+      EX: 30,
     });
     return result;
   };
