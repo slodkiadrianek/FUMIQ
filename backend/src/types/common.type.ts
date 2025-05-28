@@ -4,7 +4,7 @@ export interface RedisCacheService {
   set(
     key: string,
     value: string,
-    options?: { EX?: number; PX?: number; NX?: boolean; XX?: boolean }
+    options?: { EX?: number; PX?: number; NX?: boolean; XX?: boolean },
   ): Promise<"OK" | null>;
 
   get(key: string): Promise<string | null>;
