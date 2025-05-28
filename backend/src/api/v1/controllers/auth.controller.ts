@@ -111,7 +111,7 @@ export class AuthController {
       this.logger.info("Attempt to send email with reset password link");
       await this.authService.sendEmailToResetPassword(email);
       this.logger.info("Email sent successfully");
-      res.status(201).send();
+      res.status(204).send();
       return;
     } catch (error) {
       next(error);

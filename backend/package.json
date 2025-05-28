@@ -8,7 +8,8 @@
     "start": "node --env-file=.env ./dist/server.js",
     "build": "tsc ",
     "dev": "npx  tsx  watch --env-file=.env  ./src/server.ts",
-    "test": "npx tsx --test  ./**/*.test.ts",
+    "test": "vitest --isolate   run --pool=forks",
+    "test:ui": "vitest --ui",
     "eslint": "npx eslint **/*.ts"
   },
   "repository": {
@@ -41,7 +42,6 @@
     "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
-    "@types/nodemailer": "^6.4.17",
     "@eslint/js": "^9.20.0",
     "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.17",
@@ -50,13 +50,17 @@
     "@types/jsonwebtoken": "^9.0.8",
     "@types/mongoose": "^5.11.96",
     "@types/node": "^22.13.4",
+    "@types/nodemailer": "^6.4.17",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.8",
+    "@vitest/ui": "^3.1.4",
+    "dotenv": "^16.5.0",
     "eslint": "^9.20.1",
     "globals": "^15.15.0",
     "swagger-autogen": "^2.23.7",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3",
-    "typescript-eslint": "^8.24.0"
+    "typescript-eslint": "^8.24.0",
+    "vitest": "^3.1.4"
   }
 }
