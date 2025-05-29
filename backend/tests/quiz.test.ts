@@ -4,6 +4,7 @@ import { registerData, loginData, createQuizData } from "./data/auth.js";
 import dotenv from "dotenv";
 import { Quiz } from "../src/models/quiz.model.js";
 import { User } from "../src/models/user.model.js";
+import { date } from "joi";
 dotenv.config();
 
 describe("QUIZ", () => {
@@ -65,4 +66,7 @@ describe("QUIZ", () => {
     });
     expect(response.status).toBe(201);
   });
+  it("should display all user quizzes", async () => {
+
+  })
 });

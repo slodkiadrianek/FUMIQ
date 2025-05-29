@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/slodkiadrianek/FUMIQ#readme",
   "dependencies": {
+    "@vitest/runner": "^3.1.4",
     "bcryptjs": "^3.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
