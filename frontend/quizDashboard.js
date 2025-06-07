@@ -57,9 +57,7 @@ async function initializeQuiz() {
       }
     );
     const competitorsData = await competitorsResponse.json();
-    console.log(competitorsData);
     if (sessionData.success && quizDetails.success) {
-      // console.log(sessionData.data);
       quizData = {
         code: sessionData.data.quiz.code,
         isActive: sessionData.data.quiz.isActive,
@@ -67,14 +65,12 @@ async function initializeQuiz() {
         competitors: competitorsData.data.session.competitors || [],
       };
       quizData.competitors = competitorsData.data.session;
-      console.log(quizData.competitors);
       renderActiveQuiz();
     } else {
       alert("Error loading quiz data");
     }
     // Socket event handlers
     socket.on(`newUser-${sessionId}`, (data) => {
-      console.log("New user joined:", data);
       let founded = false;
       for (const el of quizData.competitors) {
         if (el.userId === data.userData.id) {
@@ -95,7 +91,6 @@ async function initializeQuiz() {
       renderActiveQuiz();
     });
     socket.on(`newAnswer-${sessionId}`, (data) => {
-      console.log("Answer received:", data);
 
       // Find or create competitor
       let competitor = quizData.competitors.find(

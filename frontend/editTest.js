@@ -94,7 +94,6 @@ const createQuestionCard = (questionNumber, questionData = null) => {
     photoUrl = questionData.photoUrl;
   }
 
-  console.log("Creating question card with photoUrl:", photoUrl);
 
   // For multiple-correct, ensure correctAnswer is an array
   if (questionType === "multiple-correct" && !Array.isArray(correctAnswer)) {
@@ -328,7 +327,6 @@ async function loadTestForEditing(testId) {
     }
 
     const testData = await response.json();
-    console.log("Loaded test data:", testData);
 
     if (!testData.success) {
       throw new Error(
@@ -346,7 +344,6 @@ async function loadTestForEditing(testId) {
     questionsContainer.innerHTML = "";
 
     if (test.questions && test.questions.length > 0) {
-      console.log("Questions found:", test.questions);
       test.questions.forEach((question, index) => {
         questionCount = index + 1;
         const questionCard = createQuestionCard(questionCount, question);
@@ -388,7 +385,7 @@ document
       const testTitle = document.getElementById("test-title").value;
       const testDescription = document.getElementById("test-description").value;
       const timeLimit = document.getElementById("time-limit").value;
-      const testId = document.getElementById("test-id").value;
+      // const testId = document.getElementById("test-id").value;
 
       const questionCards = document.querySelectorAll(".question-card");
 
@@ -466,17 +463,10 @@ document
           imageFormData.append("photos", imageFile);
 
           try {
-            console.log(
-              "Uploading image to:",
-              "http://localhost:3007/upload"
-            );
-            const uploadResponse = await fetch(
-              `http://localhost:3007/upload`,
-              {
-                method: "POST",
-                body: imageFormData,
-              }
-            );
+            const uploadResponse = await fetch(`http://localhost:3007/upload`, {
+              method: "POST",
+              body: imageFormData,
+            });
 
             if (!uploadResponse.ok) {
               throw new Error(
@@ -485,9 +475,7 @@ document
             }
 
             const uploadResult = await uploadResponse.json();
-            console.log("Upload result:", uploadResult);
             photoUrl = uploadResult.photoUrls[0];
-            console.log("New photo URL:", photoUrl);
           } catch (error) {
             console.error("Error uploading image:", error);
             throw new Error(
@@ -516,7 +504,6 @@ document
       if (!token) {
         throw new Error("Authentication token not found. Please log in again.");
       }
-
       const method = testId ? "PUT" : "POST";
       const url = testId
         ? `http://${base_url}/api/v1/quizzes/${testId}`

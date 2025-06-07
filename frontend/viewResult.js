@@ -29,10 +29,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         },
       },
     );
-    console.log(response);
     const responseData = await response.json();
     if (responseData.success) {
-      console.log(responseData);
       quizScore = responseData.data.score;
       scorePercent.textContent = `${quizScore}%`;
     } else {

@@ -2,10 +2,8 @@ import { base_url } from "./base_api.js";
 document.addEventListener("DOMContentLoaded", function () {
   // Get user ID from URL or local storage (adjust as needed)
   const userData = JSON.parse(sessionStorage.getItem("userData"));
-  console.log(userData);
   // Get user ID from URL or local storage (adjust as needed)
   const userId = userData.id;
-  console.log(userId);
 
   // Password toggle functionality
   const toggleIcon = document.getElementById("togglePassword");

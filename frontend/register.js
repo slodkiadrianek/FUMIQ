@@ -11,7 +11,6 @@ register_form.addEventListener("submit", async function (event) {
     const formData = new FormData(this);
     const data = Object.fromEntries(formData.entries());
 
-    console.log(data);
     const res = await fetch(`http://${base_url}/api/v1/auth/register`, {
       method: "POST",
       headers: {
@@ -20,7 +19,6 @@ register_form.addEventListener("submit", async function (event) {
       body: JSON.stringify(data),
     });
     const responseData = await res.json();
-    console.log("Success:", responseData);
     if (!responseData.success) {
       success_message.classList.add("d-none");
       errorMessage.innerHTML = responseData.error.description;

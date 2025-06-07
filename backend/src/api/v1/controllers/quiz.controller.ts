@@ -7,7 +7,7 @@ import { CustomRequest } from "../../../types/common.type.js";
 import { AppError } from "../../../models/error.model.js";
 
 export class QuizController {
-  constructor(private logger: Logger, private quizService: QuizService) {}
+  constructor(private logger: Logger, private quizService: QuizService) { }
 
   createQuiz = async (
     req: Request,
@@ -92,6 +92,8 @@ export class QuizController {
         throw new AppError(400, "User", "User id not found");
       }
       const quizId = req.params.quizId as string;
+      console.log(quizId);
+
       const data: Omit<IQuiz, "_id"> = {
         ...req.body,
         userId: (req as CustomRequest).user.id,

@@ -11,7 +11,6 @@ reset_form.addEventListener("submit", async function (event) {
     const formData = new FormData(this);
     const data = Object.fromEntries(formData.entries());
 
-    console.log(data);
     const res = await fetch(`http://${base_url}/api/v1/auth/reset-password`, {
       method: "POST",
       headers: {
@@ -20,7 +19,6 @@ reset_form.addEventListener("submit", async function (event) {
       body: JSON.stringify(data),
     });
 
-    console.log("Success:", responseData);
     if (!res.status === 204) {
       const responseData = await res.json();
 

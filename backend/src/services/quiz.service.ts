@@ -42,6 +42,10 @@ export class QuizService extends BaseService {
     quizId: string,
     quizData: Omit<IQuiz, "_id">
   ): Promise<IQuiz> => {
+    console.log(quizId);
+
+    console.log(quizData);
+
     return this.updateItem("Quiz", quizId, quizData, Quiz);
   };
   deleteQuizById = async (quizId: string): Promise<string> => {
@@ -51,6 +55,14 @@ export class QuizService extends BaseService {
     quizId: string,
     userId: string
   ): Promise<ITakenQuiz> => {
+    const quiz: IQuiz | null = await Quiz.findOne({
+      _id: quizId,
+      userId: userId
+    })
+    if (!quiz) {
+      this.logger.error("Quiz not found", { userId, quizId })
+      throw new AppError(400, "Quiz", "Quiz not found")
+    }
     const quizCheck: ITakenQuiz | null = await TakenQuiz.findOne({
       quizId,
       userId,
@@ -105,16 +117,16 @@ export class QuizService extends BaseService {
     if (await this.caching.exists(`Quiz-Results-${sessionId}`)) {
       const result:
         | {
-            name: string;
-            score: number;
-            userAnswers: {
-              questionText: string;
-              answer: string;
-            }[];
-          }[]
+          name: string;
+          score: number;
+          userAnswers: {
+            questionText: string;
+            answer: string;
+          }[];
+        }[]
         | null = JSON.parse(
-        (await this.caching.get(`Quiz-Results-${sessionId}`)) || ""
-      );
+          (await this.caching.get(`Quiz-Results-${sessionId}`)) || ""
+        );
       if (!result) {
         this.logger.error(
           `An error occurred while retrieving Quiz-Results-${sessionId}  from the cache.`
@@ -157,7 +169,7 @@ export class QuizService extends BaseService {
       answer: el.correctAnswer,
     }));
     for (const el of quizSession.competitors) {
-      let userAnswersInfo: {
+      const userAnswersInfo: {
         questionText: string;
         answer: string;
       }[] = [];
@@ -212,19 +224,19 @@ export class QuizService extends BaseService {
   > => {
     const sessions:
       | {
-          _id: string;
-          quizId: string;
-          updatedAt: string;
-          createdAt: string;
-          competitors: [];
-        }[]
+        _id: string;
+        quizId: string;
+        updatedAt: string;
+        createdAt: string;
+        competitors: [];
+      }[]
       | null = await TakenQuiz.find(
-      {
-        quizId,
-        isActive: false,
-      },
-      "_id quizId createdAt updatedAt competitors"
-    );
+        {
+          quizId,
+          isActive: false,
+        },
+        "_id quizId createdAt updatedAt competitors"
+      );
     if (!sessions) {
       this.logger.error("No sessions with this quizId", { quizId });
       throw new AppError(400, "Session", "No session with this quizId");

@@ -307,7 +307,6 @@ document
     }
 
     // Create FormData to handle file uploads
-    console.log(testTitle, testDescription, timeLimit);
     const token = sessionStorage.getItem("authToken");
 
     const formData = new FormData();
@@ -343,16 +342,12 @@ document
         };
       })
     );
-    console.log(
-      "Questions without files:",
-      JSON.stringify(questionsWithoutFiles)
-    );
+  
     const bodyData = {};
     for (let [key, value] of formData.entries()) {
       bodyData[key] = value;
     }
     bodyData["questions"] = questionsWithoutFiles;
-    console.log("FormData:", JSON.stringify(bodyData));
     try {
       const response = await fetch(`http://${base_url}/api/v1/quizzes/`, {
         method: "POST",
@@ -362,7 +357,6 @@ document
         },
         body: JSON.stringify(bodyData),
       });
-      console.log(response);
       if (response.status !== 201) {
         const responseData = await response.json();
         success_message.classList.add("d-none");

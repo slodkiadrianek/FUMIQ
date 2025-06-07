@@ -28,8 +28,6 @@ document.addEventListener("visibilitychange", async () => {
       userId: userData.id,
       sessionId: quizState.sessionId,
     });
-  } else {
-    console.log("Strona znów jest widoczna");
   }
 });
 
@@ -119,7 +117,6 @@ async function loadQuiz() {
     );
 
     const data = await response.json();
-    console.log(data);
     if (!data.success) {
       throw new Error(data.error.description || "Failed to load quiz");
     }
@@ -205,7 +202,6 @@ function renderQuestions() {
   elements.questionsContainer.innerHTML = "";
 
   quizState.questions.forEach((question, index) => {
-    console.log(question.photoUrl);
     const questionNum = index + 1;
     const questionId = question.id;
     const currentAnswer = quizState.answers[questionId];
@@ -236,7 +232,6 @@ function renderQuestions() {
         )
         .join("");
       if (question.photoUrl) {
-        console.log(`YES`);
         optionsHtml += `
             <div class="mb-3">
               <img src="${question.photoUrl}" class="img-fluid rounded mb-2" alt="Question image">
@@ -261,7 +256,6 @@ function renderQuestions() {
         </li>
       `;
       if (question.photoUrl) {
-        console.log(`YES`);
         optionsHtml += `
           <div class="mb-3">
             <img src="${question.photoUrl}" class="img-fluid rounded mb-2" alt="Question image">
@@ -280,7 +274,6 @@ function renderQuestions() {
 
       // Add photo URL input if the question has a photo
       if (question.photoUrl) {
-        console.log(`YES`);
         optionsHtml += `
           <div class="mb-3">
             <img src="${question.photoUrl}" class="img-fluid rounded mb-2" alt="Question image">
@@ -305,7 +298,6 @@ function renderQuestions() {
         )
         .join("");
       if (question.photoUrl) {
-        console.log(`YES`);
         optionsHtml += `
             <div class="mb-3">
               <img src="${question.photoUrl}" class="img-fluid rounded mb-2" alt="Question image">

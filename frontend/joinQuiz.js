@@ -2,7 +2,6 @@ import { base_url } from "./base_api.js";
 
 const btnJoin = document.getElementById("join");
 const errorMessage = document.getElementById("error-message");
-console.log(errorMessage);
 async function joinQuiz() {
   const token = sessionStorage.getItem("authToken");
   const code = document.getElementById("code").value;
