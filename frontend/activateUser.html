@@ -159,7 +159,11 @@
       }
 
       .btn-primary {
-        background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--primary-hover)
+        );
         border: none;
         padding: clamp(0.75rem, 2vw, 1rem) clamp(1.5rem, 4vw, 2rem);
         font-weight: 600;
@@ -191,13 +195,21 @@
       }
 
       .status-message.success {
-        background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
+        background: linear-gradient(
+          135deg,
+          rgba(16, 185, 129, 0.1),
+          rgba(16, 185, 129, 0.05)
+        );
         color: var(--success-color);
         border-color: rgba(16, 185, 129, 0.2);
       }
 
       .status-message.error {
-        background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
+        background: linear-gradient(
+          135deg,
+          rgba(239, 68, 68, 0.1),
+          rgba(239, 68, 68, 0.05)
+        );
         color: var(--error-color);
         border-color: rgba(239, 68, 68, 0.2);
       }
@@ -257,7 +269,7 @@
         .activation-container {
           max-width: 650px;
         }
-        
+
         .activation-card {
           padding: 3.5rem;
         }
@@ -269,20 +281,20 @@
           min-height: auto;
           padding: 0.5rem;
         }
-        
+
         .activation-card {
           padding: 1.5rem;
         }
-        
+
         .activation-icon {
           font-size: 2.5rem;
           margin-bottom: 0.75rem;
         }
-        
+
         .activation-card h1 {
           margin-bottom: 0.5rem;
         }
-        
+
         .activation-card p {
           margin-bottom: 1rem;
         }
@@ -300,11 +312,11 @@
         .activation-icon.pending {
           animation: none;
         }
-        
+
         .activation-card:hover {
           transform: none;
         }
-        
+
         .btn-primary:hover {
           transform: none;
         }
@@ -336,9 +348,7 @@
           <p>
             We're activating your FUMIQ account. This should only take a moment.
           </p>
-          <div id="successContent" style="display: none">
-            <a href="dashboard.html" class="btn btn-primary">Go to Dashboard</a>
-          </div>
+
           <div id="errorContent" style="display: none">
             <a href="register.html" class="btn btn-primary"
               >Try Registering Again</a
@@ -357,8 +367,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
     <!-- Activation Script -->
-    <script src="activateUser.js" type="module">
-     
-    </script>
+    <script src="activateUser.js" type="module"></script>
   </body>
 </html>

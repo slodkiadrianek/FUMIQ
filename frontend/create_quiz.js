@@ -320,10 +320,13 @@ document
         if (q.imageFile) {
           const imageFormData = new FormData();
           imageFormData.append("photos", q.imageFile); // "photos" is the expected field name
-          const uploadResponse = await fetch(`http://localhost:3007/upload`, {
-            method: "POST",
-            body: imageFormData,
-          });
+          const uploadResponse = await fetch(
+            `http://192.168.0.113:3007/upload`,
+            {
+              method: "POST",
+              body: imageFormData,
+            }
+          );
 
           if (!uploadResponse.ok) {
             throw new Error("Image upload failed");
@@ -342,7 +345,7 @@ document
         };
       })
     );
-  
+
     const bodyData = {};
     for (let [key, value] of formData.entries()) {
       bodyData[key] = value;

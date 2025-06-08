@@ -463,7 +463,7 @@ document
           imageFormData.append("photos", imageFile);
 
           try {
-            const uploadResponse = await fetch(`http://localhost:3007/upload`, {
+            const uploadResponse = await fetch(`http://192.168.0.113:3007/upload`, {
               method: "POST",
               body: imageFormData,
             });
