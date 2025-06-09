@@ -28,14 +28,13 @@ document.addEventListener("DOMContentLoaded", () => {
           },
         }
       );
-
+      console.log(response)
       if (response.status === 204) {
         showSuccess("Account activated successfully!");
       } else {
-        const data = await response.json();
 
         showError(
-          data.error.description || "Activation failed. Please try again."
+          "Activation failed. Please try again."
         );
       }
     } catch (error) {
@@ -49,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
     statusMessage.className = "status-message success";
     activationIcon.className =
       "bi bi-check-circle-fill activation-icon success";
-    successContent.style.display = "block";
+    // successContent.style.display = "block";
     errorContent.style.display = "none";
   }
 
@@ -57,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
     statusMessage.textContent = message;
     statusMessage.className = "status-message error";
     activationIcon.className = "bi bi-x-circle-fill activation-icon error";
-    successContent.style.display = "none";
+    // successContent.style.display = "none";
     errorContent.style.display = "block";
   }
 });

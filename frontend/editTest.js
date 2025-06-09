@@ -124,43 +124,37 @@ const createQuestionCard = (questionNumber, questionData = null) => {
         accept="image/*"
       />
       <small class="text-muted">You can upload an image to accompany the question</small>
-      ${
-        photoUrl
-          ? `
+      ${photoUrl
+      ? `
         <div class="mt-2">
           <div class="current-image-container">
             <img src="${photoUrl}" alt="Question Image" class="img-thumbnail" style="max-height: 150px;"/>
             <div class="mt-1">
               <small class="text-muted">Current image: ${photoUrl
-                .split("/")
-                .pop()}</small>
+        .split("/")
+        .pop()}</small>
             </div>
           </div>
         </div>`
-          : ""
-      }
-      ${
-        photoUrl
-          ? `<input type="hidden" class="current-photo-url" value="${photoUrl}">`
-          : ""
-      }
+      : ""
+    }
+      ${photoUrl
+      ? `<input type="hidden" class="current-photo-url" value="${photoUrl}">`
+      : ""
+    }
     </div>
     
     <div class="mb-3">
       <label for="question-type-${questionCount}" class="form-label">Question Type</label>
       <select class="form-control question-type" id="question-type-${questionCount}" required>
-        <option value="single-correct" ${
-          questionType === "single-correct" ? "selected" : ""
-        }>Single Correct Answer (A, B, C, D)</option>
-        <option value="multiple-correct" ${
-          questionType === "multiple-correct" ? "selected" : ""
-        }>Multiple Correct Answers (A, B, C, D)</option>
-        <option value="true-false" ${
-          questionType === "true-false" ? "selected" : ""
-        }>True/False</option>
-        <option value="open-ended" ${
-          questionType === "open-ended" ? "selected" : ""
-        }>Open Ended (No Correct Answer)</option>
+        <option value="single-correct" ${questionType === "single-correct" ? "selected" : ""
+    }>Single Correct Answer (A, B, C, D)</option>
+        <option value="multiple-correct" ${questionType === "multiple-correct" ? "selected" : ""
+    }>Multiple Correct Answers (A, B, C, D)</option>
+        <option value="true-false" ${questionType === "true-false" ? "selected" : ""
+    }>True/False</option>
+        <option value="open-ended" ${questionType === "open-ended" ? "selected" : ""
+    }>Open Ended (No Correct Answer)</option>
       </select>
     </div>
     
@@ -208,54 +202,44 @@ const createQuestionCard = (questionNumber, questionData = null) => {
       <label class="form-label correct-answer-label">Correct Answer</label>
       <div class="correct-answer-single" id="correct-answer-single-${questionCount}">
         <select class="form-control">
-          <option value="A" ${
-            correctAnswer === "A" ? "selected" : ""
-          }>A</option>
-          <option value="B" ${
-            correctAnswer === "B" ? "selected" : ""
-          }>B</option>
-          <option value="C" ${
-            correctAnswer === "C" ? "selected" : ""
-          }>C</option>
-          <option value="D" ${
-            correctAnswer === "D" ? "selected" : ""
-          }>D</option>
+          <option value="A" ${correctAnswer === "A" ? "selected" : ""
+    }>A</option>
+          <option value="B" ${correctAnswer === "B" ? "selected" : ""
+    }>B</option>
+          <option value="C" ${correctAnswer === "C" ? "selected" : ""
+    }>C</option>
+          <option value="D" ${correctAnswer === "D" ? "selected" : ""
+    }>D</option>
         </select>
       </div>
       <div class="correct-answer-multiple" id="correct-answer-multiple-${questionCount}" style="display: none;">
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="A" id="correct-answer-A-${questionCount}" ${
-    Array.isArray(correctAnswer) && correctAnswer.includes("A") ? "checked" : ""
-  }>
+          <input class="form-check-input" type="checkbox" value="A" id="correct-answer-A-${questionCount}" ${Array.isArray(correctAnswer) && correctAnswer.includes("A") ? "checked" : ""
+    }>
           <label class="form-check-label" for="correct-answer-A-${questionCount}">A</label>
         </div>
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="B" id="correct-answer-B-${questionCount}" ${
-    Array.isArray(correctAnswer) && correctAnswer.includes("B") ? "checked" : ""
-  }>
+          <input class="form-check-input" type="checkbox" value="B" id="correct-answer-B-${questionCount}" ${Array.isArray(correctAnswer) && correctAnswer.includes("B") ? "checked" : ""
+    }>
           <label class="form-check-label" for="correct-answer-B-${questionCount}">B</label>
         </div>
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="C" id="correct-answer-C-${questionCount}" ${
-    Array.isArray(correctAnswer) && correctAnswer.includes("C") ? "checked" : ""
-  }>
+          <input class="form-check-input" type="checkbox" value="C" id="correct-answer-C-${questionCount}" ${Array.isArray(correctAnswer) && correctAnswer.includes("C") ? "checked" : ""
+    }>
           <label class="form-check-label" for="correct-answer-C-${questionCount}">C</label>
         </div>
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="D" id="correct-answer-D-${questionCount}" ${
-    Array.isArray(correctAnswer) && correctAnswer.includes("D") ? "checked" : ""
-  }>
+          <input class="form-check-input" type="checkbox" value="D" id="correct-answer-D-${questionCount}" ${Array.isArray(correctAnswer) && correctAnswer.includes("D") ? "checked" : ""
+    }>
           <label class="form-check-label" for="correct-answer-D-${questionCount}">D</label>
         </div>
       </div>
       <div class="correct-answer-true-false" id="correct-answer-true-false-${questionCount}" style="display: none;">
         <select class="form-control">
-          <option value="True" ${
-            correctAnswer === "True" ? "selected" : ""
-          }>True</option>
-          <option value="False" ${
-            correctAnswer === "False" ? "selected" : ""
-          }>False</option>
+          <option value="True" ${correctAnswer === "True" ? "selected" : ""
+    }>True</option>
+          <option value="False" ${correctAnswer === "False" ? "selected" : ""
+    }>False</option>
         </select>
       </div>
       <div class="correct-answer-open-ended" id="correct-answer-open-ended-${questionCount}" style="display: none;">
@@ -271,13 +255,13 @@ const createQuestionCard = (questionNumber, questionData = null) => {
 
   // Add event listener for question type change
   const questionTypeSelect = questionCard.querySelector(".question-type");
-  questionTypeSelect.addEventListener("change", function () {
+  questionTypeSelect.addEventListener("change", function() {
     handleQuestionTypeChange(questionCard, this.value);
   });
 
   // Add event listener for remove button
   const removeButton = questionCard.querySelector(".remove-question");
-  removeButton.addEventListener("click", function () {
+  removeButton.addEventListener("click", function() {
     questionCard.remove();
     updateQuestionNumbers();
   });
@@ -297,7 +281,7 @@ const updateQuestionNumbers = () => {
 };
 
 // Function to add a new question
-document.getElementById("add-question").addEventListener("click", function () {
+document.getElementById("add-question").addEventListener("click", function() {
   questionCount++;
   const questionsContainer = document.getElementById("questions-container");
   const questionCard = createQuestionCard(questionCount);
@@ -377,7 +361,7 @@ if (testId) {
 // Form submission handler
 document
   .getElementById("create-test-form")
-  .addEventListener("submit", async function (e) {
+  .addEventListener("submit", async function(e) {
     e.preventDefault();
 
     try {
@@ -463,7 +447,7 @@ document
           imageFormData.append("photos", imageFile);
 
           try {
-            const uploadResponse = await fetch(`http://192.168.0.113:3007/upload`, {
+            const uploadResponse = await fetch(`http://192.168.0.194:3007/upload`, {
               method: "POST",
               body: imageFormData,
             });

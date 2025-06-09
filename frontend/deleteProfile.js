@@ -81,9 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Clear local storage and redirect
         localStorage.clear();
-        setTimeout(() => {
-          window.location.href = "register.html";
-        }, 2000);
+        window.location.href = "register.html";
       } catch (error) {
         errorAlert.textContent =
           error.message || "An error occurred while deleting your profile.";

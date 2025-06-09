@@ -89,9 +89,8 @@ async function sendResetRequest(newPassword) {
       }
     );
 
-
     if (response.status !== 204) {
-          const data = await response.json();
+      const data = await response.json();
       throw new Error(data.message || "Failed to reset password");
     }
 
@@ -99,9 +98,7 @@ async function sendResetRequest(newPassword) {
       "Password reset successfully! Redirecting to login...",
       "success"
     );
-    setTimeout(() => {
-      window.location.href = "login.html";
-    }, 3000);
+    window.location.href = "login.html";
   } catch (error) {
     showMessage(
       error.message || "Password reset failed. Please try again.",

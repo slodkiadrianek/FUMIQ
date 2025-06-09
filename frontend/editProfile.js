@@ -82,9 +82,7 @@ document.addEventListener("DOMContentLoaded", function () {
       successAlert.classList.remove("d-none");
 
       // Optionally redirect after success
-      setTimeout(() => {
-        window.location.href = "profile.html";
-      }, 1500);
+      window.location.href = "profile.html";
     } catch (error) {
       errorAlert.textContent =
         error.message || "An error occurred while updating profile.";

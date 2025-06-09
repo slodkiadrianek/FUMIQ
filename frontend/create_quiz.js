@@ -5,7 +5,7 @@ const success_message = document.getElementById("success-message");
 let questionCount = 0;
 
 // Function to add a new question
-document.getElementById("add-question").addEventListener("click", function () {
+document.getElementById("add-question").addEventListener("click", function() {
   questionCount++;
   const questionsContainer = document.getElementById("questions-container");
 
@@ -212,7 +212,7 @@ document.getElementById("add-question").addEventListener("click", function () {
   // Add event listener for remove question button
   questionCard
     .querySelector(".remove-question")
-    .addEventListener("click", function () {
+    .addEventListener("click", function() {
       questionCard.remove();
       // Update question numbers if needed
       updateQuestionNumbers();
@@ -229,7 +229,7 @@ function updateQuestionNumbers() {
 
 document
   .getElementById("create-test-form")
-  .addEventListener("submit", async function (e) {
+  .addEventListener("submit", async function(e) {
     e.preventDefault();
     const questionsContainer = document.getElementById("questions-container");
     const testTitle = document.getElementById("test-title").value;
@@ -273,8 +273,7 @@ document
         if (correctAnswer.length === 0) {
           isValid = false;
           alert(
-            `Question ${
-              questions.length + 1
+            `Question ${questions.length + 1
             }: Please select at least one correct answer for multiple choice questions.`
           );
           break;
@@ -289,8 +288,8 @@ document
       const options =
         questionType !== "true-false" && questionType !== "open-ended"
           ? Array.from(card.querySelectorAll(".option-input")).map(
-              (input) => input.value
-            )
+            (input) => input.value
+          )
           : [];
 
       questions.push({
@@ -321,7 +320,7 @@ document
           const imageFormData = new FormData();
           imageFormData.append("photos", q.imageFile); // "photos" is the expected field name
           const uploadResponse = await fetch(
-            `http://192.168.0.113:3007/upload`,
+            `http://192.168.0.194:3007/upload`,
             {
               method: "POST",
               body: imageFormData,

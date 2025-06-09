@@ -91,7 +91,6 @@ async function initializeQuiz() {
       renderActiveQuiz();
     });
     socket.on(`newAnswer-${sessionId}`, (data) => {
-
       // Find or create competitor
       let competitor = quizData.competitors.find(
         (c) => c.userId === data.userId
@@ -249,10 +248,8 @@ document.addEventListener("DOMContentLoaded", function () {
       showNotification("Quiz ended successfully!", "success");
 
       // Refresh the quiz display or redirect to results
-      setTimeout(() => {
-        window.location.href =
-          "viewResults.html?sessionId=" + sessionId + "&quizId=" + testId;
-      }, 1500);
+      window.location.href =
+        "viewResults.html?sessionId=" + sessionId + "&quizId=" + testId;
     } catch (error) {
       console.error("Error in endQuiz function:", error);
       showNotification("An unexpected error occurred.", "error");
