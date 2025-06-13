@@ -674,5 +674,11 @@ export class QuizRoutes {
       ValidationMiddleware.validate(endQuizSession, "params"),
       this.quizController.getSession
     );
+    this.router.get(
+      "/api/v1/quizzes/:quizId/sessions/:sessionId/analytics",
+      this.auth.verify,
+      ValidationMiddleware.validate(endQuizSession, "params"),
+      this.quizController.AnalyzeQuestions
+    );
   }
 }

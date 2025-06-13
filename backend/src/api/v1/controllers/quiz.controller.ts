@@ -262,4 +262,31 @@ export class QuizController {
       next(error);
     }
   };
+  AnalyzeQuestions = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      if (!(req as CustomRequest).user.id) {
+        throw new AppError(400, "User", "User id not found");
+      }
+      const sessionId: string = req.params.sessionId
+      const quizId: string = req.params.quizId
+      this.logger.info("Attempting to get analytics data about session", { sessionId, quizId })
+      const result: {
+        quizTitle: string;
+        quizDescription: string;
+        question: {
+          questionText: string;
+          questionScore: number;
+        }[];
+      } = await this.quizService.AnalizeQuizQuestions(sessionId, quizId, (req as CustomRequest).user.id)
+      res.status(200).json({
+        success: true,
+        data: {
+          session: result
+        }
+      })
+      return
+    } catch (error) {
+      next(error)
+    }
+  }
 }

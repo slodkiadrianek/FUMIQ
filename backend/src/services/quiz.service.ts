@@ -5,7 +5,6 @@ import { BaseService } from "./base.service.js";
 import { ITakenQuiz, TakenQuiz } from "../models/takenQuiz.model.js";
 import { IUser } from "../models/user.model.js";
 import { AppError } from "../models/error.model.js";
-import { s } from "@vitest/runner/dist/tasks.d-hsdzc98-.js";
 
 export class QuizService extends BaseService {
   constructor(logger: Logger, caching: RedisCacheService) {
@@ -355,30 +354,64 @@ export class QuizService extends BaseService {
     }
     return result;
   };
-  //   AnalizeQuizQuestions = async (sessionId: string, quizId: string, userId: string):
-  // Promise<{
-  //   quizName: string;
-  //   quizDescription: string;
-  //   question: {
-  //     questionText: string;
-  //     questionScore: string;
-  //   }[];
-  // }>
-  //
-  //   => {
-  //     const resQuiz = await Quiz.findOne({ _id: quizId, userId: userId })
-  //     if (!resQuiz) {
-  //       this.logger.error("Quiz with this id does not exist", { quizId })
-  //       throw new AppError(400, "Database", "Quiz with this id does not exist")
-  //     }
-  //     const resSession = await TakenQuiz.findOne({
-  //       _id: sessionId,
-  //       userId: userId
-  //     })
-  //     if (!resSession) {
-  //       this.logger.error("Session with this id does not exist", { quizId })
-  //       throw new AppError(400, "Database", "Session with this id does not exist")
-  //     }
-  //     re
-  //   }
+  AnalizeQuizQuestions = async (sessionId: string, quizId: string, userId: string):
+    Promise<{
+      quizTitle: string;
+      quizDescription: string;
+      averageScore: number
+      highestScore: number
+      question: {
+        questionText: string;
+        questionScore: number;
+      }[];
+    }> => {
+    const resQuiz = await Quiz.findOne({ _id: quizId, userId: userId })
+    if (!resQuiz) {
+      this.logger.error("Quiz with this id does not exist", { quizId })
+      throw new AppError(400, "Database", "Quiz with this id does not exist")
+    }
+    const resSession = await TakenQuiz.findOne({
+      _id: sessionId,
+      userId: userId
+    })
+    if (!resSession) {
+      this.logger.error("Session with this id does not exist", { quizId })
+      throw new AppError(400, "Database", "Session with this id does not exist")
+    }
+    const questions: { questionText: string, questionScore: number }[] = []
+    const usersScore: number[] = []
+    for (const el of resQuiz.questions) {
+      let score: number = 0;
+      for (const competitor of resSession.competitors) {
+        for (const competitorAnswer of competitor.answers) {
+          let competitorScore: number = 0
+          if (el._id.toString() === competitorAnswer.questionId.toString()) {
+            if (typeof el.correctAnswer === "string") {
+              if (el.correctAnswer.toLowerCase() === competitorAnswer.answer.toLowerCase()) {
+                competitorScore++
+                score++;
+              }
+            } else {
+              if (!el.correctAnswer) {
+                competitorScore++
+                score++;
+              } else {
+                if (el.correctAnswer.join(",").toLowerCase() === competitorAnswer.answer.toLowerCase()) {
+                  competitorScore++
+                  score++;
+                }
+              }
+            }
+          }
+          usersScore.push(competitorScore)
+        }
+      }
+      questions.push({ questionText: el.questionText, questionScore: Math.floor((score / resSession.competitors.length) * 100) })
+    }
+    const averageScore = Math.floor((usersScore.reduce((acc, curr) => {
+      return acc + curr
+    }, 0) / resSession.competitors.length) * 100)
+    const highestScore = Math.max(...usersScore)
+    return { quizTitle: resQuiz.title, quizDescription: resQuiz.description, averageScore: averageScore, highestScore: highestScore, question: questions }
+  }
 }

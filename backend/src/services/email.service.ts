@@ -10,9 +10,8 @@ export class EmailService {
     private fromEmail: string,
   ) {
     this.transporter = nodemailer.createTransport({
-      host: 'smtp.zs2.ostrzeszow.com',
+      host: 'smtp-mail.outlook.com',
       port: 587,
-      secure: false,
       auth: {
         user: this.user,
         pass: this.pass,
