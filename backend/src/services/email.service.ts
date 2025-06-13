@@ -5,13 +5,14 @@ export class EmailService {
   transporter: Mail;
 
   constructor(
-    private service: string,
     private user: string,
     private pass: string,
     private fromEmail: string,
   ) {
     this.transporter = nodemailer.createTransport({
-      service: this.service,
+      host: 'smtp.zs2.ostrzeszow.com',
+      port: 587,
+      secure: false,
       auth: {
         user: this.user,
         pass: this.pass,

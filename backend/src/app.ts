@@ -43,7 +43,6 @@ if (process.env.CACHE_LINK) {
   process.exit(1);
 }
 if (
-  !process.env.EMAIL_SERVICE ||
   !process.env.EMAIL_USER ||
   !process.env.EMAIL_PASS ||
   !process.env.EMAIL_FROM
@@ -52,7 +51,6 @@ if (
   process.exit(1);
 }
 const emailService: EmailService = new EmailService(
-  process.env.EMAIL_SERVICE,
   process.env.EMAIL_USER,
   process.env.EMAIL_PASS,
   process.env.EMAIL_FROM,

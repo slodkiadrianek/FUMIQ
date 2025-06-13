@@ -5,6 +5,7 @@ import { BaseService } from "./base.service.js";
 import { ITakenQuiz, TakenQuiz } from "../models/takenQuiz.model.js";
 import { IUser } from "../models/user.model.js";
 import { AppError } from "../models/error.model.js";
+import { s } from "@vitest/runner/dist/tasks.d-hsdzc98-.js";
 
 export class QuizService extends BaseService {
   constructor(logger: Logger, caching: RedisCacheService) {
@@ -354,4 +355,30 @@ export class QuizService extends BaseService {
     }
     return result;
   };
+  //   AnalizeQuizQuestions = async (sessionId: string, quizId: string, userId: string):
+  // Promise<{
+  //   quizName: string;
+  //   quizDescription: string;
+  //   question: {
+  //     questionText: string;
+  //     questionScore: string;
+  //   }[];
+  // }>
+  //
+  //   => {
+  //     const resQuiz = await Quiz.findOne({ _id: quizId, userId: userId })
+  //     if (!resQuiz) {
+  //       this.logger.error("Quiz with this id does not exist", { quizId })
+  //       throw new AppError(400, "Database", "Quiz with this id does not exist")
+  //     }
+  //     const resSession = await TakenQuiz.findOne({
+  //       _id: sessionId,
+  //       userId: userId
+  //     })
+  //     if (!resSession) {
+  //       this.logger.error("Session with this id does not exist", { quizId })
+  //       throw new AppError(400, "Database", "Session with this id does not exist")
+  //     }
+  //     re
+  //   }
 }
