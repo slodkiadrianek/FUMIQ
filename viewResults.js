@@ -1,15 +1,19 @@
-
 import { base_url } from "./base_api.js";
 
 document.addEventListener("DOMContentLoaded", async function () {
   const participantsList = document.getElementById("participantsList");
-
+  const checkAnaliticsHref = document.getElementById("check-analitycs");
   try {
     const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get("sessionId");
     const quizId = urlParams.get("quizId");
     const token = sessionStorage.getItem("authToken");
-
+    if (!sessionId || !quizId || !token) {
+      throw new Error(
+        "Missing sessionId, quizId, or authToken in session storage."
+      );
+    }
+    checkAnaliticsHref.href = `sessionAnalitycs.html?sessionId=${sessionId}&quizId=${quizId}`;
     const response = await fetch(
       `http://${base_url}/api/v1/quizzes/${quizId}/sessions/${sessionId}/results`,
       {
