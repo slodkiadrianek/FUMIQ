@@ -5,7 +5,7 @@ const success_message = document.getElementById("success-message");
 let questionCount = 0;
 
 // Function to add a new question
-document.getElementById("add-question").addEventListener("click", function() {
+document.getElementById("add-question").addEventListener("click", function () {
   questionCount++;
   const questionsContainer = document.getElementById("questions-container");
 
@@ -39,15 +39,15 @@ document.getElementById("add-question").addEventListener("click", function() {
       <div class="mb-3">
         <label for="question-type-${questionCount}" class="form-label">Question Type</label>
         <select class="form-control question-type" id="question-type-${questionCount}" required>
-          <option value="single-correct">Single Correct Answer (A, B, C, D)</option>
-          <option value="multiple-correct">Multiple Correct Answers (A, B, C, D)</option>
+          <option value="single-correct">Single Correct Answer</option>
+          <option value="multiple-correct">Multiple Correct Answers</option>
           <option value="true-false">True/False</option>
-          <option value="open-ended">Open Ended (No Correct Answer)</option>
+          <option value="open-ended">Open Ended</option>
         </select>
       </div>
       
       <div class="mb-3 options-container" id="options-container-${questionCount}">
-        <label class="form-label">Options (A, B, C, D)</label>
+        <label class="form-label">Options</label>
         <div class="mb-2">
           <input
             type="text"
@@ -69,7 +69,6 @@ document.getElementById("add-question").addEventListener("click", function() {
             type="text"
             class="form-control option-input"
             placeholder="Option C"
-            required
           />
         </div>
         <div class="mb-2">
@@ -77,7 +76,6 @@ document.getElementById("add-question").addEventListener("click", function() {
             type="text"
             class="form-control option-input"
             placeholder="Option D"
-            required
           />
         </div>
       </div>
@@ -130,9 +128,10 @@ document.getElementById("add-question").addEventListener("click", function() {
 
   questionsContainer.appendChild(questionCard);
 
-  // Show/hide options and correct answer based on question type
+  // Initialize question type
   const questionType = questionCard.querySelector(".question-type");
   const optionsContainer = questionCard.querySelector(".options-container");
+  const optionInputs = questionCard.querySelectorAll(".option-input");
   const correctAnswerSingle = questionCard.querySelector(
     ".correct-answer-single"
   );
@@ -149,57 +148,61 @@ document.getElementById("add-question").addEventListener("click", function() {
     ".correct-answer-label"
   );
 
-  // Function to toggle required attribute
-  const toggleRequired = (element, isRequired) => {
-    if (isRequired) {
-      element.setAttribute("required", true);
-    } else {
-      element.removeAttribute("required");
-    }
-  };
-
   // Function to handle question type changes
   const handleQuestionTypeChange = () => {
-    const optionInputs = questionCard.querySelectorAll(".option-input");
+    const type = questionType.value;
 
-    if (questionType.value === "single-correct") {
+    // Reset all options first
+    optionInputs.forEach((input, index) => {
+      input.required = true;
+      input.readOnly = false;
+      input.parentElement.style.display = "block";
+      if (index >= 2) {
+        input.required = false;
+      }
+    });
+
+    if (type === "single-correct") {
       optionsContainer.style.display = "block";
       correctAnswerSingle.style.display = "block";
       correctAnswerMultiple.style.display = "none";
       correctAnswerTrueFalse.style.display = "none";
       correctAnswerOpenEnded.style.display = "none";
       correctAnswerLabel.style.display = "block";
-      toggleRequired(correctAnswerSingle.querySelector("select"), true);
-      optionInputs.forEach((input) => toggleRequired(input, true));
-    } else if (questionType.value === "multiple-correct") {
+    } else if (type === "multiple-correct") {
       optionsContainer.style.display = "block";
       correctAnswerSingle.style.display = "none";
       correctAnswerMultiple.style.display = "block";
       correctAnswerTrueFalse.style.display = "none";
       correctAnswerOpenEnded.style.display = "none";
       correctAnswerLabel.style.display = "block";
-      toggleRequired(
-        correctAnswerMultiple.querySelectorAll("input[type='checkbox']")[0],
-        true
-      );
-      optionInputs.forEach((input) => toggleRequired(input, true));
-    } else if (questionType.value === "true-false") {
-      optionsContainer.style.display = "none";
-      correctAnswerSingle.style.display = "none";
+    } else if (type === "true-false") {
+      optionsContainer.style.display = "block";
+      correctAnswerSingle.style.display = "none"; // Hide the A/B/C/D selector
+      correctAnswerTrueFalse.style.display = "block"; // Show the True/False selector
       correctAnswerMultiple.style.display = "none";
-      correctAnswerTrueFalse.style.display = "block";
       correctAnswerOpenEnded.style.display = "none";
       correctAnswerLabel.style.display = "block";
-      toggleRequired(correctAnswerTrueFalse.querySelector("select"), true);
-      optionInputs.forEach((input) => toggleRequired(input, false));
-    } else if (questionType.value === "open-ended") {
+
+      // Set True/False values and lock them
+      optionInputs[0].value = "True";
+      optionInputs[0].readOnly = true;
+      optionInputs[1].value = "False";
+      optionInputs[1].readOnly = true;
+
+      // Hide extra options
+      for (let i = 2; i < optionInputs.length; i++) {
+        optionInputs[i].parentElement.style.display = "none";
+      }
+    } else if (type === "open-ended") {
       optionsContainer.style.display = "none";
       correctAnswerSingle.style.display = "none";
       correctAnswerMultiple.style.display = "none";
       correctAnswerTrueFalse.style.display = "none";
       correctAnswerOpenEnded.style.display = "block";
       correctAnswerLabel.style.display = "none";
-      optionInputs.forEach((input) => toggleRequired(input, false));
+      // Remove required attribute from options
+      optionInputs.forEach((input) => input.removeAttribute("required"));
     }
   };
 
@@ -212,9 +215,8 @@ document.getElementById("add-question").addEventListener("click", function() {
   // Add event listener for remove question button
   questionCard
     .querySelector(".remove-question")
-    .addEventListener("click", function() {
+    .addEventListener("click", function () {
       questionCard.remove();
-      // Update question numbers if needed
       updateQuestionNumbers();
     });
 });
@@ -222,6 +224,7 @@ document.getElementById("add-question").addEventListener("click", function() {
 // Function to update question numbers after removal
 function updateQuestionNumbers() {
   const questionCards = document.querySelectorAll(".question-card");
+  questionCount = questionCards.length;
   questionCards.forEach((card, index) => {
     card.querySelector("h4").textContent = `Question ${index + 1}`;
   });
@@ -229,14 +232,13 @@ function updateQuestionNumbers() {
 
 document
   .getElementById("create-test-form")
-  .addEventListener("submit", async function(e) {
+  .addEventListener("submit", async function (e) {
     e.preventDefault();
+
     const questionsContainer = document.getElementById("questions-container");
     const testTitle = document.getElementById("test-title").value;
     const testDescription = document.getElementById("test-description").value;
     const timeLimit = document.getElementById("time-limit").value;
-
-    const questions = [];
     const questionCards = document.querySelectorAll(".question-card");
 
     if (questionCards.length === 0) {
@@ -245,13 +247,18 @@ document
     }
 
     let isValid = true;
+    const questions = [];
 
     // Process each question card
+    // In the form submission handler, replace the question processing logic with:
+
     for (const card of questionCards) {
       const questionText = card.querySelector(".question-text").value;
       const questionType = card.querySelector(".question-type").value;
       const imageInput = card.querySelector(".question-image");
+
       let correctAnswer = null;
+      let options = undefined; // Initialize as undefined
       let imageFile = null;
 
       // Handle image upload if present
@@ -259,106 +266,151 @@ document
         imageFile = imageInput.files[0];
       }
 
-      if (questionType === "single-correct") {
-        correctAnswer = card.querySelector(
-          ".correct-answer-single select"
-        ).value;
-      } else if (questionType === "multiple-correct") {
-        const checkboxes = card.querySelectorAll(
-          ".correct-answer-multiple input:checked"
-        );
-        correctAnswer = Array.from(checkboxes).map(
-          (checkbox) => checkbox.value
-        );
-        if (correctAnswer.length === 0) {
+      // Only process options for question types that need them
+      if (questionType !== "open-ended") {
+        const optionInputs = card.querySelectorAll(".option-input");
+        options = Array.from(optionInputs)
+          .map((input) => input.value.trim())
+          .filter((value) => value !== "");
+
+        // Validate that we have enough options
+        if (questionType !== "true-false" && options.length < 2) {
           isValid = false;
           alert(
-            `Question ${questions.length + 1
-            }: Please select at least one correct answer for multiple choice questions.`
+            `Question ${
+              questions.length + 1
+            }: Please provide at least two options`
           );
           break;
         }
-      } else if (questionType === "true-false") {
-        correctAnswer = card.querySelector(
-          ".correct-answer-true-false select"
-        ).value;
       }
-      // Open-ended questions don't need a correct answer
 
-      const options =
-        questionType !== "true-false" && questionType !== "open-ended"
-          ? Array.from(card.querySelectorAll(".option-input")).map(
-            (input) => input.value
-          )
-          : [];
+      switch (questionType) {
+        case "single-correct":
+          const selectedOption = card.querySelector(
+            ".correct-answer-single select"
+          ).value;
+          const optionIndex = selectedOption.charCodeAt(0) - 65;
+          if (options[optionIndex]) {
+            correctAnswer = options[optionIndex];
+          } else {
+            isValid = false;
+            alert(
+              `Question ${
+                questions.length + 1
+              }: Selected option ${selectedOption} is missing text`
+            );
+          }
+          break;
+
+        case "multiple-correct":
+          const checkboxes = card.querySelectorAll(
+            ".correct-answer-multiple input:checked"
+          );
+          correctAnswer = Array.from(checkboxes)
+            .map((checkbox) => {
+              const optionIndex = checkbox.value.charCodeAt(0) - 65;
+              return options[optionIndex];
+            })
+            .filter((answer) => answer !== undefined);
+
+          if (correctAnswer.length === 0) {
+            isValid = false;
+            alert(
+              `Question ${
+                questions.length + 1
+              }: Please select at least one correct answer`
+            );
+          }
+          break;
+
+        case "true-false":
+          correctAnswer = card.querySelector(
+            ".correct-answer-true-false select"
+          ).value;
+          break;
+
+        case "open-ended":
+          options = [];
+          // No correct answer needed
+          break;
+      }
+
+      if (!isValid) break;
 
       questions.push({
         questionText,
         questionType,
         correctAnswer,
         options,
-        imageFile, // This will be handled in the FormData version
+        imageFile,
       });
     }
 
-    if (!isValid) {
-      return;
-    }
+    // Then modify the API request preparation to:
+    const quizData = {
+      title: testTitle,
+      description: testDescription,
+      timeLimit: parseInt(timeLimit),
+      questions: questions.map((q) => ({
+        questionText: q.questionText,
+        questionType: q.questionType,
+        correctAnswer: q.correctAnswer,
+        options: q.options, // undefined for open-ended
+        photoUrl: null, // Will be filled after upload
+      })),
+    };
+
+    if (!isValid) return;
 
     // Create FormData to handle file uploads
     const token = sessionStorage.getItem("authToken");
 
-    const formData = new FormData();
-    formData.append("title", testTitle);
-    formData.append("description", testDescription);
-    formData.append("timeLimit", timeLimit);
+    try {
+      // First upload images if any
+      const questionsWithImageUrls = await Promise.all(
+        questions.map(async (q) => {
+          let photoUrl = null;
+          if (q.imageFile) {
+            const imageFormData = new FormData();
+            imageFormData.append("photos", q.imageFile);
 
-    const questionsWithoutFiles = await Promise.all(
-      questions.map(async (q) => {
-        let photoUrl = null;
-        if (q.imageFile) {
-          const imageFormData = new FormData();
-          imageFormData.append("photos", q.imageFile); // "photos" is the expected field name
-          const uploadResponse = await fetch(
-            `http://10.139.12.221:3007/upload`,
-            {
+            const uploadResponse = await fetch(`http://${base_url}/upload`, {
               method: "POST",
               body: imageFormData,
-            }
-          );
+            });
 
-          if (!uploadResponse.ok) {
-            throw new Error("Image upload failed");
+            if (!uploadResponse.ok) {
+              throw new Error("Image upload failed");
+            }
+
+            const uploadResult = await uploadResponse.json();
+            photoUrl = uploadResult.photoUrls[0];
           }
 
-          const uploadResult = await uploadResponse.json();
-          photoUrl = uploadResult.photoUrls[0];
-        }
+          return {
+            ...q,
+            photoUrl,
+            imageFile: undefined, // Remove the file object
+          };
+        })
+      );
 
-        return {
-          photoUrl: photoUrl,
-          questionText: q.questionText,
-          questionType: q.questionType,
-          correctAnswer: q.correctAnswer,
-          options: q.options,
-        };
-      })
-    );
-
-    const bodyData = {};
-    for (let [key, value] of formData.entries()) {
-      bodyData[key] = value;
-    }
-    bodyData["questions"] = questionsWithoutFiles;
-    try {
+      // Then submit the quiz data
       const response = await fetch(`http://${base_url}/api/v1/quizzes/`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(bodyData),
+        body: JSON.stringify({
+          title: testTitle,
+          description: testDescription,
+          timeLimit: parseInt(timeLimit),
+          questions: questionsWithImageUrls,
+        }),
       });
+
       if (response.status !== 201) {
         const responseData = await response.json();
         success_message.classList.add("d-none");
@@ -371,7 +423,7 @@ document
         success_message.classList.remove("d-none");
         success_message.innerHTML = "Quiz has been created successfully";
         questionsContainer.innerHTML = "";
-        questionCount = 0; // Reset question counter
+        questionCount = 0;
       }
     } catch (error) {
       console.error("Error:", error);
